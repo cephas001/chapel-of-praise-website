@@ -1,0 +1,64 @@
+@import '@fontsource/poppins';
+@import '@fontsource/montserrat';
+@import '@fontsource/inter';
+@import 'tailwindcss';
+
+html,
+body {
+    font-family: "Poppins", sans-serif, system-ui, sans-serif !important;
+}
+
+/* 1. Define the Light Mode (Default) Colors */
+:root {
+    --brand-primary: ;
+    --brand-secondary: ;
+    --brand-base: ;
+    --brand-surface: ;
+    --brand-border: ;
+    --brand-text: ;
+    --brand-text-muted: ;
+    --navbar-border: ;
+}
+
+/* 2. Define the Dark Mode Colors */
+.dark {
+    --brand-primary: ;
+    --brand-secondary: ;
+    --brand-base: ;
+    --brand-surface: ;
+    --brand-border: ;
+    --brand-text: ;
+    --brand-text-muted: ;
+}
+
+/* 3. Feed the dynamic variables into Tailwind v4 */
+@theme {
+    --font-poppins: "Poppins", sans-serif;
+    --font-display: "Montserrat", sans-serif;
+    --font-sans: "Inter", sans-serif;
+
+    --color-theme-primary: var(--brand-primary);
+    --color-theme-secondary: var(--brand-secondary);
+    --color-theme-base: var(--brand-base);
+    --color-theme-surface: var(--brand-surface);
+    --color-theme-border: var(--brand-border);
+
+    /* Adding text colors so your typography flips automatically */
+    --color-theme-text: var(--brand-text);
+    --color-theme-text-muted: var(--brand-text-muted);
+}
+
+/* 4. Force the base background and text to transition smoothly */
+@layer base {
+
+    html,
+    body {
+        background-color: var(--brand-base);
+        color: var(--brand-text);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dark {
+        color-scheme: dark;
+    }
+}
