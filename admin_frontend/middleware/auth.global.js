@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   // 1. Grab the token from the cookie (using the exact name from your components)
-  const token = useCookie("ec_token");
+  const token = useCookie("admin_token");
 
   // 2. Define your public routes (pages anyone can visit)
   const publicRoutes = ["/auth/login", "/"]; // Add any other public paths here
