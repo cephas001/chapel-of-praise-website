@@ -55,7 +55,7 @@
           <AppNavLink
             text="Events"
             iconName="heroicons:calendar"
-            url="/"
+            url="/events"
             @click="isSidebarOpen = false"
           />
 
@@ -231,16 +231,15 @@
 
     <ForbiddenModal />
     <AlertModal />
+    <ConfirmModal />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import { useAuthStore } from "~/stores/auth";
-import { useRoute } from "#vue-router";
 
 const auth = useAuthStore();
-const route = useRoute();
 
 const showEventOversight = ref(true);
 const showUnitManagement = ref(true);
@@ -259,10 +258,6 @@ const userInitial = computed(() => {
   }
   return "R";
 });
-
-const checkActiveRoute = (url) => {
-  return route.path == url;
-};
 
 function handleLogout() {
   auth.logout();

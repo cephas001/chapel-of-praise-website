@@ -53,8 +53,33 @@ const requireDynamicTypeAccess = (req, res, next) => {
   }
 
   return res.status(403).json({
-    error: `Forbidden: You do not have permission to manage ${requiredType} applications.`,
+    error: `Forbidden: You do not have permission to manage ${requiredType} operations.`,
   });
 };
 
-module.exports = { verifyToken, requireSuperAdmin, requireDynamicTypeAccess };
+// 4. Static Type Check (Pass the type directly into the middleware)
+const requireStaticTypeAccess = (requiredType) => {
+  return (req, res, next) => {
+    const user = req.user;
+
+    if (user.role === "super_admin") return next();
+
+    if (
+      user.role === "admin" &&
+      (user.type === requiredType || user.type === "all")
+    ) {
+      return next();
+    }
+
+    return res.status(403).json({
+      error: `Forbidden: You do not have permission to manage ${requiredType} operations.`,
+    });
+  };
+};
+
+module.exports = {
+  verifyToken,
+  requireSuperAdmin,
+  requireDynamicTypeAccess,
+  requireStaticTypeAccess,
+};

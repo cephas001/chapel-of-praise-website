@@ -1,16 +1,10 @@
 <template>
   <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
-    <div class="mb-10">
-      <h1
-        class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2"
-      >
-        Welcome back, {{ name }}
-      </h1>
-      <p class="text-base text-gray-500 font-medium">
-        Here's your mission control for Chapel of Praise. What are we working on
-        today?
-      </p>
-    </div>
+    <AppPageHeader
+      :text="` Welcome back, ${name}`"
+      description=" Here's your mission control for Chapel of Praise. What are we working on today?"
+      classList="mb-10"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
       <ModuleNavigator
@@ -18,7 +12,7 @@
         description="Review event details, make changes to the schedule, and manage submissions for upcoming events."
         iconName="heroicons:calendar"
         iconColor="orange"
-        :links="[{ text: 'View Events', url: '/', type: 'primary' }]"
+        :links="[{ text: 'View Events', url: '/events', type: 'primary' }]"
       />
 
       <ModuleNavigator

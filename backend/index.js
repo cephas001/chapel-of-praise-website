@@ -15,9 +15,11 @@ app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 
 // Import Routes
 const adminAuthRoutes = require("./routes/admin/auth");
+const eventRoutes = require("./routes/admin/eventRoutes");
 
 // --- API ROUTES ---
 app.use("/api/auth", adminAuthRoutes);
+app.use("/api/events", eventRoutes);
 
 // Mount API Routes
 
