@@ -10,25 +10,25 @@ body {
 
 /* 1. Define the Light Mode (Default) Colors */
 :root {
-    --brand-primary: ;
-    --brand-secondary: ;
-    --brand-base: ;
-    --brand-surface: ;
-    --brand-border: ;
-    --brand-text: ;
-    --brand-text-muted: ;
-    --navbar-border: ;
+    --brand-primary: #f04f23;
+    --brand-secondary: #d4b56a;
+    --brand-base: #ececec;
+    --brand-surface: #ffffff;
+    --brand-border: #d4d4d8;
+    --brand-text: #0f1115;
+    --brand-text-muted: #4d5159;
+    --navbar-border: #242831;
 }
 
 /* 2. Define the Dark Mode Colors */
 .dark {
-    --brand-primary: ;
-    --brand-secondary: ;
-    --brand-base: ;
-    --brand-surface: ;
-    --brand-border: ;
-    --brand-text: ;
-    --brand-text-muted: ;
+    --brand-primary: #f04f23;
+    --brand-secondary: #d4b56a;
+    --brand-base: #0f1115;
+    --brand-surface: #171a21;
+    --brand-border: #2e3440;
+    --brand-text: #f3f4f6;
+    --brand-text-muted: #a3a8b2;
 }
 
 /* 3. Feed the dynamic variables into Tailwind v4 */
@@ -60,5 +60,19 @@ body {
 
     .dark {
         color-scheme: dark;
+    }
+
+    ::selection {
+        background: color-mix(in srgb, var(--brand-primary) 38%, transparent);
+        color: var(--brand-text);
+    }
+}
+
+@layer utilities {
+    .church-display {
+        font-family: "Montserrat", "Poppins", sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 0.95;
     }
 }
