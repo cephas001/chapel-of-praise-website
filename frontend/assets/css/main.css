@@ -1,7 +1,14 @@
 @import '@fontsource/poppins';
 @import '@fontsource/montserrat';
 @import '@fontsource/inter';
+@import '@fontsource/anton';
 @import 'tailwindcss';
+
+.font-impact {
+    font-family: "Anton", sans-serif !important;
+    font-weight: normal !important;
+    letter-spacing: 0.02em; /* Refined letter spacing for Anton */
+}
 
 html,
 body {
