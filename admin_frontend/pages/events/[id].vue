@@ -124,6 +124,8 @@
 
       <div class="lg:col-span-2 space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <EventHeadCount :eventId="eventId" />
+
           <div
             class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center text-center group hover:shadow-md transition-shadow"
           >
@@ -143,24 +145,20 @@
             </button>
           </div>
 
-          <div
-            class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center text-center group hover:shadow-md transition-shadow"
-          >
-            <div
-              class="h-12 w-12 rounded-full bg-red-50 flex items-center justify-center mb-4 text-red-600 group-hover:bg-red-500 group-hover:text-white transition-colors"
-            >
-              <Icon name="heroicons:megaphone" class="h-6 w-6" />
-            </div>
-            <h3 class="text-lg font-bold text-black mb-1">Altar Calls</h3>
-            <p class="text-sm text-gray-500 mb-4">
-              Log responses and assign follow-up tasks.
-            </p>
-            <button
-              class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors"
-            >
-              Manage Altar Calls &rarr;
-            </button>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <EventHeadCount :eventId="eventId" />
+
+            <EventAltarCalls
+              :eventId="eventId"
+              @select-call="(call) => (selectedAltarCall = call)"
+              :selected-call="selectedAltarCall"
+            />
           </div>
+
+          <EventFollowUps
+            :eventId="eventId"
+            :selected-call="selectedAltarCall"
+          />
         </div>
       </div>
     </div>
@@ -190,6 +188,7 @@ import { useAlertModal } from "~/composables/useAlertModal";
 const route = useRoute();
 const config = useRuntimeConfig();
 const { showAlert } = useAlertModal();
+const selectedAltarCall = ref(null);
 
 const eventId = route.params.id;
 const event = ref(null);
