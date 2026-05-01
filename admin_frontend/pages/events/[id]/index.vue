@@ -138,11 +138,13 @@
             <p class="text-sm text-gray-500 mb-4">
               Record and review attendance by chapel unit.
             </p>
-            <button
+
+            <NuxtLink
+              :to="`/events/${eventId}/attendance`"
               class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
             >
               Manage Attendance &rarr;
-            </button>
+            </NuxtLink>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -4,7 +4,7 @@
   >
     <div class="flex items-center gap-4 mb-4">
       <div
-        :class="`bg-${iconColor}-50 text-${iconColor}-600 p-3 rounded-xl group-hover:bg-${iconColor}-500 group-hover:text-white transition-colors duration-200 flex items-center`"
+        :class="`bg-${iconColor}-50 text-${iconColor}-600 p-3 rounded-xl group-hover:bg-${iconColor}-500 group-hover:text-black transition-colors duration-200 flex items-center`"
       >
         <Icon :name="iconName" class="w-6 h-6" />
       </div>
