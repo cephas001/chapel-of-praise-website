@@ -14,16 +14,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 
 // Import Routes
-const adminAuthRoutes = require("./routes/admin/auth");
+const adminAuthRoutes = require("./routes/admin/authRoutes");
 const eventRoutes = require("./routes/admin/eventRoutes");
 const adminHomepageRoutes = require("./routes/admin/homepageRoutes");
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
+const altarCallRoutes = require("./routes/admin/altarCallRoutes");
+const headcountRoutes = require("./routes/admin/headcountRoutes");
 
 // --- API ROUTES ---
 app.use("/api/auth", adminAuthRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/admin/homepage", adminHomepageRoutes);
 app.use("/api/public/homepage", publicHomepageRoutes);
+app.use("/api/altar-calls", altarCallRoutes);
+app.use("/api/headcounts", headcountRoutes);
 
 // Mount API Routes
 

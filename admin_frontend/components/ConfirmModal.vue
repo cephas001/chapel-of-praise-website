@@ -33,7 +33,7 @@
               />
             </div>
 
-            <h3 class="text-xl font-black font-poppins text-gray-900 mb-2">
+            <h3 class="text-xl font-black font-roboto text-gray-900 mb-2">
               {{ title }}
             </h3>
             <p class="text-sm text-gray-500 font-montserrat leading-relaxed">
@@ -44,13 +44,13 @@
           <div class="flex items-center border-t border-gray-100 bg-gray-50">
             <button
               @click="respond(false)"
-              class="flex-1 py-4 text-sm font-bold font-poppins text-gray-500 hover:bg-gray-100 transition-colors border-r border-gray-100 outline-none"
+              class="flex-1 py-4 text-sm font-bold font-roboto text-gray-500 hover:bg-gray-100 transition-colors border-r border-gray-100 outline-none"
             >
               {{ cancelText }}
             </button>
             <button
               @click="respond(true)"
-              class="flex-1 py-4 text-sm font-bold font-poppins transition-colors outline-none"
+              class="flex-1 py-4 text-sm font-bold font-roboto transition-colors outline-none"
               :class="
                 isDestructive
                   ? 'text-red-600 hover:bg-red-50'

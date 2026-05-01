@@ -65,7 +65,6 @@
               v-for="event in events"
               :key="event.id"
               class="hover:bg-gray-50/50 transition-colors group"
-              @click="navigateTo(`/events/${event.id}`)"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
@@ -113,6 +112,13 @@
                 class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
               >
                 <div class="flex items-center justify-end gap-1">
+                  <button
+                    @click="navigateTo(`/events/${event.id}`)"
+                    class="text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    title="Open Event"
+                  >
+                    <Icon name="heroicons:eye" class="h-5 w-5" />
+                  </button>
                   <button
                     @click="openEditDrawer(event)"
                     class="text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
