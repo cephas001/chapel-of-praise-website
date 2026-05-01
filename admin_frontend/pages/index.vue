@@ -8,6 +8,14 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
       <ModuleNavigator
+        title="Homepage Management"
+        description="Update homepage content such as hero slides, announcements, ongoing programs, and latest sermons."
+        iconName="heroicons:home"
+        iconColor="teal"
+        :links="[{ text: 'Manage Homepage', url: '/pages/homepage', type: 'primary' }]"
+      />
+
+      <ModuleNavigator
         title="Events"
         description="Review event details, make changes to the schedule, and manage submissions for upcoming events."
         iconName="heroicons:calendar"
