@@ -16,10 +16,14 @@ app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 // Import Routes
 const adminAuthRoutes = require("./routes/admin/auth");
 const eventRoutes = require("./routes/admin/eventRoutes");
+const adminHomepageRoutes = require("./routes/admin/homepageRoutes");
+const publicHomepageRoutes = require("./routes/public/homepageRoutes");
 
 // --- API ROUTES ---
 app.use("/api/auth", adminAuthRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/admin/homepage", adminHomepageRoutes);
+app.use("/api/public/homepage", publicHomepageRoutes);
 
 // Mount API Routes
 
