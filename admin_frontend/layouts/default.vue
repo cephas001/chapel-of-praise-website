@@ -100,7 +100,7 @@
           <AppNavLink
             text=" Executives"
             iconName="heroicons:user-group"
-            url="/"
+            url="/executives"
             @click="isSidebarOpen = false"
           />
         </div>
