@@ -8,11 +8,15 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
       <ModuleNavigator
-        title="Homepage Management"
-        description="Update homepage content such as hero slides, announcements, ongoing programs, and latest sermons."
-        iconName="heroicons:home"
+        title="Pages Management"
+        description="Update global page content for the Homepage, About Us page, and more."
+        iconName="heroicons:document-text"
         iconColor="teal"
-        :links="[{ text: 'Manage Homepage', url: '/pages/homepage', type: 'primary' }]"
+        :links="[
+          { text: 'Manage Homepage', url: '/pages/homepage', type: 'primary' },
+          { text: 'Manage About Page', url: '/pages/about', type: 'secondary' },
+          { text: 'Manage Contact Page', url: '/pages/contact', type: 'secondary' }
+        ]"
       />
 
       <ModuleNavigator
