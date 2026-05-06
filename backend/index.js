@@ -17,16 +17,26 @@ app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 const adminAuthRoutes = require("./routes/admin/auth");
 const eventRoutes = require("./routes/admin/eventRoutes");
 const adminHomepageRoutes = require("./routes/admin/homepageRoutes");
+const adminLeadershipRoutes = require("./routes/admin/leadershipRoutes");
+const adminMinistriesRoutes = require("./routes/admin/ministriesRoutes");
+const adminGivingRoutes = require("./routes/admin/givingRoutes");
 const adminAboutRoutes = require("./routes/admin/aboutRoutes");
 const adminContactRoutes = require("./routes/admin/contactRoutes");
+const adminPrayerRoutes = require("./routes/admin/prayerRoutes");
+const adminCounselingRoutes = require("./routes/admin/counselingRoutes");
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
 
 // --- API ROUTES ---
 app.use("/api/auth", adminAuthRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/admin/homepage", adminHomepageRoutes);
+app.use("/api/admin/leadership", adminLeadershipRoutes);
+app.use("/api/admin/ministries", adminMinistriesRoutes);
+app.use("/api/admin/giving", adminGivingRoutes);
 app.use("/api/admin/about", adminAboutRoutes);
 app.use("/api/admin/contact", adminContactRoutes);
+app.use("/api/admin/prayer", adminPrayerRoutes);
+app.use("/api/admin/counseling", adminCounselingRoutes);
 app.use("/api/public/homepage", publicHomepageRoutes);
 
 // Mount API Routes

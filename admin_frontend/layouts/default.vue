@@ -41,9 +41,51 @@
 
         <div v-show="showWebManagement">
           <AppNavLink
-            text="Manage Content"
-            iconName="heroicons:cog-6-tooth"
-            url="/"
+            text="Homepage"
+            iconName="heroicons:home"
+            url="/pages/homepage"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="About Page"
+            iconName="heroicons:information-circle"
+            url="/pages/about"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Leadership Page"
+            iconName="heroicons:user-group"
+            url="/pages/leadership"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Ministries Page"
+            iconName="heroicons:heart"
+            url="/pages/ministries"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Giving Page"
+            iconName="heroicons:banknotes"
+            url="/pages/giving"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Contact Page"
+            iconName="heroicons:phone"
+            url="/pages/contact"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Prayer Page"
+            iconName="heroicons:sparkles"
+            url="/pages/prayer"
+            @click="isSidebarOpen = false"
+          />
+          <AppNavLink
+            text="Counseling Page"
+            iconName="heroicons:chat-bubble-left-right"
+            url="/pages/counseling"
             @click="isSidebarOpen = false"
           />
         </div>

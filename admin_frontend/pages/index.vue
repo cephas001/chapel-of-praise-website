@@ -15,7 +15,12 @@
         :links="[
           { text: 'Manage Homepage', url: '/pages/homepage', type: 'primary' },
           { text: 'Manage About Page', url: '/pages/about', type: 'secondary' },
-          { text: 'Manage Contact Page', url: '/pages/contact', type: 'secondary' }
+          { text: 'Manage Leadership Page', url: '/pages/leadership', type: 'secondary' },
+          { text: 'Manage Ministries Page', url: '/pages/ministries', type: 'secondary' },
+          { text: 'Manage Giving Page', url: '/pages/giving', type: 'secondary' },
+          { text: 'Manage Contact Page', url: '/pages/contact', type: 'secondary' },
+          { text: 'Manage Prayer Page', url: '/pages/prayer', type: 'secondary' },
+          { text: 'Manage Counseling Page', url: '/pages/counseling', type: 'secondary' }
         ]"
       />
 
