@@ -4,10 +4,9 @@
             <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
             <img src="~/assets/images/chapel.webp" alt="Ministries Hero" class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale" />
             <div class="relative z-20 text-center px-4 mt-16">
-                <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Get Involved</p>
+                <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">{{ page?.heroKicker || 'Get Involved' }}</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Ministries
-                </h1>
+                    >{{ page?.heroHeadline || 'Ministries' }}</h1>
             </div>
         </section>
 
@@ -57,5 +56,10 @@
 </template>
 
 <script setup>
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/ministries`);
+const page = pageData.value?.data || {};
+
 useHead({ title: 'Ministries | Chapel of Praise' })
 </script>

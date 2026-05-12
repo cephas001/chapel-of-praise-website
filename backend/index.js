@@ -25,6 +25,13 @@ const adminContactRoutes = require("./routes/admin/contactRoutes");
 const adminPrayerRoutes = require("./routes/admin/prayerRoutes");
 const adminCounselingRoutes = require("./routes/admin/counselingRoutes");
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
+const publicAboutRoutes = require("./routes/public/aboutRoutes");
+const publicContactRoutes = require("./routes/public/contactRoutes");
+const publicLeadershipRoutes = require("./routes/public/leadershipRoutes");
+const publicMinistriesRoutes = require("./routes/public/ministriesRoutes");
+const publicGivingRoutes = require("./routes/public/givingRoutes");
+const publicPrayerRoutes = require("./routes/public/prayerRoutes");
+const publicCounselingRoutes = require("./routes/public/counselingRoutes");
 const altarCallRoutes = require("./routes/admin/altarCallRoutes");
 const headcountRoutes = require("./routes/admin/headcountRoutes");
 
@@ -40,6 +47,13 @@ app.use("/api/admin/contact", adminContactRoutes);
 app.use("/api/admin/prayer", adminPrayerRoutes);
 app.use("/api/admin/counseling", adminCounselingRoutes);
 app.use("/api/public/homepage", publicHomepageRoutes);
+app.use("/api/public/about", publicAboutRoutes);
+app.use("/api/public/contact", publicContactRoutes);
+app.use("/api/public/leadership", publicLeadershipRoutes);
+app.use("/api/public/ministries", publicMinistriesRoutes);
+app.use("/api/public/giving", publicGivingRoutes);
+app.use("/api/public/prayer", publicPrayerRoutes);
+app.use("/api/public/counseling", publicCounselingRoutes);
 app.use("/api/altar-calls", altarCallRoutes);
 app.use("/api/headcounts", headcountRoutes);
 

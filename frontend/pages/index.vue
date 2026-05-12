@@ -33,7 +33,7 @@
                 </div>
 
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-impact uppercase text-black max-w-4xl leading-none">
-                    Welcome Home!
+                    {{ page?.heroHeadline || 'Welcome Home!' }}
                 </h1>
 
                 <p class="mt-4 text-base md:text-lg text-gray-500 max-w-2xl font-medium leading-relaxed">
@@ -159,8 +159,12 @@
 </template>
 
 <script setup>
-// New: Include onUnmounted for cleanup
 import { onMounted } from 'vue';
+import { useRuntimeConfig, useFetch } from '#app';
+
+const config = useRuntimeConfig();
+const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/homepage`);
+const page = pageData.value?.data || {};
 
 // Existing Image Imports
 import aboutImage from "~/assets/images/about.webp";

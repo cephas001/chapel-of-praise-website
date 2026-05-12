@@ -7,8 +7,7 @@
             <div class="relative z-20 text-center px-4 mt-16">
                 <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Stand With Us</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Prayer Request
-                </h1>
+                    >{{ page?.heroHeadline || 'Prayer Request' }}</h1>
             </div>
         </section>
 
@@ -37,7 +36,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label for="prayerRequest" class="block text-xs font-bold uppercase tracking-wider text-black/70">Your Prayer Request <span class="text-[#e94e4e]">*</span></label>
+                        <label for="prayerRequest" class="block text-xs font-bold uppercase tracking-wider text-black/70">Your >{{ page?.heroHeadline || 'Prayer Request' }}<span class="text-[#e94e4e]">*</span></label>
                         <textarea id="prayerRequest" rows="6" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all resize-y" placeholder="Please share how we can pray for you..." required></textarea>
                     </div>
 
@@ -54,8 +53,7 @@
 
                     <div class="pt-4">
                         <button type="submit" class="bg-black hover:bg-[#e94e4e] text-white font-bold py-4 px-10 rounded-full transition-colors uppercase tracking-wider text-sm w-full">
-                            Submit Prayer Request
-                        </button>
+                            Submit >{{ page?.heroHeadline || 'Prayer Request' }}</button>
                     </div>
                 </form>
             </div>
@@ -64,6 +62,11 @@
 </template>
 
 <script setup>
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/prayer`);
+const page = pageData.value?.data || {};
+
 useHead({
   title: 'Prayer Request | Chapel of Praise'
 })

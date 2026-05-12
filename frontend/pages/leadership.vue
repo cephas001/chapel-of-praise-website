@@ -7,8 +7,7 @@
             <div class="relative z-20 text-center px-4 mt-16">
                 <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Our Pastors & Leaders</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Leadership
-                </h1>
+                    >{{ page?.heroHeadline || 'Leadership' }}</h1>
             </div>
         </section>
 
@@ -71,5 +70,10 @@
 </template>
 
 <script setup>
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/leadership`);
+const page = pageData.value?.data || {};
+
 useHead({ title: 'Leadership | Chapel of Praise' })
 </script>

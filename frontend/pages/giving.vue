@@ -7,14 +7,13 @@
             <div class="relative z-20 text-center px-4 mt-16">
                 <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Partner with us</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Giving
-                </h1>
+                    >{{ page?.heroHeadline || 'Giving' }}</h1>
             </div>
         </section>
 
         <!-- Main Content -->
         <main class="max-w-4xl mx-auto px-4 md:px-8 py-20 md:py-28 text-center">
-            <h2 class="text-3xl md:text-4xl font-impact uppercase mb-6 text-black">Worship Through Giving</h2>
+            <h2 class="text-3xl md:text-4xl font-impact uppercase mb-6 text-black">Worship Through >{{ page?.heroHeadline || 'Giving' }}</h2>
             <p class="text-base md:text-lg text-gray-600 font-light leading-relaxed mb-12">
                 Your generosity helps us continue our mission to shine the gospel light globally and raise the next generation of champions. Thank you for partnering with Chapel of Praise.
             </p>
@@ -59,5 +58,10 @@
 </template>
 
 <script setup>
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/giving`);
+const page = pageData.value?.data || {};
+
 useHead({ title: 'Giving | Chapel of Praise' })
 </script>
