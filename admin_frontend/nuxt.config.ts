@@ -8,7 +8,8 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   colorMode: {
-    preference: "light",
+    preference: "system",
+    fallback: "light",
   },
 
   // Centralized API access linking to your Express backend

@@ -26,7 +26,7 @@
       <h3 class="text-sm font-bold text-gray-900">Loading Configuration...</h3>
     </div>
 
-    <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
       <form @submit.prevent="saveSettings" class="space-y-8">
         
         <!-- Hero Section -->
@@ -119,7 +119,7 @@
           <button
             type="submit"
             :disabled="isSaving"
-            class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 transition-colors"
+            class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl shadow-sm text-white bg-slate-950 dark:bg-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-950 dark:focus:ring-white disabled:opacity-50 transition-colors"
           >
             <Icon
               v-if="isSaving"

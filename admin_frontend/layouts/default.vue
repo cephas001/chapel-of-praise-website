@@ -1,24 +1,27 @@
 <template>
-  <div class="flex h-screen bg-gray-50 text-gray-900">
+  <div class="flex min-h-screen text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950">
     <div
       v-if="isSidebarOpen"
       @click="isSidebarOpen = false"
-      class="fixed inset-0 z-40 bg-gray-900/50 transition-opacity md:hidden"
+      class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm transition-opacity md:hidden"
     ></div>
 
     <aside
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0',
+        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90',
       ]"
     >
       <div
-        class="h-16 flex items-center px-6 border-b border-gray-100 shrink-0"
+        class="h-16 flex items-center px-6 border-b border-slate-200/80 dark:border-slate-800 shrink-0"
       >
-        <h1 class="text-lg font-bold tracking-tight">COP Admin</h1>
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500">Chapel of Praise</p>
+          <h1 class="text-lg font-bold tracking-tight text-slate-950 dark:text-white">COP Admin</h1>
+        </div>
         <button
           @click="isSidebarOpen = false"
-          class="ml-auto md:hidden text-black hover:text-gray-600 flex items-center"
+          class="ml-auto md:hidden text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white flex items-center"
         >
           <Icon name="heroicons:x-mark" class="h-6 w-6" />
         </button>
@@ -218,24 +221,25 @@
       </nav>
 
       <div
-        class="p-4 border-t border-gray-100 shrink-0 flex flex-col items-center"
+        class="p-4 border-t border-slate-200/80 dark:border-slate-800 shrink-0 flex flex-col items-center"
       >
         <div class="flex items-center pb-4 w-full">
           <div
-            class="h-8 w-8 rounded-full bg-black text-white flex items-center justify-center text-sm font-bold"
+            class="h-9 w-9 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center text-sm font-bold shadow-sm"
           >
             {{ userInitial }}
           </div>
           <div class="ml-3 truncate">
-            <p class="text-sm font-medium text-gray-900 truncate">
+            <p class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
               {{ auth.user?.email || "Administrator" }}
             </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">System administrator</p>
           </div>
         </div>
 
         <button
           @click="handleLogout"
-          class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors"
+          class="w-full flex items-center justify-center px-4 py-2.5 border border-slate-200 shadow-sm text-sm font-semibold rounded-xl text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-950 transition-colors dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-offset-slate-950 dark:focus:ring-white"
         >
           {{ auth.user ? "Logout" : "Login" }}
         </button>
@@ -244,7 +248,7 @@
           v-if="auth.user?.role === 'super_admin'"
           to="/auth/register"
           @click="isSidebarOpen = false"
-          class="mt-3 text-xs text-gray-400 hover:text-gray-700 transition-colors font-medium cursor-pointer"
+          class="mt-3 text-xs text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 transition-colors font-medium cursor-pointer"
         >
           + Add new administrator
         </NuxtLink>
@@ -253,16 +257,16 @@
 
     <main class="flex-1 flex flex-col overflow-hidden w-full relative">
       <div
-        class="md:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 h-16 shrink-0"
+        class="md:hidden flex items-center justify-between bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 px-4 h-16 shrink-0"
       >
         <div class="flex items-center">
           <button
             @click="isSidebarOpen = true"
-            class="text-black hover:text-gray-900 rounded-md mr-3 cursor-pointer flex items-center"
+            class="text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-md mr-3 cursor-pointer flex items-center"
           >
             <Icon name="heroicons:bars-3" class="h-6 w-6 font-bold" />
           </button>
-          <h1 class="text-lg font-bold tracking-tight">COP Admin</h1>
+          <h1 class="text-lg font-bold tracking-tight text-slate-950 dark:text-white">COP Admin</h1>
         </div>
       </div>
 
