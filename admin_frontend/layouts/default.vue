@@ -9,8 +9,9 @@
     <aside
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90',
+        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90 overflow-hidden',
       ]"
+      style="will-change: transform; contain: layout style paint"
     >
       <div
         class="h-16 flex items-center px-6 border-b border-slate-200/80 dark:border-slate-800 shrink-0"
@@ -270,7 +271,7 @@
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto p-4 md:p-8">
+    <div class="flex-1 overflow-y-auto p-4 md:p-8">
         <slot />
       </div>
     </main>
