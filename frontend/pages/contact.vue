@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
@@ -67,8 +68,7 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Main Campus</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        123 Gospel Light Avenue,<br />
-                                        Excellence District, Lagos, Nigeria
+                                        {{ page?.mainCampusAddress || '123 Gospel Light Avenue,\nExcellence District, Lagos, Nigeria' }}
                                     </p>
                                 </div>
                             </div>
@@ -81,8 +81,7 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Service Times</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        Sundays: 8:00 AM & 10:30 AM<br />
-                                        Wednesdays (Mid-week): 6:00 PM
+                                        {{ page?.serviceTimes || 'Sundays: 8:00 AM & 10:30 AM\nWednesdays (Mid-week): 6:00 PM' }}
                                     </p>
                                 </div>
                             </div>
@@ -95,8 +94,8 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Contact Details</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        Email: info@chapelofpraise.org<br />
-                                        Phone: +234 123 456 7890
+                                        Email: {{ page?.contactEmail || 'info@chapelofpraise.org' }}<br />
+                                        Phone: {{ page?.contactPhone || '+234 123 456 7890' }}
                                     </p>
                                 </div>
                             </div>
@@ -120,11 +119,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRuntimeConfig, useFetch } from '#app';
 const config = useRuntimeConfig();
 
-const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/contact`);
-const page = pageData.value?.data || {};
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/contact`);
+const page = computed(() => pageData.value?.data || {});
 
 useHead({
   title: 'Contact Us | Chapel of Praise'

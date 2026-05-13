@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
@@ -26,18 +27,14 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                                <img src="~/assets/images/pastor.webp" alt="Rev. Ibiwunmi Alo" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Rev. Ibiwunmi Alo</h3>
-                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Senior Pastor</p>
-                                <p class="text-gray-600 font-light text-sm leading-relaxed">Guiding the spiritual vision and teaching profound scriptural truths to the congregation.</p>
+                            <div v-for="chaplain in page?.chaplaincyList || []" :key="chaplain.name" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img :src="chaplain.imageUrl || '~/assets/images/pastor.webp'" :alt="chaplain.name" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">{{ chaplain.name }}</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">{{ chaplain.title }}</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">{{ chaplain.bio }}</p>
                             </div>
-
-                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                                <img src="~/assets/images/connect.webp" alt="Apostle Iren" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Apostle Iren</h3>
-                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Apostolic Leader</p>
-                                <p class="text-gray-600 font-light text-sm leading-relaxed">Expanding the gospel light globally and equipping believers for societal impact.</p>
+                            <div v-if="!page?.chaplaincyList || page.chaplaincyList.length === 0" class="col-span-full text-center py-8">
+                                <p class="text-gray-500 font-light">No chaplains listed at this time.</p>
                             </div>
                         </div>
                     </section>
@@ -48,18 +45,14 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                                <img src="~/assets/images/connect.webp" alt="Student Executive President" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Name Here</h3>
-                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">President</p>
-                                <p class="text-gray-600 font-light text-sm leading-relaxed">Provides direction for student-led initiatives and community development.</p>
+                            <div v-for="exec in page?.studentExecutivesList || []" :key="exec.name" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img :src="exec.imageUrl || '~/assets/images/connect.webp'" :alt="exec.name" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">{{ exec.name }}</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">{{ exec.title }}</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">{{ exec.bio }}</p>
                             </div>
-
-                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                                <img src="~/assets/images/connect.webp" alt="Student Executive Vice President" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Name Here</h3>
-                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Vice President</p>
-                                <p class="text-gray-600 font-light text-sm leading-relaxed">Supports coordination across student teams and ministry operations.</p>
+                            <div v-if="!page?.studentExecutivesList || page.studentExecutivesList.length === 0" class="col-span-full text-center py-8">
+                                <p class="text-gray-500 font-light">No student executives listed at this time.</p>
                             </div>
                         </div>
                     </section>
@@ -70,10 +63,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRuntimeConfig, useFetch } from '#app';
 const config = useRuntimeConfig();
-const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/leadership`);
-const page = pageData.value?.data || {};
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/leadership`);
+const page = computed(() => pageData.value?.data || {});
 
 useHead({ title: 'Leadership | Chapel of Praise' })
 </script>

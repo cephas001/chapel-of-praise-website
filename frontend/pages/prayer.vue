@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
@@ -62,10 +63,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRuntimeConfig, useFetch } from '#app';
 const config = useRuntimeConfig();
-const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/prayer`);
-const page = pageData.value?.data || {};
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/prayer`);
+const page = computed(() => pageData.value?.data || {});
 
 useHead({
   title: 'Prayer Request | Chapel of Praise'

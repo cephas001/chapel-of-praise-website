@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[60vh] md:h-[75vh] flex items-center justify-center overflow-hidden bg-black text-white">
@@ -78,6 +79,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useRuntimeConfig, useFetch } from '#app'
 
 // Static presentation page. No complex states or layout animations.
@@ -86,5 +88,6 @@ useHead({
 })
 
 const config = useRuntimeConfig()
-const { data: pageData } = await useFetch(`${config.public.apiBaseUrl}/public/about`)
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/about`)
+const page = computed(() => pageData.value?.data || {})
 </script>
