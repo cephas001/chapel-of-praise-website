@@ -20,21 +20,50 @@
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto font-light">Dedicated men and women committed to shepherding the flock and advancing the kingdom of God.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <!-- Leader Card -->
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                        <img src="~/assets/images/pastor.webp" alt="Rev. Ibiwunmi Alo" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                        <h3 class="text-2xl font-impact uppercase text-black mb-1">Rev. Ibiwunmi Alo</h3>
-                        <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Senior Pastor</p>
-                        <p class="text-gray-600 font-light text-sm leading-relaxed">Guiding the spiritual vision and teaching profound scriptural truths to the congregation.</p>
-                    </div>
-                    <!-- Leader Card -->
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
-                        <img src="~/assets/images/connect.webp" alt="Apostle Iren" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
-                        <h3 class="text-2xl font-impact uppercase text-black mb-1">Apostle Iren</h3>
-                        <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Apostolic Leader</p>
-                        <p class="text-gray-600 font-light text-sm leading-relaxed">Expanding the gospel light globally and equipping believers for societal impact.</p>
-                    </div>
+                <div class="space-y-20">
+                    <section>
+                        <div class="mb-10 text-center md:text-left">
+                            <h3 class="text-3xl md:text-4xl font-impact uppercase text-black">Chaplaincy</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img src="~/assets/images/pastor.webp" alt="Rev. Ibiwunmi Alo" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Rev. Ibiwunmi Alo</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Senior Pastor</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">Guiding the spiritual vision and teaching profound scriptural truths to the congregation.</p>
+                            </div>
+
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img src="~/assets/images/connect.webp" alt="Apostle Iren" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Apostle Iren</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Apostolic Leader</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">Expanding the gospel light globally and equipping believers for societal impact.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="mb-10 text-center md:text-left">
+                            <h3 class="text-3xl md:text-4xl font-impact uppercase text-black">Students Executives</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img src="~/assets/images/connect.webp" alt="Student Executive President" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Name Here</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">President</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">Provides direction for student-led initiatives and community development.</p>
+                            </div>
+
+                            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+                                <img src="~/assets/images/connect.webp" alt="Student Executive Vice President" class="w-40 h-40 rounded-full object-cover mb-6 shadow-md" />
+                                <h3 class="text-2xl font-impact uppercase text-black mb-1">Name Here</h3>
+                                <p class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4">Vice President</p>
+                                <p class="text-gray-600 font-light text-sm leading-relaxed">Supports coordination across student teams and ministry operations.</p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
