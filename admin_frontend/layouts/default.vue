@@ -25,14 +25,6 @@
       </div>
 
       <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        <!-- Dashboard -->
-        <AppNavLink
-          text="Dashboard"
-          iconName="heroicons:home"
-          url="/"
-          @click="isSidebarOpen = false"
-        />
-
         <!-- Web Management -->
         <AppNavTabLabel
           v-model="showWebManagement"
@@ -43,7 +35,7 @@
           <AppNavLink
             text="Manage Content"
             iconName="heroicons:cog-6-tooth"
-            url="/"
+            url="/website"
             @click="isSidebarOpen = false"
           />
         </div>
@@ -62,21 +54,21 @@
           <AppNavLink
             text="Event Unit Attendance"
             iconName="heroicons:clipboard-document-check"
-            url="/"
+            url="/event-attendance"
             @click="isSidebarOpen = false"
           />
 
           <AppNavLink
             text="Event Head Count"
             iconName="heroicons:users"
-            url="/"
+            url="/headcounts"
             @click="isSidebarOpen = false"
           />
 
           <AppNavLink
             text="Altar Calls"
             iconName="heroicons:megaphone"
-            url="/"
+            url="/altar-calls"
             @click="isSidebarOpen = false"
           />
         </div>
@@ -88,7 +80,7 @@
           <AppNavLink
             text="Unit Members"
             iconName="heroicons:users"
-            url="/"
+            url="/members"
             @click="isSidebarOpen = false"
           />
           <AppNavLink
@@ -112,12 +104,12 @@
           <AppNavLink
             text="Follow-up Records"
             iconName="heroicons:users"
-            url="/"
+            url="/follow-ups"
             @click="isSidebarOpen = false"
           />
         </div>
 
-        <!-- Workers in Training -->
+        <!-- Workers in Training
         <AppNavTabLabel v-model="showWIT" label="Workers in Training" />
 
         <div v-show="showWIT">
@@ -133,9 +125,9 @@
             url="/"
             @click="isSidebarOpen = false"
           />
-        </div>
+        </div> -->
 
-        <!-- Special Meetings -->
+        <!-- Special Meetings
         <AppNavTabLabel
           v-model="showSpecialMeetings"
           label="Special Meetings"
@@ -154,7 +146,7 @@
             url="/"
             @click="isSidebarOpen = false"
           />
-        </div>
+        </div> -->
 
         <!-- Data Inference -->
         <AppNavTabLabel v-model="showDataSummaries" label="Data Inference" />

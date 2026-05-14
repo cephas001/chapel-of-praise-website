@@ -7,7 +7,6 @@ exports.getUnitAttendance = async (req, res) => {
   try {
     const { eventId, unitName } = req.params;
 
-    // Query for the specific document
     const snapshot = await db
       .collection("eventUnitAttendance")
       .where("eventId", "==", eventId)
@@ -15,8 +14,14 @@ exports.getUnitAttendance = async (req, res) => {
       .get();
 
     if (snapshot.empty) {
-      // Return a blank template so the frontend knows no one has been marked yet
-      return res.status(200).json({ presentIds: [], absentIds: [] });
+      // Return empty arrays if no record exists yet
+      return res.status(200).json({
+        officiatingIds: [],
+        presentIds: [],
+        pardonedIds: [],
+        absentIds: [],
+        additionalComments: "",
+      });
     }
 
     const doc = snapshot.docs[0];
@@ -31,7 +36,14 @@ exports.getUnitAttendance = async (req, res) => {
 // @route   POST /api/event-attendance
 exports.saveUnitAttendance = async (req, res) => {
   try {
-    const { eventId, unitName, presentIds, absentIds } = req.body;
+    const {
+      eventId,
+      unitName,
+      officiatingIds = [],
+      presentIds = [],
+      pardonedIds = [],
+      additionalComments = "",
+    } = req.body;
 
     if (!eventId || !unitName) {
       return res
@@ -39,16 +51,23 @@ exports.saveUnitAttendance = async (req, res) => {
         .json({ error: "Event ID and Unit Name are required." });
     }
 
+    // CORE LOGIC: Calculate absentees dynamically
+    // Absent = Officiating minus (Present + Pardoned)
+    const presentOrPardoned = new Set([...presentIds, ...pardonedIds]);
+    const absentIds = officiatingIds.filter((id) => !presentOrPardoned.has(id));
+
     const payload = {
       eventId,
       unitName,
-      presentIds: presentIds || [],
-      absentIds: absentIds || [],
+      officiatingIds,
+      presentIds,
+      pardonedIds,
+      absentIds, // Save the calculated result
+      additionalComments,
       recordedBy: req.user.uid,
       updatedAt: new Date().toISOString(),
     };
 
-    // Check if a record already exists
     const snapshot = await db
       .collection("eventUnitAttendance")
       .where("eventId", "==", eventId)
@@ -56,19 +75,21 @@ exports.saveUnitAttendance = async (req, res) => {
       .get();
 
     if (snapshot.empty) {
-      // CREATE: No record exists yet
       payload.createdAt = new Date().toISOString();
       const docRef = await db.collection("eventUnitAttendance").add(payload);
-      return res
-        .status(201)
-        .json({ message: "Attendance recorded successfully.", id: docRef.id });
+      return res.status(201).json({
+        message: "Attendance recorded successfully.",
+        id: docRef.id,
+        data: payload,
+      });
     } else {
-      // UPDATE: Overwrite the existing arrays
       const docId = snapshot.docs[0].id;
       await db.collection("eventUnitAttendance").doc(docId).update(payload);
-      return res
-        .status(200)
-        .json({ message: "Attendance updated successfully.", id: docId });
+      return res.status(200).json({
+        message: "Attendance updated successfully.",
+        id: docId,
+        data: payload,
+      });
     }
   } catch (error) {
     console.error("Error saving attendance:", error);

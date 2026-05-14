@@ -9,6 +9,7 @@ const {
   createAltarCall,
   getResponsesByAltarCall,
   createResponse,
+  getGlobalAltarCalls,
 } = require("../../controllers/altarCallController");
 
 router.use(verifyToken);
@@ -21,5 +22,7 @@ router.post("/", createAltarCall);
 // Individual Response Routes
 router.get("/responses/:altarCallId", getResponsesByAltarCall);
 router.post("/responses", createResponse);
+
+router.get("/global", getGlobalAltarCalls);
 
 module.exports = router;

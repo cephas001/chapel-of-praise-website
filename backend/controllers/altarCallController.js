@@ -23,6 +23,49 @@ exports.getAltarCallsByEvent = async (req, res) => {
   }
 };
 
+// @desc    Get all altar calls globally, enriched with Event details
+// @route   GET /api/altar-calls/global
+exports.getGlobalAltarCalls = async (req, res) => {
+  try {
+    // 1. Fetch all altar call categories recorded
+    const callsSnapshot = await db.collection("altarCalls").get();
+
+    // 2. Fetch all events for the join
+    const eventsSnapshot = await db.collection("events").get();
+
+    const eventsMap = {};
+    eventsSnapshot.forEach((doc) => {
+      eventsMap[doc.id] = doc.data();
+    });
+
+    const altarCalls = [];
+    callsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      altarCalls.push({
+        id: doc.id,
+        ...data,
+        eventDetails: eventsMap[data.eventId] || null,
+      });
+    });
+
+    // Sort descending by Event Date
+    altarCalls.sort((a, b) => {
+      const dateA = a.eventDetails
+        ? new Date(a.eventDetails.eventDate)
+        : new Date(0);
+      const dateB = b.eventDetails
+        ? new Date(b.eventDetails.eventDate)
+        : new Date(0);
+      return dateB - dateA;
+    });
+
+    res.status(200).json(altarCalls);
+  } catch (error) {
+    console.error("Error fetching global altar calls:", error);
+    res.status(500).json({ error: "Failed to fetch global altar calls." });
+  }
+};
+
 // @desc    Record a new altar call aggregate (e.g. Salvation - 25)
 // @route   POST /api/altar-calls
 exports.createAltarCall = async (req, res) => {

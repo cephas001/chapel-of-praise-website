@@ -24,6 +24,7 @@ const headcountRoutes = require("./routes/admin/headcountRoutes");
 const publicMemberRoutes = require("./routes/public/memberRoutes");
 const adminMemberRoutes = require("./routes/admin/memberRoutes");
 const eventAttendanceRoutes = require("./routes/admin/eventAttendanceRoutes");
+const followUpRoutes = require("./routes/admin/followUpRoutes");
 
 // --- API ROUTES ---
 app.use("/api/auth", adminAuthRoutes);
@@ -33,6 +34,7 @@ app.use("/api/headcounts", headcountRoutes);
 app.use("/api/members", publicMemberRoutes); // Public routes (e.g., worker registration)
 app.use("/api/members", adminMemberRoutes); // Admin routes (e.g., executive management)
 app.use("/api/event-attendance", eventAttendanceRoutes);
+app.use("/api/follow-ups", followUpRoutes);
 
 // Mount API Routes
 

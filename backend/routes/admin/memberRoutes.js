@@ -6,6 +6,7 @@ const {
   createExecutive,
   getExecutives,
   getMembersByUnit,
+  getAllMembers,
 } = require("../../controllers/memberController");
 
 // ==========================================
@@ -17,6 +18,7 @@ router.use(verifyToken);
 // General Admin Routes
 // Used to fetch lists for attendance dropping
 router.get("/unit/:unitName", getMembersByUnit);
+router.get("/", getAllMembers);
 
 // Super Admin Only Routes
 // Used specifically for managing the Executive roster

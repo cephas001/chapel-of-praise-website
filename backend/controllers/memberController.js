@@ -129,3 +129,14 @@ exports.getMembersByUnit = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch unit members." });
   }
 };
+
+exports.getAllMembers = async (req, res) => {
+  try {
+    const snapshot = await db.collection("members").get();
+    const members = [];
+    snapshot.forEach((doc) => members.push({ id: doc.id, ...doc.data() }));
+    res.status(200).json(members);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch all members." });
+  }
+};
