@@ -3,7 +3,7 @@
     <div class="mb-8">
       <NuxtLink
         to="/events"
-        class="inline-flex items-center justify-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-100 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-5 py-2.5 text-sm font-semibold text-slate-950 dark:text-white shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition-colors"
       >
         <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
         Back to Events
@@ -20,7 +20,7 @@
           ></div>
           <h1
             v-else
-            class="text-3xl font-black text-black tracking-tight mb-1 font-roboto"
+            class="text-3xl font-black text-slate-950 dark:text-white tracking-tight mb-1 font-roboto"
           >
             {{
               event?.service === "SPECIAL PROGRAM"
@@ -32,7 +32,7 @@
 
         <button
           v-if="!isFetching"
-          class="inline-flex items-center justify-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-100 transition-colors"
+          class="inline-flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-5 py-2.5 text-sm font-semibold text-slate-950 dark:text-white shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-600 transition-colors"
         >
           <Icon name="heroicons:document-arrow-down" class="mr-2 h-5 w-5" />
           Export Report
@@ -43,9 +43,9 @@
     <div v-if="isFetching" class="py-20 text-center">
       <Icon
         name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
+        class="mx-auto h-10 w-10 text-slate-400 dark:text-slate-600 animate-spin mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900">Loading Event Details...</h3>
+      <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Loading Event Details...</h3>
     </div>
 
     <div
@@ -53,9 +53,9 @@
       class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8"
     >
       <div class="lg:col-span-1 space-y-6">
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
           <h3
-            class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3"
+            class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-3"
           >
             Overview
           </h3>
@@ -63,14 +63,14 @@
           <div class="space-y-4">
             <div>
               <p
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"
               >
                 Date
               </p>
-              <p class="text-sm font-semibold text-black flex items-center">
+              <p class="text-sm font-semibold text-slate-950 dark:text-white flex items-center">
                 <Icon
                   name="heroicons:calendar"
-                  class="mr-2 h-4 w-4 text-gray-400"
+                  class="mr-2 h-4 w-4 text-slate-400 dark:text-slate-500"
                 />
                 {{ formatDate(event.eventDate) }}
               </p>
@@ -78,14 +78,14 @@
 
             <div>
               <p
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"
               >
                 Time
               </p>
-              <p class="text-sm font-semibold text-black flex items-center">
+              <p class="text-sm font-semibold text-slate-950 dark:text-white flex items-center">
                 <Icon
                   name="heroicons:clock"
-                  class="mr-2 h-4 w-4 text-gray-400"
+                  class="mr-2 h-4 w-4 text-slate-400 dark:text-slate-500"
                 />
                 {{ event.startTime }} - {{ event.endTime }}
               </p>
@@ -93,12 +93,12 @@
 
             <div v-if="event.programDay">
               <p
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"
               >
                 Program Day
               </p>
               <span
-                class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-50 text-black"
+                class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white"
               >
                 {{ event.programDay }}
               </span>
@@ -106,12 +106,12 @@
 
             <div>
               <p
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1"
               >
                 Description
               </p>
               <p
-                class="text-sm text-black leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100"
+                class="text-sm text-slate-950 dark:text-slate-100 leading-relaxed bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700"
               >
                 {{
                   event.eventDescription || "No additional details provided."
@@ -127,15 +127,15 @@
           <EventHeadCount :eventId="eventId" />
 
           <div
-            class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center text-center group hover:shadow-md transition-shadow"
+            class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 flex flex-col items-center justify-center text-center group hover:shadow-md transition-shadow"
           >
             <div
-              class="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center mb-4 text-blue-600 group-hover:bg-blue-500 group-hover:text-white transition-colors"
+              class="h-12 w-12 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mb-4 text-blue-600 dark:text-blue-400 group-hover:bg-blue-500 dark:group-hover:bg-blue-600 group-hover:text-white transition-colors"
             >
               <Icon name="heroicons:clipboard-document-check" class="h-6 w-6" />
             </div>
-            <h3 class="text-lg font-bold text-black mb-1">Unit Attendance</h3>
-            <p class="text-sm text-gray-500 mb-4">
+            <h3 class="text-lg font-bold text-slate-950 dark:text-white mb-1">Unit Attendance</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
               Record and review attendance by chapel unit.
             </p>
 
