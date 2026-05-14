@@ -1,4 +1,5 @@
 <template>
+  <LoadingScreen :isLoading="pending" />
   <main v-if="pageData">
     <h1>{{ pageData.title }}</h1>
     
@@ -7,6 +8,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 const route = useRoute()
 
 // 1. Get the slug from the URL. 
@@ -15,7 +17,7 @@ const route = useRoute()
 const slugPath = route.params.slug ? route.params.slug.join('/') : ''
 
 // 2. Fetch the page data from your backend API
-const { data: pageData, error } = await useFetch(`/api/pages/${slugPath}`, {
+const { data: pageData, pending, error } = useFetch(`/api/pages/${slugPath}`, {
   baseURL: 'https://your-backend-api.com' // Replace with your actual API URL
 })
 

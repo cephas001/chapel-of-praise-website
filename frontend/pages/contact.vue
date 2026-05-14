@@ -1,13 +1,14 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
             <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-            <img src="~/assets/images/connect.webp" alt="Contact Us Hero" class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale" />
+            <img :src="page?.heroImage || '~/assets/images/connect.webp'" alt="Contact Us Hero" class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale" />
             <div class="relative z-20 text-center px-4 mt-16">
-                <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Reach Out</p>
+                <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">{{ page?.heroKicker || 'Reach Out' }}</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Contact Us
+                    {{ page?.heroHeadline || 'Contact Us' }}
                 </h1>
             </div>
         </section>
@@ -19,9 +20,9 @@
                 <!-- Left: Professional Contact Form -->
                 <div>
                     <div class="mb-10">
-                        <h2 class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black">Send a Message</h2>
+                        <h2 class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black">{{ page?.formHeading || 'Send a Message' }}</h2>
                         <p class="text-gray-600 text-base md:text-lg font-light leading-relaxed">
-                            Have questions about our ministries, services, or events? Send us a message, and our team will get back to you as soon as possible.
+                            {{ page?.formDescription || 'Have questions about our ministries, services, or events? Send us a message, and our team will get back to you as soon as possible.' }}
                         </p>
                     </div>
 
@@ -67,8 +68,7 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Main Campus</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        123 Gospel Light Avenue,<br />
-                                        Excellence District, Lagos, Nigeria
+                                        {{ page?.mainCampusAddress || '123 Gospel Light Avenue,\nExcellence District, Lagos, Nigeria' }}
                                     </p>
                                 </div>
                             </div>
@@ -81,8 +81,7 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Service Times</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        Sundays: 8:00 AM & 10:30 AM<br />
-                                        Wednesdays (Mid-week): 6:00 PM
+                                        {{ page?.serviceTimes || 'Sundays: 8:00 AM & 10:30 AM\nWednesdays (Mid-week): 6:00 PM' }}
                                     </p>
                                 </div>
                             </div>
@@ -95,8 +94,8 @@
                                 <div>
                                     <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Contact Details</h4>
                                     <p class="text-gray-600 font-light leading-relaxed">
-                                        Email: info@chapelofpraise.org<br />
-                                        Phone: +234 123 456 7890
+                                        Email: {{ page?.contactEmail || 'info@chapelofpraise.org' }}<br />
+                                        Phone: {{ page?.contactPhone || '+234 123 456 7890' }}
                                     </p>
                                 </div>
                             </div>
@@ -120,6 +119,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/contact`);
+const page = computed(() => pageData.value?.data || {});
+
 useHead({
   title: 'Contact Us | Chapel of Praise'
 })

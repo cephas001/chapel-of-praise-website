@@ -11,7 +11,7 @@
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-slate-950 dark:bg-white px-5 py-2.5 text-sm font-semibold text-white dark:text-slate-950 shadow-sm hover:bg-slate-800 dark:hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 dark:focus:ring-white transition-colors"
       >
         <Icon name="heroicons:plus" class="mr-2 h-5 w-5" />
         New Event
@@ -19,56 +19,56 @@
     </div>
 
     <div
-      class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden"
     >
       <div v-if="isFetching" class="p-12 text-center">
         <Icon
           name="heroicons:arrow-path"
-          class="mx-auto h-8 w-8 text-gray-400 animate-spin mb-4"
+          class="mx-auto h-8 w-8 text-slate-400 dark:text-slate-600 animate-spin mb-4"
         />
-        <h3 class="text-sm font-bold text-gray-900">Loading Events...</h3>
+        <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Loading Events...</h3>
       </div>
 
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+          <thead class="bg-slate-50 dark:bg-slate-800/50">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
               >
                 Event Details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
               >
                 Service Type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
               >
                 Date & Time
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-right text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-50">
+          <tbody class="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-800">
             <tr
               v-for="event in events"
               :key="event.id"
-              class="hover:bg-gray-50/50 transition-colors group"
+              class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <div class="text-sm font-bold text-gray-900 font-roboto">
+                  <div class="text-sm font-bold text-slate-900 dark:text-white font-roboto">
                     {{
                       event.service === "SPECIAL PROGRAM"
                         ? event.specialProgram
@@ -76,7 +76,7 @@
                     }}
                   </div>
                   <div
-                    class="text-xs text-gray-500 mt-0.5 max-w-[200px] truncate"
+                    class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-[200px] truncate"
                   >
                     {{ event.eventDescription || "No description provided" }}
                   </div>

@@ -16,6 +16,6 @@ import "@fontsource/poppins/700.css";
 <style>
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #f9fafb;
+  background-color: #f8fafc;
 }
 </style>

@@ -1,4 +1,5 @@
 <template>
+    <LoadingScreen :isLoading="pending" />
     <div class="bg-white text-black w-full font-sans">
         <!-- Static Hero Banner -->
         <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
@@ -7,8 +8,7 @@
             <div class="relative z-20 text-center px-4 mt-16">
                 <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">Guidance & Support</p>
                 <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    Counseling
-                </h1>
+                    >{{ page?.heroHeadline || 'Counseling' }}</h1>
             </div>
         </section>
 
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label for="counselingArea" class="block text-xs font-bold uppercase tracking-wider text-black/70">Area of Counseling</label>
+                            <label for="counselingArea" class="block text-xs font-bold uppercase tracking-wider text-black/70">Area of >{{ page?.heroHeadline || 'Counseling' }}</label>
                             <select id="counselingArea" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all appearance-none">
                                 <option value="" disabled selected>Select an area</option>
                                 <option value="marriage">Marriage / Relationship</option>
@@ -89,6 +89,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRuntimeConfig, useFetch } from '#app';
+const config = useRuntimeConfig();
+const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/counseling`);
+const page = computed(() => pageData.value?.data || {});
+
 useHead({
   title: 'Counseling | Chapel of Praise'
 })
