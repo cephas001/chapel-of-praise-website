@@ -2,13 +2,6 @@
   <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-black transition-colors mb-2"
-        >
-          <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </NuxtLink>
         <h1 class="text-3xl font-black text-black tracking-tight font-roboto">
           About Page Management
         </h1>
@@ -26,17 +19,23 @@
       <h3 class="text-sm font-bold text-gray-900">Loading Configuration...</h3>
     </div>
 
-    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+    <div
+      v-else
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8"
+    >
       <form @submit.prevent="saveSettings" class="space-y-8">
-        
         <!-- Hero Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Hero Banner
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Kicker</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Kicker</label
+              >
               <input
                 v-model="formData.heroKicker"
                 type="text"
@@ -45,7 +44,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Headline</label
+              >
               <input
                 v-model="formData.heroHeadline"
                 type="text"
@@ -53,7 +54,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Hero Background Image URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Background Image URL</label
+              >
               <input
                 v-model="formData.heroImage"
                 type="url"
@@ -66,12 +69,16 @@
 
         <!-- Vision / Mission Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Vision & Mission Section
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Section Headline (Black Text)</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Section Headline (Black Text)</label
+              >
               <input
                 v-model="formData.visionHeadlineBlack"
                 type="text"
@@ -80,7 +87,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Section Headline (Colored Text)</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Section Headline (Colored Text)</label
+              >
               <input
                 v-model="formData.visionHeadlineColored"
                 type="text"
@@ -89,7 +98,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Content Column 1</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Content Column 1</label
+              >
               <textarea
                 v-model="formData.visionContentCol1"
                 rows="6"
@@ -98,7 +109,9 @@
               ></textarea>
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Content Column 2</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Content Column 2</label
+              >
               <textarea
                 v-model="formData.visionContentCol2"
                 rows="6"
@@ -154,7 +167,7 @@ const loadSettings = async () => {
   try {
     const response = await $fetch(`${config.public.apiBase}/admin/about`);
     if (response) {
-      Object.keys(formData).forEach(key => {
+      Object.keys(formData).forEach((key) => {
         if (response[key] !== undefined) {
           formData[key] = response[key];
         }
@@ -173,7 +186,7 @@ const saveSettings = async () => {
   try {
     await $fetch(`${config.public.apiBase}/admin/about`, {
       method: "PUT",
-      body: formData
+      body: formData,
     });
     showAlert("About page settings saved successfully!", "success");
   } catch (error) {

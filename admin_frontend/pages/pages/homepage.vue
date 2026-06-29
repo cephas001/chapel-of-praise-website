@@ -2,13 +2,6 @@
   <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-black transition-colors mb-2"
-        >
-          <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </NuxtLink>
         <h1 class="text-3xl font-black text-black tracking-tight font-roboto">
           Homepage Management
         </h1>
@@ -26,17 +19,23 @@
       <h3 class="text-sm font-bold text-gray-900">Loading Configuration...</h3>
     </div>
 
-    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+    <div
+      v-else
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8"
+    >
       <form @submit.prevent="saveSettings" class="space-y-8">
-        
         <!-- Hero Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Hero Banner
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Kicker</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Kicker</label
+              >
               <input
                 v-model="formData.heroKicker"
                 type="text"
@@ -45,7 +44,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Headline</label
+              >
               <input
                 v-model="formData.heroHeadline"
                 type="text"
@@ -53,7 +54,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Hero Background Video URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Background Video URL</label
+              >
               <input
                 v-model="formData.heroVideo"
                 type="url"
@@ -62,7 +65,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Primary CTA Label</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Primary CTA Label</label
+              >
               <input
                 v-model="formData.heroCta1Label"
                 type="text"
@@ -71,7 +76,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Primary CTA Link</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Primary CTA Link</label
+              >
               <input
                 v-model="formData.heroCta1Link"
                 type="text"
@@ -80,7 +87,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Secondary CTA Label</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Secondary CTA Label</label
+              >
               <input
                 v-model="formData.heroCta2Label"
                 type="text"
@@ -89,7 +98,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Secondary CTA Link</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Secondary CTA Link</label
+              >
               <input
                 v-model="formData.heroCta2Link"
                 type="text"
@@ -102,15 +113,23 @@
 
         <!-- Action Cards Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Action Cards Section
           </h3>
           <div class="space-y-8">
-            <div v-for="(card, index) in formData.actionCards" :key="'card' + index" class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+            <div
+              v-for="(card, index) in formData.actionCards"
+              :key="'card' + index"
+              class="p-5 border border-gray-200 rounded-xl bg-gray-50"
+            >
               <h4 class="text-md font-bold mb-4">Card {{ index + 1 }}</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-bold text-black mb-1">Background Image URL</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Background Image URL</label
+                  >
                   <input
                     v-model="card.image"
                     type="url"
@@ -119,7 +138,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Kicker</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Kicker</label
+                  >
                   <input
                     v-model="card.kicker"
                     type="text"
@@ -127,7 +148,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Title</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Title</label
+                  >
                   <input
                     v-model="card.title"
                     type="text"
@@ -135,7 +158,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">CTA Label</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >CTA Label</label
+                  >
                   <input
                     v-model="card.ctaLabel"
                     type="text"
@@ -143,7 +168,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">CTA Link</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >CTA Link</label
+                  >
                   <input
                     v-model="card.ctaLink"
                     type="text"
@@ -157,12 +184,16 @@
 
         <!-- Welcome Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Welcome Section
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Welcome Badge</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Welcome Badge</label
+              >
               <input
                 v-model="formData.welcomeBadge"
                 type="text"
@@ -170,7 +201,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Welcome Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Welcome Headline</label
+              >
               <input
                 v-model="formData.welcomeHeadline"
                 type="text"
@@ -178,7 +211,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Welcome Description</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Welcome Description</label
+              >
               <textarea
                 v-model="formData.welcomeDescription"
                 rows="3"
@@ -190,12 +225,16 @@
 
         <!-- Champions Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Great Champions Section
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Champion Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Champion Headline</label
+              >
               <input
                 v-model="formData.championHeadline"
                 type="text"
@@ -203,7 +242,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Champion Background Image URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Champion Background Image URL</label
+              >
               <input
                 v-model="formData.championImage"
                 type="url"
@@ -212,7 +253,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Champion Description</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Champion Description</label
+              >
               <textarea
                 v-model="formData.championDescription"
                 rows="3"
@@ -220,7 +263,9 @@
               ></textarea>
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">CTA Label</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >CTA Label</label
+              >
               <input
                 v-model="formData.championCtaLabel"
                 type="text"
@@ -229,7 +274,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">CTA Link</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >CTA Link</label
+              >
               <input
                 v-model="formData.championCtaLink"
                 type="text"
@@ -241,15 +288,23 @@
 
         <!-- Sticky Editorial Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Sticky Editorial Section
           </h3>
           <div class="space-y-8">
-            <div v-for="(slide, index) in formData.editorialSlides" :key="'slide' + index" class="p-5 border border-gray-200 rounded-xl bg-gray-50">
+            <div
+              v-for="(slide, index) in formData.editorialSlides"
+              :key="'slide' + index"
+              class="p-5 border border-gray-200 rounded-xl bg-gray-50"
+            >
               <h4 class="text-md font-bold mb-4">Slide {{ index + 1 }}</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Kicker</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Kicker</label
+                  >
                   <input
                     v-model="slide.kicker"
                     type="text"
@@ -257,7 +312,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Title</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Title</label
+                  >
                   <input
                     v-model="slide.title"
                     type="text"
@@ -265,7 +322,9 @@
                   />
                 </div>
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-bold text-black mb-1">Description</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Description</label
+                  >
                   <textarea
                     v-model="slide.description"
                     rows="2"
@@ -279,12 +338,16 @@
 
         <!-- Leadership Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Leadership Section
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Leadership Badge</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Leadership Badge</label
+              >
               <input
                 v-model="formData.leadershipBadge"
                 type="text"
@@ -292,7 +355,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Leadership Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Leadership Headline</label
+              >
               <input
                 v-model="formData.leadershipHeadline"
                 type="text"
@@ -300,7 +365,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Leadership Image URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Leadership Image URL</label
+              >
               <input
                 v-model="formData.leadershipImage"
                 type="url"
@@ -309,7 +376,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Leadership Bio</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Leadership Bio</label
+              >
               <textarea
                 v-model="formData.leadershipBio"
                 rows="4"
@@ -317,7 +386,9 @@
               ></textarea>
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">CTA Label</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >CTA Label</label
+              >
               <input
                 v-model="formData.leadershipCtaLabel"
                 type="text"
@@ -326,7 +397,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">CTA Link</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >CTA Link</label
+              >
               <input
                 v-model="formData.leadershipCtaLink"
                 type="text"
@@ -366,50 +439,51 @@ const { showAlert } = useAlertModal();
 const isFetching = ref(true);
 const isSaving = ref(false);
 
-    const formData = reactive({
-      heroKicker: "",
-      heroHeadline: "",
-      heroVideo: "",
-      heroCta1Label: "",
-      heroCta1Link: "",
-      heroCta2Label: "",
-      heroCta2Link: "",
-      welcomeBadge: "",
-      welcomeHeadline: "",
-      welcomeDescription: "",
-      actionCards: [
-        { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
-        { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
-        { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" }
-      ],
-      championHeadline: "",
-      championDescription: "",
-      championImage: "",
-      championCtaLabel: "",
-      championCtaLink: "",
-      editorialSlides: [
-        { kicker: "", title: "", description: "" },
-        { kicker: "", title: "", description: "" },
-        { kicker: "", title: "", description: "" }
-      ],
-      leadershipBadge: "",
-      leadershipHeadline: "",
-      leadershipBio: "",
-      leadershipImage: "",
-      leadershipCtaLabel: "",
-      leadershipCtaLink: ""
-    });
+const formData = reactive({
+  heroKicker: "",
+  heroHeadline: "",
+  heroVideo: "",
+  heroCta1Label: "",
+  heroCta1Link: "",
+  heroCta2Label: "",
+  heroCta2Link: "",
+  welcomeBadge: "",
+  welcomeHeadline: "",
+  welcomeDescription: "",
+  actionCards: [
+    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
+    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
+    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
+  ],
+  championHeadline: "",
+  championDescription: "",
+  championImage: "",
+  championCtaLabel: "",
+  championCtaLink: "",
+  editorialSlides: [
+    { kicker: "", title: "", description: "" },
+    { kicker: "", title: "", description: "" },
+    { kicker: "", title: "", description: "" },
+  ],
+  leadershipBadge: "",
+  leadershipHeadline: "",
+  leadershipBio: "",
+  leadershipImage: "",
+  leadershipCtaLabel: "",
+  leadershipCtaLink: "",
+});
 
 const loadSettings = async () => {
   isFetching.value = true;
   try {
     const response = await $fetch(`${config.public.apiBase}/admin/homepage`);
     if (response) {
-      Object.keys(formData).forEach(key => {
+      Object.keys(formData).forEach((key) => {
         if (response[key] !== undefined) {
           if (Array.isArray(formData[key])) {
             // Overwrite if it has items, otherwise keep the default empty objects
-            formData[key] = response[key].length > 0 ? response[key] : formData[key];
+            formData[key] =
+              response[key].length > 0 ? response[key] : formData[key];
           } else {
             formData[key] = response[key];
           }
@@ -429,7 +503,7 @@ const saveSettings = async () => {
   try {
     await $fetch(`${config.public.apiBase}/admin/homepage`, {
       method: "PUT",
-      body: formData
+      body: formData,
     });
     showAlert("Homepage settings saved successfully!", "success");
   } catch (error) {

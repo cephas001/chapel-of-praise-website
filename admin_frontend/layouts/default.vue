@@ -11,25 +11,18 @@
     <aside
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90 overflow-hidden',
+        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90 overflow-hidden pt-7',
       ]"
       style="will-change: transform; contain: layout style paint"
     >
       <div
-        class="h-16 flex items-center px-6 border-b border-slate-200/80 dark:border-slate-800 shrink-0"
+        class="flex items-center px-6 border-b border-slate-200/80 dark:border-slate-800 shrink-0 pb-3"
       >
-        <div>
-          <p
-            class="text-[11px] uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500"
-          >
-            Chapel of Praise
-          </p>
-          <h1
-            class="text-lg font-bold tracking-tight text-slate-950 dark:text-white"
-          >
-            COP Admin
-          </h1>
-        </div>
+        <h1
+          class="text-lg font-bold tracking-tight text-slate-950 dark:text-white"
+        >
+          MENU
+        </h1>
         <button
           @click="isSidebarOpen = false"
           class="ml-auto md:hidden text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white flex items-center"

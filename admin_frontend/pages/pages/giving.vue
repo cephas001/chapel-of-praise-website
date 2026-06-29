@@ -2,13 +2,6 @@
   <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-black transition-colors mb-2"
-        >
-          <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </NuxtLink>
         <h1 class="text-3xl font-black text-black tracking-tight font-roboto">
           Giving Page Management
         </h1>
@@ -26,17 +19,23 @@
       <h3 class="text-sm font-bold text-gray-900">Loading Configuration...</h3>
     </div>
 
-    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+    <div
+      v-else
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8"
+    >
       <form @submit.prevent="saveSettings" class="space-y-8">
-        
         <!-- Hero Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Hero Banner
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Kicker</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Kicker</label
+              >
               <input
                 v-model="formData.heroKicker"
                 type="text"
@@ -45,7 +44,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Headline</label
+              >
               <input
                 v-model="formData.heroHeadline"
                 type="text"
@@ -53,7 +54,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Hero Background Image URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Background Image URL</label
+              >
               <input
                 v-model="formData.heroImage"
                 type="url"
@@ -66,12 +69,16 @@
 
         <!-- Section Details -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Section Content
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Section Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Section Headline</label
+              >
               <input
                 v-model="formData.sectionHeadline"
                 type="text"
@@ -80,7 +87,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Section Description</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Section Description</label
+              >
               <textarea
                 v-model="formData.sectionDescription"
                 rows="4"
@@ -93,12 +102,16 @@
 
         <!-- Bank Transfer Details -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Bank Transfer Details
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Bank Name</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Bank Name</label
+              >
               <input
                 v-model="formData.bankName"
                 type="text"
@@ -107,7 +120,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Account Name</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Account Name</label
+              >
               <input
                 v-model="formData.accountName"
                 type="text"
@@ -116,7 +131,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Account Number</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Account Number</label
+              >
               <input
                 v-model="formData.accountNumber"
                 type="text"
@@ -129,12 +146,16 @@
 
         <!-- Online Payment Configuration -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Online Payment Configuration
           </h3>
           <div class="grid grid-cols-1 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Description Text</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Description Text</label
+              >
               <textarea
                 v-model="formData.onlinePaymentDescription"
                 rows="3"
@@ -143,7 +164,9 @@
               ></textarea>
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Button URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Button URL</label
+              >
               <input
                 v-model="formData.onlinePaymentButtonUrl"
                 type="url"
@@ -202,7 +225,7 @@ const loadSettings = async () => {
   try {
     const response = await $fetch(`${config.public.apiBase}/admin/giving`);
     if (response) {
-      Object.keys(formData).forEach(key => {
+      Object.keys(formData).forEach((key) => {
         if (response[key] !== undefined) {
           formData[key] = response[key];
         }
@@ -221,7 +244,7 @@ const saveSettings = async () => {
   try {
     await $fetch(`${config.public.apiBase}/admin/giving`, {
       method: "PUT",
-      body: formData
+      body: formData,
     });
     showAlert("Giving page settings saved successfully!", "success");
   } catch (error) {

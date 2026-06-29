@@ -2,13 +2,6 @@
   <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-black transition-colors mb-2"
-        >
-          <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </NuxtLink>
         <h1 class="text-3xl font-black text-black tracking-tight font-roboto">
           Ministries Management
         </h1>
@@ -26,17 +19,23 @@
       <h3 class="text-sm font-bold text-gray-900">Loading Configuration...</h3>
     </div>
 
-    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+    <div
+      v-else
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8"
+    >
       <form @submit.prevent="saveSettings" class="space-y-8">
-        
         <!-- Hero Section -->
         <div class="space-y-5">
-          <h3 class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3">
+          <h3
+            class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3"
+          >
             Hero Section
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Kicker</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Kicker</label
+              >
               <input
                 v-model="formData.heroKicker"
                 type="text"
@@ -45,7 +44,9 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-bold text-black mb-1">Hero Headline</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Headline</label
+              >
               <input
                 v-model="formData.heroHeadline"
                 type="text"
@@ -53,7 +54,9 @@
               />
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-bold text-black mb-1">Hero Image URL</label>
+              <label class="block text-sm font-bold text-black mb-1"
+                >Hero Image URL</label
+              >
               <input
                 v-model="formData.heroImageUrl"
                 type="url"
@@ -66,23 +69,37 @@
 
         <!-- Ministries List -->
         <div class="space-y-5">
-          <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-            <h3 class="text-lg font-bold text-gray-900">
-              Ministries
-            </h3>
-            <button type="button" @click="addMinistry" class="text-sm font-bold text-blue-600 hover:text-blue-800">
+          <div
+            class="flex items-center justify-between border-b border-gray-100 pb-3"
+          >
+            <h3 class="text-lg font-bold text-gray-900">Ministries</h3>
+            <button
+              type="button"
+              @click="addMinistry"
+              class="text-sm font-bold text-blue-600 hover:text-blue-800"
+            >
               + Add Ministry
             </button>
           </div>
           <div class="space-y-8">
-            <div v-for="(ministry, index) in formData.ministries" :key="'ministry' + index" class="p-5 border border-gray-200 rounded-xl bg-gray-50 relative">
-              <button type="button" @click="removeMinistry(index)" class="absolute top-4 right-4 text-red-500 hover:text-red-700">
+            <div
+              v-for="(ministry, index) in formData.ministries"
+              :key="'ministry' + index"
+              class="p-5 border border-gray-200 rounded-xl bg-gray-50 relative"
+            >
+              <button
+                type="button"
+                @click="removeMinistry(index)"
+                class="absolute top-4 right-4 text-red-500 hover:text-red-700"
+              >
                 <Icon name="heroicons:trash" class="h-5 w-5" />
               </button>
               <h4 class="text-md font-bold mb-4">Ministry {{ index + 1 }}</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Name</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Name</label
+                  >
                   <input
                     v-model="ministry.name"
                     type="text"
@@ -91,7 +108,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-black mb-1">Subtitle / Alias</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Subtitle / Alias</label
+                  >
                   <input
                     v-model="ministry.subtitle"
                     type="text"
@@ -100,7 +119,9 @@
                   />
                 </div>
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-bold text-black mb-1">Description</label>
+                  <label class="block text-sm font-bold text-black mb-1"
+                    >Description</label
+                  >
                   <textarea
                     v-model="ministry.description"
                     rows="3"
@@ -109,7 +130,10 @@
                 </div>
               </div>
             </div>
-            <div v-if="formData.ministries.length === 0" class="text-sm text-gray-500 text-center py-4">
+            <div
+              v-if="formData.ministries.length === 0"
+              class="text-sm text-gray-500 text-center py-4"
+            >
               No ministries added yet.
             </div>
           </div>
@@ -135,10 +159,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useNuxtApp } from '#app';
-import { useAlertModal } from '@/composables/useAlertModal';
-import { useErrorModal } from '@/composables/useErrorModal';
+import { ref, onMounted } from "vue";
+import { useNuxtApp } from "#app";
+import { useAlertModal } from "@/composables/useAlertModal";
+import { useErrorModal } from "@/composables/useErrorModal";
 
 definePageMeta({
   middleware: ["auth"],
@@ -152,27 +176,30 @@ const isFetching = ref(true);
 const isSaving = ref(false);
 
 const formData = ref({
-  heroKicker: '',
-  heroHeadline: '',
-  heroImageUrl: '',
-  ministries: []
+  heroKicker: "",
+  heroHeadline: "",
+  heroImageUrl: "",
+  ministries: [],
 });
 
 const fetchSettings = async () => {
   isFetching.value = true;
   try {
-    const { data } = await $api.get('/api/admin/ministries');
+    const { data } = await $api.get("/api/admin/ministries");
     if (data) {
-      formData.value.heroKicker = data.heroKicker || '';
-      formData.value.heroHeadline = data.heroHeadline || '';
-      formData.value.heroImageUrl = data.heroImageUrl || '';
-      formData.value.ministries = Array.isArray(data.ministries) ? data.ministries : [];
+      formData.value.heroKicker = data.heroKicker || "";
+      formData.value.heroHeadline = data.heroHeadline || "";
+      formData.value.heroImageUrl = data.heroImageUrl || "";
+      formData.value.ministries = Array.isArray(data.ministries)
+        ? data.ministries
+        : [];
     }
   } catch (error) {
-    console.error('Failed to fetch ministries settings:', error);
+    console.error("Failed to fetch ministries settings:", error);
     errorModal.show({
-      title: 'Fetch Error',
-      message: 'Failed to fetch the ministries configuration. Please try again.',
+      title: "Fetch Error",
+      message:
+        "Failed to fetch the ministries configuration. Please try again.",
     });
   } finally {
     isFetching.value = false;
@@ -181,9 +208,9 @@ const fetchSettings = async () => {
 
 const addMinistry = () => {
   formData.value.ministries.push({
-    name: '',
-    subtitle: '',
-    description: ''
+    name: "",
+    subtitle: "",
+    description: "",
   });
 };
 
@@ -194,17 +221,18 @@ const removeMinistry = (index) => {
 const saveSettings = async () => {
   isSaving.value = true;
   try {
-    await $api.put('/api/admin/ministries', formData.value);
+    await $api.put("/api/admin/ministries", formData.value);
     alertModal.show({
-      title: 'Success',
-      message: 'Ministries page configuration has been updated successfully.',
-      type: 'success'
+      title: "Success",
+      message: "Ministries page configuration has been updated successfully.",
+      type: "success",
     });
   } catch (error) {
-    console.error('Failed to save ministries settings:', error);
+    console.error("Failed to save ministries settings:", error);
     errorModal.show({
-      title: 'Save Error',
-      message: 'There was an issue saving your changes. Please check your connection and try again.',
+      title: "Save Error",
+      message:
+        "There was an issue saving your changes. Please check your connection and try again.",
     });
   } finally {
     isSaving.value = false;
