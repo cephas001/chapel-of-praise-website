@@ -4,16 +4,20 @@ require("dotenv").config();
 
 const app = express();
 
+// 1. Define all possible allowed origins in an array
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_FRONTEND_URL,
+  "http://localhost:3000",
+  "http://localhost:3001",
+].filter(Boolean); // 2. Filter out any undefined values if env vars are missing
+
 const corsOptions = {
-  origin:
-    process.env.FRONTEND_URL ||
-    process.env.ADMIN_FRONTEND_URL ||
-    "http://localhost:3000" ||
-    "http://localhost:3001",
+  origin: allowedOrigins,
   credentials: true,
 };
-app.use(cors(corsOptions));
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
 
