@@ -7,6 +7,7 @@ const app = express();
 const corsOptions = {
   origin:
     process.env.FRONTEND_URL ||
+    process.env.ADMIN_FRONTEND_URL ||
     "http://localhost:3000" ||
     "http://localhost:3001",
   credentials: true,
