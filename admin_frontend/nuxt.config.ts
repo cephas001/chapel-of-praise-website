@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   // Centralized API access linking to your Express backend
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:5000/api",
+      apiBase: process.env.API_BASE_URL || "http://localhost:5000/api",
       firebaseApiKey: process.env.FIREBASE_API_KEY,
       firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
       firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
