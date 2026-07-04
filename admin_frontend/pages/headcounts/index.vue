@@ -1,81 +1,83 @@
 <!-- pages/headcounts/index.vue -->
 <template>
-  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
-    <!-- Header -->
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <AppPageHeader
-        text="Global Headcounts"
-        description="Review attendance totals across all events and services."
-        classList="mt-5"
-      />
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Event Headcounts
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Review attendance totals across all events and services.
+        </p>
+      </div>
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-gray-900 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
-        <Icon name="heroicons:plus" class="mr-2 h-5 w-5" />
+        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         Record New Headcount
       </button>
     </div>
 
-    <!-- Data Table -->
     <div
-      class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <!-- Loading State -->
-      <div v-if="isFetching" class="p-12 text-center">
+      <div v-if="isFetching" class="py-20 text-center">
         <Icon
           name="heroicons:arrow-path"
           class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
         />
-        <h3 class="text-sm font-bold text-gray-900">
+        <h3
+          class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
+        >
           Loading aggregate headcounts...
         </h3>
       </div>
 
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100">
-          <thead class="bg-gray-50">
+      <div
+        v-else
+        class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200"
+      >
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50/50">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Event Name & Date
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Male
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Female
               </th>
-
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-xs font-bold text-gray-900 uppercase tracking-wider"
+                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Total
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-50">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr
               v-for="record in headcounts"
               :key="record.id"
-              class="hover:bg-gray-50/50 transition-colors"
+              class="hover:bg-gray-50/50 transition-colors group"
             >
-              <!-- Event Details Column -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-bold text-gray-900">
-                  <!-- Condition 1: If it's a Special Program, show the Program Name and Day -->
+              <td class="px-6 py-4 whitespace-nowrap font-jetbrains">
+                <div class="text-xs md:text-sm font-bold text-gray-800">
                   <template
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
                   >
@@ -84,18 +86,19 @@
                     }}
                     <span
                       v-if="record.eventDetails?.programDay"
-                      class="font-semibold text-gray-600"
+                      class="font-semibold text-gray-800"
                     >
                       - {{ record.eventDetails.programDay }}
                     </span>
                   </template>
-                  <!-- Condition 2: If it's a regular service, just show the service name -->
                   <template v-else>
                     {{ record.eventDetails?.service || "Unknown Event" }}
                   </template>
                 </div>
 
-                <div class="text-xs text-gray-500 mt-0.5">
+                <div
+                  class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-500"
+                >
                   {{ formatDate(record.eventDetails?.eventDate) }}
                   <span
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
@@ -105,30 +108,26 @@
                 </div>
               </td>
 
-              <!-- Male Students -->
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600 font-medium"
+                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
               >
-                {{ record.maleStudents || 0 }}
+                {{ record.maleStudents || 0 + record.maleVisitors || 0 }}
               </td>
 
-              <!-- Female Students -->
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600 font-medium"
+                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
               >
-                {{ record.femaleStudents || 0 }}
+                {{ record.femaleStudents || 0 + record.femaleVisitors || 0 }}
               </td>
 
-              <!-- Total Visitors (Male + Female combined for a cleaner table) -->
-              <td
-                class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600 font-medium"
+              <!-- <td
+                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
               >
                 {{ (record.maleVisitors || 0) + (record.femaleVisitors || 0) }}
-              </td>
+              </td> -->
 
-              <!-- Grand Total (Sums all 4 fields) -->
               <td
-                class="px-6 py-4 whitespace-nowrap text-right text-sm font-black text-blue-600"
+                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm font-black text-black"
               >
                 {{
                   (record.maleStudents || 0) +
@@ -143,35 +142,34 @@
 
         <div
           v-if="headcounts.length === 0"
-          class="p-12 text-center border-t border-gray-100"
+          class="py-20 text-center border-t border-gray-100"
         >
           <Icon
             name="heroicons:users"
             class="mx-auto h-12 w-12 text-gray-300 mb-4"
           />
-          <h3 class="text-lg font-bold text-gray-900 mb-1">
+          <h3 class="text-sm font-bold text-gray-900 mb-1">
             No headcounts found
           </h3>
-          <p class="text-gray-500 text-sm">
+          <p class="text-gray-500 text-xs px-5">
             Get started by recording attendance for a recent event.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Slide-over Drawer for Creating Headcount -->
     <SlideOver
       :is-open="isDrawerOpen"
       title="Record Event Headcount"
       @close="closeDrawer"
     >
-      <div class="p-1 font-montserrat">
-        <!-- Step 1: Select Event using our new component -->
+      <div class="p-1 font-poppins">
         <div class="mb-6 pb-6 border-b border-gray-100">
           <label
-            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-            >Select Target Event</label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
+            Select Target Event
+          </label>
           <SearchableSelect
             v-model="selectedEventId"
             :options="events"
@@ -181,11 +179,12 @@
           />
         </div>
 
-        <!-- Step 2: Inject the component we built previously -->
-        <!-- Only render if an event is selected so it knows where to save -->
         <div v-if="selectedEventId">
-          <h4 class="text-sm font-bold text-gray-900 mb-4">Enter Counts</h4>
-          <!-- We reuse the form component from your event/[id].vue! -->
+          <h4
+            class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-4"
+          >
+            Enter Counts
+          </h4>
           <EventHeadCountForm
             @submit="handleHeadcountSubmit"
             :loading="isSubmitting"
@@ -194,13 +193,15 @@
 
         <div
           v-else
-          class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+          class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200"
         >
           <Icon
             name="heroicons:calendar"
-            class="h-8 w-8 text-gray-300 mx-auto mb-2"
+            class="h-8 w-8 text-gray-300 mx-auto mb-3"
           />
-          <p class="text-xs text-gray-500 font-medium">
+          <p
+            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
+          >
             Please select an event above first.
           </p>
         </div>
@@ -255,7 +256,7 @@ const fetchData = async () => {
       .sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
   } catch (error) {
     console.error("Fetch error:", error);
-    showAlert("Error", "Could not load global headcount data.", "error");
+    showAlert("Error", "Could not load event headcount data.", "error");
   } finally {
     isFetching.value = false;
   }

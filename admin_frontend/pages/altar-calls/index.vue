@@ -1,79 +1,81 @@
 <!-- pages/altar-calls/index.vue -->
 <template>
-  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Header -->
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <AppPageHeader
-        text="Global Altar Calls"
-        description="Review altar call responses and categories across all events."
-        classList="mt-5"
-      />
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Altar Calls
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Review altar call responses and categories across all events.
+        </p>
+      </div>
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-gray-900 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
-        <Icon name="heroicons:plus" class="mr-2 h-5 w-5" />
+        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         Record Altar Call
       </button>
     </div>
 
-    <!-- Data Table -->
+    <!-- Data Table Container -->
     <div
-      class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
       <!-- Loading State -->
-      <div v-if="isFetching" class="p-12 text-center">
+      <div v-if="isFetching" class="py-20 text-center">
         <Icon
           name="heroicons:arrow-path"
           class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
         />
-        <h3 class="text-sm font-bold text-gray-900">
+        <h3
+          class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
+        >
           Loading altar call records...
         </h3>
       </div>
 
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100">
-          <thead class="bg-gray-50">
+      <div
+        v-else
+        class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200"
+      >
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50/50">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-1/3"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap w-1/3"
               >
                 Event Details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Call Type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Responders
               </th>
-              <th
-                scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
-              >
-                Comments
-              </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-50">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr
               v-for="record in altarCalls"
               :key="record.id"
-              class="hover:bg-gray-50/50 transition-colors"
+              class="hover:bg-gray-50/50 transition-colors group"
             >
               <!-- Event Column -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-bold text-gray-900">
+                <div class="text-xs md:text-sm font-bold text-gray-900">
                   <!-- Condition 1: If it's a Special Program, show the Program Name and Day -->
                   <template
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
@@ -83,7 +85,7 @@
                     }}
                     <span
                       v-if="record.eventDetails?.programDay"
-                      class="font-semibold text-gray-600"
+                      class="font-semibold text-gray-900"
                     >
                       - {{ record.eventDetails.programDay }}
                     </span>
@@ -94,7 +96,9 @@
                   </template>
                 </div>
 
-                <div class="text-xs text-gray-500 mt-0.5">
+                <div
+                  class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-600"
+                >
                   {{ formatDate(record.eventDetails?.eventDate) }}
                   <span
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
@@ -107,7 +111,7 @@
               <!-- Category Column -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700"
+                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100"
                 >
                   {{ record.callType }}
                 </span>
@@ -115,36 +119,27 @@
 
               <!-- Responders Column -->
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-sm font-black text-black"
+                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm font-black text-black"
               >
                 {{ record.totalResponders || 0 }}
-              </td>
-
-              <!-- Notes Column -->
-              <td class="px-6 py-4">
-                <div
-                  class="text-sm text-gray-600 line-clamp-2 max-w-xs"
-                  :title="record.additionalComments"
-                >
-                  {{ record.additionalComments || "No additional comments" }}
-                </div>
               </td>
             </tr>
           </tbody>
         </table>
 
+        <!-- Empty State -->
         <div
           v-if="altarCalls.length === 0"
-          class="p-12 text-center border-t border-gray-100"
+          class="py-20 text-center border-t border-gray-100"
         >
           <Icon
             name="heroicons:megaphone"
             class="mx-auto h-12 w-12 text-gray-300 mb-4"
           />
-          <h3 class="text-lg font-bold text-gray-900 mb-1">
+          <h3 class="text-sm font-bold text-gray-900 mb-1">
             No altar calls recorded
           </h3>
-          <p class="text-gray-500 text-sm">
+          <p class="text-gray-500 text-xs px-5">
             Get started by logging a response for a recent event.
           </p>
         </div>
@@ -157,13 +152,14 @@
       title="Record Altar Call Response"
       @close="closeDrawer"
     >
-      <div class="p-1 font-montserrat">
+      <div class="p-1 font-poppins">
         <!-- Step 1: Select Event using our reusable component -->
         <div class="mb-6 pb-6 border-b border-gray-100">
           <label
-            class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
-            >Select Target Event</label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
+            Select Target Event
+          </label>
           <SearchableSelect
             v-model="selectedEventId"
             :options="events"
@@ -175,7 +171,11 @@
 
         <!-- Step 2: Form Component -->
         <div v-if="selectedEventId">
-          <h4 class="text-sm font-bold text-gray-900 mb-4">Response Details</h4>
+          <h4
+            class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-4"
+          >
+            Response Details
+          </h4>
           <!-- We reuse the form component built for the individual event view -->
           <EventAltarCallForm
             @submit="handleAltarCallSubmit"
@@ -183,15 +183,18 @@
           />
         </div>
 
+        <!-- Awaiting Selection State -->
         <div
           v-else
-          class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+          class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200"
         >
           <Icon
             name="heroicons:calendar"
-            class="h-8 w-8 text-gray-300 mx-auto mb-2"
+            class="h-8 w-8 text-gray-300 mx-auto mb-3"
           />
-          <p class="text-xs text-gray-500 font-medium">
+          <p
+            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
+          >
             Please select an event above first.
           </p>
         </div>
@@ -223,7 +226,7 @@ const selectedEventId = ref("");
 const fetchData = async () => {
   isFetching.value = true;
   try {
-    // 1. Fetch Global Altar Calls using the new endpoint we just made
+    // 1. Fetch Event Altar Calls using the new endpoint we just made
     const callsRes = await $fetch(
       `${config.public.apiBase}/altar-calls/global`,
       {

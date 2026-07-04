@@ -1,21 +1,21 @@
 <!-- components/ui/MemberCard.vue -->
 <template>
   <div
-    class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col h-full font-montserrat hover:shadow-md transition-shadow"
+    class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col h-full font-poppins hover:shadow-md transition-shadow"
   >
     <!-- Header -->
     <div class="flex items-start gap-4 mb-4">
       <div
-        class="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-lg shrink-0"
+        class="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-base shrink-0"
       >
         {{ initials }}
       </div>
       <div>
-        <h3 class="text-lg font-black text-gray-900 line-clamp-1">
+        <h3 class="text-sm md:text-base font-bold text-gray-900 line-clamp-1">
           {{ member.name }}
         </h3>
         <p
-          class="text-xs font-bold mt-0.5"
+          class="text-[11px] font-bold mt-0.5 uppercase tracking-wider font-jetbrains"
           :class="
             member.memberType === 'EXECUTIVE'
               ? 'text-blue-600'

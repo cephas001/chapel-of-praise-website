@@ -1,13 +1,89 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken, requireStaticTypeAccess } = require("../../middleware/auth");
-const { getMinistriesSettings, updateMinistriesSettings } = require("../../controllers/ministriesController");
+const { db } = require("../../config/firebase");
+const {
+  verifyToken,
+  requireStaticTypeAccess,
+} = require("../../middleware/auth");
 
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
-router.get("/", getMinistriesSettings);
-router.put("/", updateMinistriesSettings);
-router.post("/", updateMinistriesSettings);
+// Get ministries settings
+router.get("/", async (req, res) => {
+  try {
+    const docRef = db.collection("settings").doc("ministries");
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(200).json({});
+    }
+
+    res.status(200).json(doc.data());
+  } catch (error) {
+    console.error("Error getting ministries settings:", error);
+    res.status(500).json({ message: "Failed to fetch ministries settings" });
+  }
+});
+
+// Create or update ministries settings
+router.put("/", async (req, res) => {
+  try {
+    const settingsData = req.body;
+    const docRef = db.collection("settings").doc("ministries");
+    const doc = await docRef.get();
+
+    const dataToSave = {
+      ...settingsData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (req.user && req.user.uid) {
+      dataToSave.updatedBy = req.user.uid;
+    }
+
+    if (!doc.exists) {
+      dataToSave.createdAt = new Date().toISOString();
+      await docRef.set(dataToSave);
+    } else {
+      await docRef.update(dataToSave);
+    }
+
+    res.status(200).json(dataToSave);
+  } catch (error) {
+    console.error("Error updating ministries settings:", error);
+    res.status(500).json({ message: "Failed to update ministries settings" });
+  }
+});
+
+// Allow POST to behave the same as PUT
+router.post("/", async (req, res) => {
+  try {
+    const settingsData = req.body;
+    const docRef = db.collection("settings").doc("ministries");
+    const doc = await docRef.get();
+
+    const dataToSave = {
+      ...settingsData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (req.user && req.user.uid) {
+      dataToSave.updatedBy = req.user.uid;
+    }
+
+    if (!doc.exists) {
+      dataToSave.createdAt = new Date().toISOString();
+      await docRef.set(dataToSave);
+    } else {
+      await docRef.update(dataToSave);
+    }
+
+    res.status(200).json(dataToSave);
+  } catch (error) {
+    console.error("Error updating ministries settings:", error);
+    res.status(500).json({ message: "Failed to update ministries settings" });
+  }
+});
 
 module.exports = router;

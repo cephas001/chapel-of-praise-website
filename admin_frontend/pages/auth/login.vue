@@ -7,7 +7,7 @@
     >
       <div class="text-center mb-6">
         <h2
-          class="text-md md:text-xl font-bold text-black uppercase tracking-tighter font-jetbrains"
+          class="text-md md:text-xl font-bold text-black uppercase font-jetbrains"
         >
           Chapel of Praise
         </h2>
@@ -81,21 +81,23 @@
         <button
           type="submit"
           :disabled="loading"
-          class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-xs md:text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
+          class="w-full flex justify-center items-center gap-1 py-3 px-4 border border-transparent rounded-lg shadow-sm text-xs md:text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
         >
           <Icon
             name="heroicons:arrow-path"
             v-if="loading"
             width="4"
             height="4"
-            class="mr-1 animate-spin"
+            class="animate-spin"
           />
           {{ loading ? "Signing in..." : "Sign In" }}
         </button>
 
         <div v-if="errorMessage" class="rounded-md bg-red-50 p-3 mt-3">
           <div>
-            <h3 class="text-xs md:text-sm text-red-800 text-center">
+            <h3
+              class="text-xs md:text-sm text-red-800 text-center font-literata tracking-wide"
+            >
               {{ errorMessage }}
             </h3>
           </div>
@@ -150,9 +152,10 @@ async function handleLogin() {
 
     // 4. Save to Pinia and Cookies (Just like before!)
     authStore.setAuth(response.user, firebaseToken);
-    navigateTo("/");
+    navigateTo("/dashboard");
   } catch (error) {
     // Map Firebase error codes to user-friendly messages
+    console.log(error);
     if (
       error.code === "auth/invalid-credential" ||
       error.code === "auth/wrong-password"

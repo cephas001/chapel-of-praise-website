@@ -1,110 +1,113 @@
 <!-- components/events/AttendanceTable.vue -->
 <template>
   <div
-    class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col font-montserrat"
+    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col font-poppins mt-8"
   >
-    <!-- Loading State -->
-    <div v-if="isFetching" class="p-12 text-center">
+    <div v-if="isFetching" class="p-16 text-center">
       <Icon
         name="heroicons:arrow-path"
         class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900">
+      <p
+        class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
+      >
         Loading roster and records...
-      </h3>
+      </p>
     </div>
 
-    <!-- Empty Roster State -->
-    <div v-else-if="members.length === 0" class="p-12 text-center">
+    <div v-else-if="members.length === 0" class="p-16 text-center">
       <Icon
         name="heroicons:users"
         class="mx-auto h-12 w-12 text-gray-300 mb-4"
       />
-      <h3 class="text-lg font-bold text-gray-900 mb-1">No Workers Found</h3>
-      <p class="text-gray-500 text-sm">
-        There are no registered workers in the {{ unitName }} unit.
+      <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+        No Workers Found
+      </h3>
+      <p class="text-xs md:text-sm text-gray-500">
+        There are no registered workers in the
+        <span class="font-bold text-black">{{ unitName }}</span> unit.
       </p>
     </div>
 
-    <!-- The Roster Table -->
-    <div v-else class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-100">
-        <thead class="bg-gray-50">
+    <div v-else class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50/50">
           <tr>
             <th
               scope="col"
-              class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+              class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-900 uppercase tracking-widest whitespace-nowrap"
             >
               Worker Name
             </th>
             <th
               scope="col"
-              class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+              class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-900 uppercase tracking-widest whitespace-nowrap"
             >
               Officiating?
             </th>
             <th
               scope="col"
-              class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+              class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-900 uppercase tracking-widest whitespace-nowrap"
             >
               Attendance Status
             </th>
             <th
               scope="col"
-              class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider"
+              class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-900 uppercase tracking-widest whitespace-nowrap"
             >
               System Result
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-50">
+        <tbody class="bg-white divide-y divide-gray-100">
           <tr
             v-for="member in members"
             :key="member.id"
-            class="hover:bg-gray-50/30 transition-colors"
-            :class="{ 'bg-blue-50/20': isOfficiating(member.id) }"
+            class="transition-colors group"
+            :class="
+              isOfficiating(member.id)
+                ? 'bg-gray-50/50 hover:bg-gray-50'
+                : 'hover:bg-gray-50/30'
+            "
           >
-            <!-- Worker Details -->
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="pl-6 pr-2 py-4 whitespace-nowrap">
               <div
-                class="text-sm font-bold"
+                class="text-xs md:text-sm font-bold"
                 :class="
-                  isOfficiating(member.id) ? 'text-blue-900' : 'text-gray-900'
+                  isOfficiating(member.id) ? 'text-black' : 'text-gray-600'
                 "
               >
                 {{ member.name }}
               </div>
-              <div class="text-xs mt-0.5 text-gray-500">
+              <div
+                class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-400"
+              >
                 {{ member.memberType === "EXECUTIVE" ? "Executive" : "Worker" }}
               </div>
             </td>
 
-            <!-- Officiating Master Toggle -->
             <td class="px-6 py-4 whitespace-nowrap text-center">
               <button
                 type="button"
                 @click="toggleOfficiating(member.id)"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                :class="
-                  isOfficiating(member.id) ? 'bg-blue-600' : 'bg-gray-200'
-                "
+                class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                :class="isOfficiating(member.id) ? 'bg-black' : 'bg-gray-200'"
               >
                 <span class="sr-only">Toggle Officiating</span>
                 <span
                   aria-hidden="true"
-                  class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                  class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
                   :class="
-                    isOfficiating(member.id) ? 'translate-x-5' : 'translate-x-0'
+                    isOfficiating(member.id) ? 'translate-x-4' : 'translate-x-0'
                   "
                 />
               </button>
             </td>
 
-            <!-- Status Selection (Only show if officiating) -->
             <td class="px-6 py-4 whitespace-nowrap text-center">
               <div
                 v-if="isOfficiating(member.id)"
-                class="flex items-center justify-center gap-4"
+                class="flex items-center justify-center gap-5"
               >
                 <label class="inline-flex items-center cursor-pointer group">
                   <input
@@ -112,12 +115,13 @@
                     :name="`status-${member.id}`"
                     :checked="isPresent(member.id)"
                     @change="setStatus(member.id, 'present')"
-                    class="h-4 w-4 text-green-600 focus:ring-green-600 border-gray-300 cursor-pointer"
+                    class="h-4 w-4 text-black focus:ring-black border-gray-300 cursor-pointer transition-colors"
                   />
                   <span
-                    class="ml-2 text-xs font-semibold text-gray-700 group-hover:text-green-700"
-                    >Present</span
+                    class="ml-2 text-[11px] font-jetbrains font-bold tracking-wide uppercase text-gray-500 group-hover:text-black transition-colors"
                   >
+                    Present
+                  </span>
                 </label>
 
                 <label class="inline-flex items-center cursor-pointer group">
@@ -126,72 +130,82 @@
                     :name="`status-${member.id}`"
                     :checked="isPardoned(member.id)"
                     @change="setStatus(member.id, 'pardoned')"
-                    class="h-4 w-4 text-amber-500 focus:ring-amber-500 border-gray-300 cursor-pointer"
+                    class="h-4 w-4 text-gray-400 focus:ring-gray-500 border-gray-300 cursor-pointer transition-colors"
                   />
                   <span
-                    class="ml-2 text-xs font-semibold text-gray-700 group-hover:text-amber-700"
-                    >Pardoned</span
+                    class="ml-2 text-[11px] font-jetbrains font-bold tracking-wide uppercase text-gray-500 group-hover:text-gray-900 transition-colors"
                   >
+                    Pardoned
+                  </span>
                 </label>
               </div>
-              <span v-else class="text-xs text-gray-400 italic"
-                >Not required to attend</span
+              <span
+                v-else
+                class="text-[11px] font-jetbrains font-medium text-gray-400 uppercase tracking-widest"
               >
+                Not Officiating
+              </span>
             </td>
 
-            <!-- Computed System Result (The magic of useAttendanceLogic) -->
             <td class="px-6 py-4 whitespace-nowrap text-center">
-              <span v-if="!isOfficiating(member.id)" class="text-gray-300"
+              <span
+                v-if="!isOfficiating(member.id)"
+                class="text-gray-300 font-bold"
                 >-</span
               >
               <span
                 v-else-if="isPresent(member.id)"
-                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-50 text-green-700"
-                >Present</span
+                class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-green-50 text-green-700 border border-green-100"
               >
+                Present
+              </span>
               <span
                 v-else-if="isPardoned(member.id)"
-                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-50 text-amber-700"
-                >Excused</span
+                class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-100"
               >
+                Excused
+              </span>
               <span
                 v-else-if="absentIds.includes(member.id)"
-                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-red-50 text-red-700 animate-pulse"
-                >Absent</span
+                class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-100 animate-pulse"
               >
+                Absent
+              </span>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <!-- Comments & Save -->
-      <div
-        class="px-6 py-5 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:items-end justify-between gap-4"
-      >
-        <div class="w-full sm:w-1/2">
-          <label class="block text-xs font-bold text-gray-700 mb-1.5"
-            >Additional Comments</label
-          >
-          <input
-            v-model="additionalComments"
-            type="text"
-            class="block w-full px-3 py-2 border border-gray-300 focus:border-blue-600 outline-none rounded-lg text-sm transition-colors text-black"
-            placeholder="Any specific notes about this unit's attendance..."
-          />
-        </div>
-        <button
-          @click="submitAttendance"
-          :disabled="isSubmitting"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 transition-colors disabled:opacity-70 disabled:cursor-not-allowed h-[38px] shrink-0"
+    <div
+      class="px-6 pt-7 pb-5 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row sm:items-end justify-between gap-6"
+    >
+      <div class="w-full sm:w-1/2">
+        <label
+          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >
-          <Icon
-            v-if="isSubmitting"
-            name="heroicons:arrow-path"
-            class="mr-2 h-4 w-4 animate-spin"
-          />
-          {{ isSubmitting ? "Saving..." : "Save Unit Attendance" }}
-        </button>
+          Additional Comments
+        </label>
+        <textarea
+          v-model="additionalComments"
+          type="text"
+          class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm resize-none"
+          placeholder="Any specific notes about this unit's attendance..."
+          rows="4"
+        />
       </div>
+      <button
+        @click="submitAttendance"
+        :disabled="isSubmitting"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains shrink-0 h-[42px]"
+      >
+        <Icon
+          v-if="isSubmitting"
+          name="heroicons:arrow-path"
+          class="mr-2 h-4 w-4 animate-spin"
+        />
+        {{ isSubmitting ? "Saving..." : "Save Unit Attendance" }}
+      </button>
     </div>
   </div>
 </template>

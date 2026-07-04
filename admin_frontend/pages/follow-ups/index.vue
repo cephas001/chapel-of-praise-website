@@ -1,21 +1,24 @@
 <!-- pages/follow-ups/index.vue -->
 <template>
-  <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
-    <!-- Header -->
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <AppPageHeader
-        text="Follow-Up & Welfare"
-        description="Track, contact, and leave notes on first-timers and altar call responders."
-        classList="mt-5"
-      />
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Follow-Up & Welfare
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Track, contact, and leave notes on first-timers and altar call
+          responders.
+        </p>
+      </div>
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-gray-900 transition-colors shrink-0"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
-        <Icon name="heroicons:plus" class="mr-2 h-5 w-5" />
+        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         New Follow-Up Record
       </button>
     </div>
@@ -26,13 +29,17 @@
         name="heroicons:arrow-path"
         class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900">Loading records...</h3>
+      <h3
+        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
+      >
+        Loading records...
+      </h3>
     </div>
 
     <!-- The Grid of Cards -->
     <div
       v-else-if="followUps.length > 0"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
       <ActionCard
         v-for="record in followUps"
@@ -45,14 +52,16 @@
     <!-- Empty State -->
     <div
       v-else
-      class="bg-white rounded-2xl border border-gray-100 p-12 text-center"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center"
     >
       <Icon
         name="heroicons:users"
         class="mx-auto h-12 w-12 text-gray-300 mb-4"
       />
-      <h3 class="text-lg font-bold text-gray-900 mb-1">No follow-ups needed</h3>
-      <p class="text-gray-500 text-sm">
+      <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+        No follow-ups needed
+      </h3>
+      <p class="text-gray-500 text-xs md:text-sm">
         Create a new record to start tracking.
       </p>
     </div>
@@ -65,30 +74,32 @@
     >
       <form
         @submit.prevent="submitNewRecord"
-        class="p-1 space-y-5 font-montserrat pb-8"
+        class="space-y-6 pt-2 font-poppins"
       >
         <div>
-          <label class="block text-sm font-bold text-gray-900 mb-1.5"
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Full Name</label
           >
           <input
             v-model="form.fullName"
             type="text"
             required
-            class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-sm transition-colors text-black font-medium"
+            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="e.g. Jane Doe"
           />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5"
+            <label
+              class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >Category</label
             >
             <select
               v-model="form.category"
               required
-              class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-sm transition-colors text-black font-medium appearance-none bg-white"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
             >
               <option value="First Timer">First Timer</option>
               <option value="New Convert">New Convert</option>
@@ -97,20 +108,22 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-900 mb-1.5"
+            <label
+              class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >Phone Number</label
             >
             <input
               v-model="form.phoneNumber"
               type="tel"
-              class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-sm transition-colors text-black font-medium"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               placeholder="080..."
             />
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-gray-900 mb-1.5"
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Link to Event (Optional)</label
           >
           <SearchableSelect
@@ -123,22 +136,23 @@
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-gray-900 mb-1.5"
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Initial Note (Optional)</label
           >
           <textarea
             v-model="form.initialNote"
             rows="3"
-            class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-sm transition-colors text-black font-medium resize-none"
+            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
             placeholder="Context or details about this person..."
           ></textarea>
         </div>
 
-        <div class="pt-4">
+        <div class="pt-6 border-t border-gray-200">
           <button
             type="submit"
             :disabled="isCreating"
-            class="w-full flex justify-center items-center py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-black hover:bg-gray-900 focus:outline-none transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
           >
             <Icon
               v-if="isCreating"

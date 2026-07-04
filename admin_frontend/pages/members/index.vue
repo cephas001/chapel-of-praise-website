@@ -1,11 +1,14 @@
 <!-- pages/members/index.vue -->
 <template>
-  <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
-    <AppPageHeader
-      text="Chapel Workforce"
-      description="View the complete directory of workers and executives grouped by unit."
-      classList="mb-8 mt-5"
-    />
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+    <div class="mb-8">
+      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+        Chapel Workforce
+      </h2>
+      <p class="text-gray-500 text-xs md:text-sm">
+        View the complete directory of workers and executives grouped by unit.
+      </p>
+    </div>
 
     <!-- Loading State -->
     <div v-if="isFetching" class="py-20 text-center">
@@ -13,7 +16,9 @@
         name="heroicons:arrow-path"
         class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900">
+      <h3
+        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
+      >
         Loading workforce directory...
       </h3>
     </div>
@@ -21,30 +26,34 @@
     <!-- Empty State -->
     <div
       v-else-if="members.length === 0"
-      class="bg-white rounded-2xl border border-gray-100 p-12 text-center"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center"
     >
       <Icon
         name="heroicons:user-group"
         class="mx-auto h-12 w-12 text-gray-300 mb-4"
       />
-      <h3 class="text-lg font-bold text-gray-900 mb-1">No members found</h3>
-      <p class="text-gray-500 text-sm">
+      <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+        No members found
+      </h3>
+      <p class="text-gray-500 text-xs md:text-sm">
         Register workers to see them appear in the directory.
       </p>
     </div>
 
     <!-- Grouped Sections -->
-    <div v-else class="space-y-12">
+    <div v-else class="space-y-10">
       <div v-for="(group, unitName) in groupedMembers" :key="unitName">
         <!-- Section Header -->
         <div
-          class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2"
+          class="flex items-center justify-between mb-4 border-b border-gray-200 pb-3"
         >
-          <h2 class="text-xl font-black text-gray-900 uppercase tracking-tight">
+          <h2
+            class="text-sm md:text-base font-bold text-gray-900 uppercase tracking-widest font-jetbrains"
+          >
             {{ unitName }}
           </h2>
           <span
-            class="bg-gray-100 text-gray-600 py-1 px-3 rounded-full text-xs font-bold"
+            class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-600 font-jetbrains uppercase tracking-wider"
           >
             {{ group.length }} Members
           </span>
@@ -52,7 +61,7 @@
 
         <!-- Section Grid -->
         <div
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           <MemberCard
             v-for="member in group"

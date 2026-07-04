@@ -5,12 +5,12 @@
       class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
     >
       <div
-        class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+        class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
         @click="closeModal"
       ></div>
 
       <div
-        class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all p-6 sm:p-8 text-center animate-fade-in-up"
+        class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white p-6 sm:p-8 text-center shadow-2xl transform transition-all animate-fade-in-up"
       >
         <div
           class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 mb-6"
@@ -30,16 +30,16 @@
           </svg>
         </div>
 
-        <h3 class="text-xl font-bold text-gray-900 font-montserrat mb-2">
+        <h3 class="mb-2 text-sm font-bold text-gray-900 font-jetbrains">
           {{ errorTitle }}
         </h3>
-        <p class="text-sm text-gray-500 mb-8 leading-relaxed">
+        <p class="mb-8 text-xs md:text-sm text-gray-500 leading-relaxed">
           {{ errorMessage }}
         </p>
 
         <button
           @click="closeModal"
-          class="w-full inline-flex justify-center rounded-xl border border-transparent bg-gray-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-black focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors"
+          class="w-full inline-flex justify-center rounded-xl border border-transparent bg-black px-4 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors font-jetbrains"
         >
           Understood
         </button>

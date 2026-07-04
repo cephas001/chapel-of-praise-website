@@ -1,88 +1,97 @@
 <template>
   <div
-    class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full font-montserrat"
+    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full font-poppins"
   >
     <div
-      class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50"
+      class="px-6 py-5 border-b border-gray-200 flex items-start justify-between bg-white"
     >
-      <div class="flex items-center gap-3">
-        <div
-          class="h-10 w-10 rounded-full bg-red-50 flex items-center justify-center text-red-600"
-        >
-          <Icon name="heroicons:megaphone" class="h-5 w-5" />
-        </div>
-        <h3 class="text-lg font-bold text-gray-900">Altar Calls</h3>
+      <div>
+        <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          Altar Calls
+        </h3>
+        <p class="text-xs text-gray-500">
+          Manage response categories for this event.
+        </p>
       </div>
 
       <button
         @click="openDrawer"
-        class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors flex items-center gap-1"
+        class="inline-flex items-center px-4 py-2 text-[11px] font-bold text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
       >
-        <Icon name="heroicons:plus" class="h-4 w-4" />
-        Record Call
+        <Icon name="heroicons:plus" class="mr-1.5 h-4 w-4" />
+        Record
       </button>
     </div>
 
     <div
       v-if="isFetching"
-      class="p-8 text-center flex-1 flex flex-col justify-center"
+      class="py-16 flex flex-col items-center justify-center"
     >
       <Icon
         name="heroicons:arrow-path"
-        class="mx-auto h-8 w-8 text-gray-400 animate-spin mb-3"
+        class="h-8 w-8 text-gray-400 animate-spin mb-4"
       />
-      <p class="text-sm text-gray-500 font-medium">Loading altar calls...</p>
+      <p
+        class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
+      >
+        Loading altar calls...
+      </p>
     </div>
 
     <div
       v-else-if="altarCalls.length === 0"
-      class="p-8 text-center flex-1 flex flex-col items-center justify-center group"
+      class="flex-1 flex flex-col justify-center items-center text-center py-14 px-8"
     >
-      <div
-        class="h-12 w-12 rounded-full bg-gray-50 flex items-center justify-center mb-4 text-gray-400 group-hover:bg-red-50 group-hover:text-red-600 transition-colors"
-      >
-        <Icon name="heroicons:sparkles" class="h-6 w-6" />
-      </div>
-      <h4 class="text-base font-bold text-gray-900 mb-1">No Altar Calls</h4>
-      <p class="text-sm text-gray-500 mb-5">
-        No altar calls have been recorded for this event yet.
+      <Icon name="heroicons:megaphone" class="h-10 w-10 text-gray-300 mb-4" />
+      <h4 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
+        No Altar Calls
+      </h4>
+      <p class="text-xs text-gray-500 mb-6 max-w-xs">
+        Start recording altar call responses for this event.
       </p>
       <button
         @click="openDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains"
       >
         <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         Record Call
       </button>
     </div>
 
-    <div v-else class="flex-1 overflow-y-auto">
+    <div
+      v-else
+      class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200"
+    >
       <ul class="divide-y divide-gray-100">
         <li
           v-for="call in altarCalls"
           :key="call.id"
           @click="$emit('select-call', call)"
-          class="p-4 sm:px-6 hover:bg-gray-50/50 transition-colors cursor-pointer group flex items-center justify-between"
-          :class="selectedCall?.id === call.id ? 'bg-gray-50' : ''"
+          class="group cursor-pointer px-6 py-5 hover:bg-gray-50/50 transition-colors"
+          :class="selectedCall?.id === call.id ? 'bg-gray-50/80' : ''"
         >
           <div>
-            <p class="text-sm font-bold text-gray-900 mb-0.5">
+            <p
+              class="text-[11px] font-jetbrains font-bold uppercase tracking-widest text-gray-500 mb-2"
+            >
               {{ call.callType }}
             </p>
-            <p class="text-xs text-gray-500 truncate max-w-[200px]">
+            <p class="text-xs text-gray-500 truncate max-w-[250px] font-medium">
               {{ call.additionalComments || "No additional comments" }}
             </p>
           </div>
 
-          <div class="flex items-center gap-4">
+          <div
+            class="inline-flex items-center justify-between rounded-md bg-white border border-gray-200 px-2.5 py-1.5 mt-3 shadow-sm"
+          >
             <span
-              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-700 border border-red-100"
+              class="text-[10px] font-bold font-jetbrains uppercase tracking-wider text-gray-600"
             >
-              {{ call.totalResponders }}
+              {{ call.totalResponders }} Responders
             </span>
             <Icon
               name="heroicons:chevron-right"
-              class="h-5 w-5 text-gray-400 group-hover:text-red-600 transition-colors"
+              class="ml-2 h-3.5 w-3.5 text-gray-300 group-hover:text-black transition-colors"
             />
           </div>
         </li>

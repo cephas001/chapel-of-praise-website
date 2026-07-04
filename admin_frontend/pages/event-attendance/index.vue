@@ -1,83 +1,100 @@
 <!-- pages/event-attendance/index.vue -->
 <template>
-  <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
-    <AppPageHeader
-      text="Global Event Attendance"
-      description="Record or review unit attendance across all recorded events."
-      classList="mb-8"
-    />
-
-    <!-- Global Selectors -->
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
-      class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm mb-6 flex flex-col sm:flex-row gap-4"
+      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <!-- Event Selector -->
-      <div class="flex-1">
-        <label
-          class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5"
-          >1. Select Event</label
-        >
-        <div class="relative">
-          <select
-            v-model="selectedEventId"
-            class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-xl text-sm transition-colors text-black font-semibold appearance-none bg-white"
-          >
-            <option value="" disabled>Choose Event...</option>
-            <option v-for="event in events" :key="event.id" :value="event.id">
-              {{ formatEventDisplay(event) }}
-            </option>
-          </select>
-          <div
-            class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-          >
-            <Icon name="heroicons:calendar" class="h-4 w-4 text-gray-400" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Unit Selector -->
-      <div class="flex-1">
-        <label
-          class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5"
-          >2. Select Unit</label
-        >
-        <div class="relative">
-          <select
-            v-model="selectedUnit"
-            :disabled="!selectedEventId"
-            class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-xl text-sm transition-colors text-black font-semibold appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400"
-          >
-            <option value="" disabled>Choose Unit...</option>
-            <option v-for="unit in availableUnits" :key="unit" :value="unit">
-              {{ unit }}
-            </option>
-          </select>
-          <div
-            class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-          >
-            <Icon name="heroicons:users" class="h-4 w-4 text-gray-400" />
-          </div>
-        </div>
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Event Unit Attendance
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Record or review unit attendance across all events.
+        </p>
       </div>
     </div>
 
-    <!-- Reusable Component -->
-    <EventAttendanceTable
-      v-if="selectedEventId && selectedUnit"
-      :event-id="selectedEventId"
-      :unit-name="selectedUnit"
-    />
+    <div
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-6"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+          >
+            1. Select Event
+          </label>
+          <div class="relative">
+            <select
+              v-model="selectedEventId"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+            >
+              <option value="" disabled>Choose Event...</option>
+              <option v-for="event in events" :key="event.id" :value="event.id">
+                {{ formatEventDisplay(event) }}
+              </option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+            >
+              <Icon
+                name="heroicons:chevron-down"
+                class="h-4 w-4 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
 
-    <div v-else class="py-20 text-center">
-      <div
-        class="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 text-blue-600 mb-4"
-      >
-        <Icon name="heroicons:clipboard-document-check" class="h-8 w-8" />
+        <div>
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+          >
+            2. Select Unit
+          </label>
+          <div class="relative">
+            <select
+              v-model="selectedUnit"
+              :disabled="!selectedEventId"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <option value="" disabled>Choose Unit...</option>
+              <option v-for="unit in availableUnits" :key="unit" :value="unit">
+                {{ unit }}
+              </option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+            >
+              <Icon
+                name="heroicons:chevron-down"
+                class="h-4 w-4 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <h3 class="text-lg font-bold text-gray-900 mb-1">Awaiting Selection</h3>
-      <p class="text-gray-500 text-sm">
-        Please select an Event and a Unit above to load the attendance roster.
-      </p>
+
+      <div class="border-t border-gray-100 -mx-6 pt-4 px-2">
+        <EventAttendanceTable
+          v-if="selectedEventId && selectedUnit"
+          :event-id="selectedEventId"
+          :unit-name="selectedUnit"
+        />
+
+        <div v-else class="py-14 text-center">
+          <Icon
+            name="heroicons:clipboard-document-check"
+            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+          />
+          <h3 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
+            Awaiting Selection
+          </h3>
+          <p class="text-xs text-gray-500 max-w-xs mx-auto px-3">
+            Please select an Event and a Unit above to load the attendance
+            roster.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <!-- components/ui/SearchableSelect.vue -->
 <template>
-  <div class="relative font-montserrat" ref="selectContainer">
+  <div class="relative" ref="selectContainer">
     <!-- Input Field -->
     <div class="relative">
       <input
@@ -8,7 +8,7 @@
         v-model="searchQuery"
         @focus="openDropdown"
         :placeholder="placeholder"
-        class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-xl sm:text-sm transition-colors text-black font-semibold bg-white cursor-text"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm cursor-text"
       />
       <div
         class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
@@ -20,12 +20,12 @@
     <!-- Dropdown Menu -->
     <div
       v-if="isOpen"
-      class="absolute z-50 mt-1 w-full bg-white border border-gray-100 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+      class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
     >
       <ul class="py-1">
         <li
           v-if="filteredOptions.length === 0"
-          class="px-4 py-3 text-sm text-gray-500 italic text-center"
+          class="px-4 py-3 text-xs md:text-sm text-gray-500 italic text-center"
         >
           No results found.
         </li>
@@ -34,7 +34,7 @@
           v-for="option in filteredOptions"
           :key="option[valueKey]"
           @click="selectOption(option)"
-          class="px-4 py-2.5 text-sm text-gray-900 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+          class="px-4 py-2.5 text-xs md:text-sm text-gray-900 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
           :class="{ 'bg-gray-50 font-bold': modelValue === option[valueKey] }"
         >
           <!-- We use a slot so you can pass custom formatting (like the complex event date format) -->

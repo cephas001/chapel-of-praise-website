@@ -1,14 +1,15 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-5 pb-8 font-montserrat">
+  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
     <div>
-      <label class="block text-sm font-bold text-gray-900 mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Altar Call Category</label
       >
       <div class="relative">
         <select
           v-model="formData.callType"
           required
-          class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+          class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
         >
           <option value="" disabled>Select Call Type</option>
           <option value="SALVATION">SALVATION</option>
@@ -27,7 +28,8 @@
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-gray-900 mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Number of Responders</label
       >
       <input
@@ -35,28 +37,29 @@
         type="number"
         min="1"
         required
-        class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
         placeholder="e.g. 25"
       />
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-gray-900 mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Additional Comments</label
       >
       <textarea
         v-model="formData.additionalComments"
         rows="3"
-        class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium resize-none"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
         placeholder="Any notes regarding this altar call..."
       ></textarea>
     </div>
 
-    <div class="pt-4">
+    <div class="pt-6 border-t border-gray-200">
       <button
         type="submit"
         :disabled="loading"
-        class="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer items-center"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"

@@ -3,14 +3,19 @@
     :to="url"
     @click="emit('click')"
     :class="[
-      'flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-all duration-200 border border-transparent',
+      'flex items-center px-2 py-2 text-xs md:text-sm font-jetbrains transition-colors duration-200 border-l-[3px] group tracking-wide',
       checkActiveRoute(url)
-        ? 'bg-slate-100 text-slate-950 border-slate-200 shadow-sm dark:bg-slate-800 dark:text-white dark:border-slate-700'
-        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800/70 dark:hover:text-white',
+        ? 'border-black text-black font-bold tracking-wider'
+        : 'border-transparent text-black  hover:bg-gray-50 hover:border-gray-200',
     ]"
   >
-    <Icon :name="iconName" class="mr-3 h-5 w-5 opacity-80" />
-
+    <Icon
+      :name="iconName"
+      :class="[
+        'mr-3 h-4 w-4 transition-colors duration-200',
+        checkActiveRoute(url) ? 'text-black' : 'text-gray-800',
+      ]"
+    />
     {{ text }}
   </NuxtLink>
 </template>
@@ -35,8 +40,11 @@ const props = defineProps({
 });
 
 const checkActiveRoute = (url) => {
+  if (route.path == url) {
+    emit("open-tab", true);
+  }
   return route.path == url;
 };
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(["click", "open-tab"]);
 </script>

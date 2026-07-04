@@ -1,22 +1,24 @@
 <!-- components/ui/ActionCard.vue -->
 <template>
   <div
-    class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col h-full font-montserrat hover:shadow-md transition-shadow"
+    class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col h-full font-poppins hover:shadow-md transition-shadow"
   >
     <!-- Top Section: Header & Badges -->
     <div class="flex justify-between items-start mb-3">
       <div>
-        <h3 class="text-lg font-black text-gray-900 line-clamp-1">
+        <h3 class="text-sm md:text-base font-bold text-gray-900 line-clamp-1">
           {{ record.fullName }}
         </h3>
-        <p class="text-xs font-semibold text-gray-500 mt-0.5">
+        <p
+          class="text-[11px] font-semibold text-gray-500 mt-0.5 font-jetbrains uppercase tracking-wider"
+        >
           {{ record.category }}
         </p>
       </div>
 
       <!-- Status Badge -->
       <span
-        class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider"
+        class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider"
         :class="{
           'bg-amber-50 text-amber-700': record.status === 'Pending',
           'bg-blue-50 text-blue-700': record.status === 'Contacted',
@@ -30,7 +32,7 @@
     <!-- Event Link (If applicable) -->
     <div
       v-if="record.eventDetails"
-      class="mb-4 text-xs font-medium text-gray-500 flex items-center"
+      class="mb-4 text-xs font-medium text-gray-500 flex items-center font-jetbrains"
     >
       <Icon
         name="heroicons:calendar"
@@ -76,11 +78,11 @@
     <!-- Threading Section -->
     <div class="flex-1 flex flex-col min-h-[150px]">
       <h4
-        class="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center justify-between"
+        class="text-[11px] font-bold text-gray-900 uppercase tracking-widest mb-3 flex items-center justify-between font-jetbrains"
       >
         Notes Thread
         <span
-          class="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-[10px]"
+          class="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-[10px] font-jetbrains"
           >{{ record.notesThread?.length || 0 }}</span
         >
       </h4>
@@ -100,13 +102,13 @@
           v-else
           v-for="(note, index) in record.notesThread"
           :key="index"
-          class="bg-gray-50 p-3 rounded-xl border border-gray-100/50"
+          class="bg-gray-50 p-3 rounded-xl border border-gray-200"
         >
           <div class="text-xs text-gray-800 font-medium mb-1.5 leading-relaxed">
             {{ note.text }}
           </div>
           <div
-            class="flex justify-between items-center text-[10px] text-gray-400 font-semibold"
+            class="flex justify-between items-center text-[10px] text-gray-400 font-semibold font-jetbrains"
           >
             <span>{{ note.authorName }}</span>
             <span>{{ formatTime(note.timestamp) }}</span>

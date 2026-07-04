@@ -1,282 +1,254 @@
 <template>
   <div
-    class="flex min-h-screen text-slate-900 dark:text-slate-100 bg-slate-50 dark:bg-slate-950"
+    class="flex h-screen w-full bg-[#f9f9f9] text-[#1b1b1b] antialiased overflow-hidden font-poppins relative"
   >
     <div
       v-if="isSidebarOpen"
       @click="isSidebarOpen = false"
-      class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm transition-opacity md:hidden"
+      class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
     ></div>
+
+    <header
+      class="md:hidden flex justify-between items-center px-4 w-full bg-white border-b border-gray-200 absolute top-0 h-14 z-30"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          @click="isSidebarOpen = true"
+          class="p-2 text-black hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center"
+        >
+          <Icon name="heroicons:bars-3" class="h-5 w-5" />
+        </button>
+      </div>
+    </header>
 
     <aside
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200/80 bg-white/90 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90 overflow-hidden pt-7',
+        'fixed md:relative top-0 left-0 z-50 flex flex-col justify-between pt-6 md:pt-8 bg-white border-r border-gray-200 w-72 h-screen flex-shrink-0 transition-transform duration-300 ease-in-out md:translate-x-0',
       ]"
-      style="will-change: transform; contain: layout style paint"
+      style="will-change: transform"
     >
-      <div
-        class="flex items-center px-6 border-b border-slate-200/80 dark:border-slate-800 shrink-0 pb-3"
+      <button
+        @click="isSidebarOpen = false"
+        class="md:hidden absolute top-4 right-4 p-2 text-gray-800 transition-colors"
       >
-        <h1
-          class="text-lg font-bold tracking-tight text-slate-950 dark:text-white"
-        >
-          MENU
-        </h1>
-        <button
-          @click="isSidebarOpen = false"
-          class="ml-auto md:hidden text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white flex items-center"
-        >
-          <Icon name="heroicons:x-mark" class="h-6 w-6" />
-        </button>
+        <Icon name="heroicons:x-mark" class="h-6 w-6" />
+      </button>
+
+      <div class="flex-1 overflow-y-auto overflow-x-hidden px-4 sidebar-scroll">
+        <div class="space-y-6 pb-8 pt-10 pl-2">
+          <div>
+            <AppNavTabLabel v-model="showHelpMenu" label="Dashboard & Help" />
+            <ul v-show="showHelpMenu" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Dashboard"
+                iconName="heroicons:home"
+                url="/dashboard"
+                @click="closeOnMobile"
+                @open-tab="showHelpMenu = true"
+              />
+              <AppNavLink
+                text="Help & Support"
+                iconName="heroicons:question-mark-circle"
+                url="/dashboard/help"
+                @click="closeOnMobile"
+                @open-tab="showHelpMenu = true"
+              />
+            </ul>
+          </div>
+
+          <div>
+            <AppNavTabLabel
+              v-model="showWebManagement"
+              label="Website Management"
+            />
+            <ul v-show="showWebManagement" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Homepage"
+                iconName="heroicons:home"
+                url="/website/homepage"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="About Page"
+                iconName="heroicons:book-open"
+                url="/website/about"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Leadership Page"
+                iconName="heroicons:users"
+                url="/website/leadership"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Ministries Page"
+                iconName="heroicons:building-office"
+                url="/website/ministries"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Giving Page"
+                iconName="heroicons:hand-raised"
+                url="/website/giving"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Contact Page"
+                iconName="heroicons:envelope"
+                url="/website/contact"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Prayer Page"
+                iconName="heroicons:sun"
+                url="/website/prayer"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Counseling Page"
+                iconName="heroicons:chat-bubble-left-ellipsis"
+                url="/website/counseling"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+            </ul>
+          </div>
+
+          <div>
+            <AppNavTabLabel
+              v-model="showEventOversight"
+              label="Event Oversight"
+            />
+            <ul v-show="showEventOversight" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Events"
+                iconName="heroicons:calendar"
+                url="/events"
+                @click="closeOnMobile"
+                @open-tab="showEventOversight = true"
+              />
+              <AppNavLink
+                text="Unit Attendance"
+                iconName="heroicons:clipboard-document-check"
+                url="/event-attendance"
+                @click="closeOnMobile"
+                @open-tab="showEventOversight = true"
+              />
+              <AppNavLink
+                text="Head Count"
+                iconName="heroicons:users"
+                url="/headcounts"
+                @click="closeOnMobile"
+                @open-tab="showEventOversight = true"
+              />
+              <AppNavLink
+                text="Altar Calls"
+                iconName="heroicons:megaphone"
+                url="/altar-calls"
+                @click="closeOnMobile"
+                @open-tab="showEventOversight = true"
+              />
+            </ul>
+          </div>
+
+          <div>
+            <AppNavTabLabel
+              v-model="showUnitManagement"
+              label="Unit Management"
+            />
+            <ul v-show="showUnitManagement" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Unit Members"
+                iconName="heroicons:users"
+                url="/members"
+                @click="closeOnMobile"
+                @open-tab="showUnitManagement = true"
+              />
+              <AppNavLink
+                text="Meeting Attendance"
+                iconName="heroicons:clipboard-document-check"
+                url="/unit-meetings"
+                @click="closeOnMobile"
+                @open-tab="showUnitManagement = true"
+              />
+              <!-- <AppNavLink
+                text="Executives"
+                iconName="heroicons:user-group"
+                url="/executives"
+                @click="closeOnMobile"
+              /> -->
+            </ul>
+          </div>
+
+          <div>
+            <AppNavTabLabel v-model="showEvangelism" label="Evangelism" />
+            <ul v-show="showEvangelism" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Follow-up Records"
+                iconName="heroicons:megaphone"
+                url="/follow-ups"
+                @click="closeOnMobile"
+                @open-tab="showEvangelism = true"
+              />
+            </ul>
+          </div>
+
+          <div>
+            <AppNavTabLabel
+              v-model="showDataSummaries"
+              label="Data Inference"
+            />
+            <ul v-show="showDataSummaries" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Data Visualization"
+                iconName="heroicons:chart-bar"
+                url="/analytics/visuals"
+                @click="closeOnMobile"
+                @open-tab="showDataSummaries = true"
+              />
+              <AppNavLink
+                text="Data Summaries"
+                iconName="heroicons:presentation-chart-bar"
+                url="/analytics/summaries"
+                @click="closeOnMobile"
+                @open-tab="showDataSummaries = true"
+              />
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        <!-- Web Management -->
-        <AppNavTabLabel
-          v-model="showWebManagement"
-          label="Website Management"
-        />
-
-        <div v-show="showWebManagement">
-          <AppNavLink
-            text="Homepage"
-            iconName="heroicons:home"
-            url="/pages/homepage"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="About Page"
-            iconName="heroicons:information-circle"
-            url="/pages/about"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Leadership Page"
-            iconName="heroicons:user-group"
-            url="/pages/leadership"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Ministries Page"
-            iconName="heroicons:heart"
-            url="/pages/ministries"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Giving Page"
-            iconName="heroicons:banknotes"
-            url="/pages/giving"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Contact Page"
-            iconName="heroicons:phone"
-            url="/pages/contact"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Prayer Page"
-            iconName="heroicons:sparkles"
-            url="/pages/prayer"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Counseling Page"
-            iconName="heroicons:chat-bubble-left-right"
-            url="/pages/counseling"
-            @click="isSidebarOpen = false"
-          />
-        </div>
-
-        <!-- Event Oversight -->
-        <AppNavTabLabel v-model="showEventOversight" label="Event Oversight" />
-
-        <div v-show="showEventOversight">
-          <AppNavLink
-            text="Events"
-            iconName="heroicons:calendar"
-            url="/events"
-            @click="isSidebarOpen = false"
-          />
-
-          <AppNavLink
-            text="Event Unit Attendance"
-            iconName="heroicons:clipboard-document-check"
-            url="/event-attendance"
-            @click="isSidebarOpen = false"
-          />
-
-          <AppNavLink
-            text="Event Head Count"
-            iconName="heroicons:users"
-            url="/headcounts"
-            @click="isSidebarOpen = false"
-          />
-
-          <AppNavLink
-            text="Altar Calls"
-            iconName="heroicons:megaphone"
-            url="/altar-calls"
-            @click="isSidebarOpen = false"
-          />
-        </div>
-
-        <!-- Unit Management -->
-        <AppNavTabLabel v-model="showUnitManagement" label="Unit Management" />
-
-        <div v-show="showUnitManagement">
-          <AppNavLink
-            text="Unit Members"
-            iconName="heroicons:users"
-            url="/members"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text=" Meeting Attendance"
-            iconName="heroicons:clipboard-document-check"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text=" Executives"
-            iconName="heroicons:user-group"
-            url="/executives"
-            @click="isSidebarOpen = false"
-          />
-        </div>
-
-        <!-- Evangelism -->
-        <AppNavTabLabel v-model="showEvangelism" label="Evangelism" />
-
-        <div v-show="showEvangelism">
-          <AppNavLink
-            text="Follow-up Records"
-            iconName="heroicons:users"
-            url="/follow-ups"
-            @click="isSidebarOpen = false"
-          />
-        </div>
-
-        <!-- Workers in Training
-        <AppNavTabLabel v-model="showWIT" label="Workers in Training" />
-
-        <div v-show="showWIT">
-          <AppNavLink
-            text="Trainees"
-            iconName="heroicons:academic-cap"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Training Attendance"
-            iconName="heroicons:clipboard-document-check"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-        </div> -->
-
-        <!-- Special Meetings
-        <AppNavTabLabel
-          v-model="showSpecialMeetings"
-          label="Special Meetings"
-        />
-
-        <div v-show="showSpecialMeetings">
-          <AppNavLink
-            text="Special Meetings"
-            iconName="heroicons:calendar"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Meeting Attendance"
-            iconName="heroicons:clipboard-document-check"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-        </div> -->
-
-        <!-- Data Inference -->
-        <AppNavTabLabel v-model="showDataSummaries" label="Data Inference" />
-
-        <div v-show="showDataSummaries">
-          <AppNavLink
-            text="Data Visualization"
-            iconName="heroicons:chart-bar"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-          <AppNavLink
-            text="Data Summaries"
-            iconName="heroicons:presentation-chart-bar"
-            url="/"
-            @click="isSidebarOpen = false"
-          />
-        </div>
-      </nav>
-
       <div
-        class="p-4 border-t border-slate-200/80 dark:border-slate-800 shrink-0 flex flex-col items-center"
+        class="border-t border-gray-100 py-4 mt-auto flex items-center justify-between px-6"
       >
-        <div class="flex items-center pb-4 w-full">
-          <div
-            class="h-9 w-9 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center text-sm font-bold shadow-sm"
-          >
-            {{ userInitial }}
-          </div>
-          <div class="ml-3 truncate">
-            <p
-              class="text-sm font-medium text-slate-900 dark:text-slate-100 truncate"
-            >
-              {{ auth.user?.email || "Administrator" }}
-            </p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
-              System administrator
-            </p>
-          </div>
-        </div>
+        <p class="text-xs text-black truncate">
+          {{ auth.user?.email || "Administrator" }}
+        </p>
 
         <button
           @click="handleLogout"
-          class="w-full flex items-center justify-center px-4 py-2.5 border border-slate-200 shadow-sm text-sm font-semibold rounded-xl text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-950 transition-colors dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-offset-slate-950 dark:focus:ring-white"
+          class="transition-colors duration-200 font-montserrat text-sm font-bold text-black flex items-center"
         >
-          {{ auth.user ? "Logout" : "Login" }}
+          <Icon
+            name="heroicons:arrow-right-on-rectangle"
+            class="h-4 w-4 text-red-600"
+          />
         </button>
-
-        <NuxtLink
-          v-if="auth.user?.role === 'super_admin'"
-          to="/auth/register"
-          @click="isSidebarOpen = false"
-          class="mt-3 text-xs text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 transition-colors font-medium cursor-pointer"
-        >
-          + Add new administrator
-        </NuxtLink>
       </div>
     </aside>
 
-    <main class="flex-1 flex flex-col overflow-hidden w-full relative">
-      <div
-        class="md:hidden flex items-center justify-between bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 px-4 h-16 shrink-0"
-      >
-        <div class="flex items-center">
-          <button
-            @click="isSidebarOpen = true"
-            class="text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white rounded-md mr-3 cursor-pointer flex items-center"
-          >
-            <Icon name="heroicons:bars-3" class="h-6 w-6 font-bold" />
-          </button>
-          <h1
-            class="text-lg font-bold tracking-tight text-slate-950 dark:text-white"
-          >
-            COP Admin
-          </h1>
-        </div>
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-4 md:p-8">
-        <slot />
-      </div>
+    <main
+      class="flex-1 overflow-y-auto bg-[#f9f9f9] p-4 md:p-8 w-full pt-20 md:pt-8 h-screen"
+    >
+      <slot />
     </main>
 
     <ForbiddenModal />
@@ -288,28 +260,55 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useAuthStore } from "~/stores/auth";
+// Assuming you have components like AppNavLink and AppNavTabLabel registered globally or imported here
 
 const auth = useAuthStore();
 
-const showEventOversight = ref(true);
-const showUnitManagement = ref(true);
-const showEvangelism = ref(true);
-const showWIT = ref(true);
-const showSpecialMeetings = ref(true);
-const showDataSummaries = ref(true);
-const showWebManagement = ref(true);
+// Accordion states
+const showEventOversight = ref(false);
+const showUnitManagement = ref(false);
+const showEvangelism = ref(false);
+const showDataSummaries = ref(false);
+const showWebManagement = ref(false);
+const showHelpMenu = ref(false);
 
-// Track if the mobile sidebar is open
 const isSidebarOpen = ref(false);
+
+const closeOnMobile = () => {
+  if (window.innerWidth < 768) {
+    isSidebarOpen.value = false;
+  }
+};
 
 const userInitial = computed(() => {
   if (auth.user?.email) {
     return auth.user.email.charAt(0).toUpperCase();
   }
-  return "R";
+  return "A"; // Default to 'A' for Administrator
 });
 
 function handleLogout() {
   auth.logout();
 }
 </script>
+
+<style>
+/* Thinner, seamless scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+</style>
