@@ -1,84 +1,91 @@
 <template>
-  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
     >
-      <AppPageHeader
-        text="Executive Management"
-        description="Manage the roster of chapel executives across all units."
-        classList="mt-5"
-      />
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Executive Management
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Manage the roster of chapel executives across all units.
+        </p>
+      </div>
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
-        <Icon name="heroicons:user-plus" class="mr-2 h-5 w-5" />
+        <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
         New Executive
       </button>
     </div>
 
     <div
-      class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <div v-if="isFetching" class="p-12 text-center">
+      <div v-if="isFetching" class="py-20 text-center">
         <Icon
           name="heroicons:arrow-path"
           class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
         />
-        <h3 class="text-sm font-bold text-gray-900">Loading Executives...</h3>
+        <h3
+          class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
+        >
+          Loading Executives...
+        </h3>
       </div>
 
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50/50">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Executive
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Chapel Unit
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Academic Details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider"
+                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-50">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr
               v-for="exec in executives"
               :key="exec.id"
-              class="hover:bg-gray-50/50 transition-colors group"
+              class="group cursor-pointer px-6 py-5 hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
                   <div
-                    class="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold"
+                    class="h-10 w-10 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm shrink-0"
                   >
                     {{ exec.name.charAt(0).toUpperCase() }}
                   </div>
                   <div>
-                    <div class="text-sm font-bold text-gray-900">
+                    <div class="text-xs md:text-sm font-bold text-gray-900">
                       {{ exec.name }}
                     </div>
                     <div
-                      class="text-xs text-gray-500 mt-0.5 flex items-center gap-1"
+                      class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide flex items-center gap-1"
                     >
                       <Icon name="heroicons:envelope" class="h-3 w-3" />
                       {{ exec.emailAddress }}
@@ -89,17 +96,19 @@
 
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-700"
+                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-gray-100 text-gray-700"
                 >
                   {{ exec.chapelUnit }}
                 </span>
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-semibold text-gray-900">
+                <div class="text-xs md:text-sm font-bold text-gray-900">
                   {{ exec.schoolDepartment }}
                 </div>
-                <div class="text-xs text-gray-500 mt-0.5 font-medium">
+                <div
+                  class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide"
+                >
                   Level {{ exec.level }} • {{ exec.matricNumber }}
                 </div>
               </td>
@@ -112,7 +121,7 @@
                   class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
                   title="View / Edit Details"
                 >
-                  <Icon name="heroicons:pencil-square" class="h-5 w-5" />
+                  <Icon name="heroicons:pencil-square" class="h-4 w-4" />
                 </button>
               </td>
             </tr>
@@ -122,16 +131,16 @@
 
       <div
         v-if="!isFetching && executives.length === 0"
-        class="p-12 text-center border-t border-gray-100"
+        class="py-20 text-center border-t border-gray-100"
       >
         <Icon
           name="heroicons:users"
           class="mx-auto h-12 w-12 text-gray-300 mb-4"
         />
-        <h3 class="text-lg font-bold text-gray-900 mb-1">
+        <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
           No executives found
         </h3>
-        <p class="text-gray-500 text-sm">
+        <p class="text-gray-500 text-xs md:text-sm">
           Get started by registering a new executive.
         </p>
       </div>

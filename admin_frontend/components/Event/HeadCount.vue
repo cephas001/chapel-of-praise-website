@@ -1,88 +1,96 @@
 <template>
   <div
-    class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full font-montserrat"
+    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full"
   >
     <div
-      class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50"
+      class="px-6 py-5 border-b border-gray-200 flex items-start justify-between"
     >
-      <div class="flex items-center gap-3">
-        <div
-          class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600"
-        >
-          <Icon name="heroicons:users" class="h-5 w-5" />
-        </div>
-        <h3 class="text-lg font-bold text-black">Event Demographics</h3>
+      <div>
+        <h3 class="text-md font-bold font-jetbrains text-black">
+          Event Demographics
+        </h3>
+
+        <p class="text-xs text-gray-500 mt-1">
+          Attendance breakdown for this event.
+        </p>
       </div>
 
       <button
         v-if="headcount && !isFetching"
         @click="openDrawer"
-        class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors flex items-center gap-1"
+        class="inline-flex items-center text-xs font-bold font-jetbrains text-gray-500 hover:text-black transition-colors"
       >
-        <Icon name="heroicons:pencil-square" class="h-4 w-4" />
-        Edit
+        <Icon name="heroicons:pencil-square" class="mr-1.5 h-4 w-4" />
       </button>
     </div>
 
     <div
       v-if="isFetching"
-      class="p-8 text-center flex-1 flex flex-col justify-center"
+      class="py-16 flex flex-col items-center justify-center"
     >
       <Icon
         name="heroicons:arrow-path"
-        class="mx-auto h-8 w-8 text-gray-400 animate-spin mb-3"
+        class="h-8 w-8 text-gray-400 animate-spin mb-4"
       />
-      <p class="text-sm text-gray-500 font-medium">Loading demographics...</p>
+
+      <p class="text-xs font-bold font-jetbrains text-gray-500 animate-pulse">
+        Loading demographics...
+      </p>
     </div>
 
     <div
       v-else-if="!headcount"
-      class="p-8 text-center flex-1 flex flex-col items-center justify-center group"
+      class="flex-1 flex flex-col items-center justify-center py-14 px-8 text-center"
     >
-      <h4 class="text-base font-bold text-gray-900 mb-1">
-        No Head Count Recorded
+      <Icon name="heroicons:users" class="h-10 w-10 text-gray-300 mb-4" />
+
+      <h4 class="text-sm font-bold font-jetbrains text-black mb-2">
+        No Demographics Recorded
       </h4>
-      <p class="text-sm text-gray-500 mb-5">
-        Demographic data has not been logged for this event yet.
+
+      <p class="text-xs text-gray-500 mb-6 max-w-xs">
+        Record attendance demographics for this event.
       </p>
+
       <button
         @click="openDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold font-jetbrains text-white hover:bg-gray-800 transition-colors"
       >
         <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-        Add Head Count
+
+        Record Head Count
       </button>
     </div>
 
     <div v-else class="p-6 flex-1 flex flex-col">
-      <div class="grid grid-cols-2 gap-x-6 gap-y-6 mb-6">
-        <div>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <p
-            class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+            class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500 mb-3"
           >
             Students
           </p>
-          <div class="flex items-center gap-4">
-            <p class="text-sm text-gray-900">
+          <div class="space-y-2">
+            <p class="text-xs text-gray-900">
               <span class="font-bold">{{ headcount.maleStudents }}</span> Male
             </p>
-            <p class="text-sm text-gray-900">
+            <p class="text-xs text-gray-900">
               <span class="font-bold">{{ headcount.femaleStudents }}</span>
               Female
             </p>
           </div>
         </div>
-        <div>
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <p
-            class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1"
+            class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500 mb-3"
           >
             Visitors
           </p>
-          <div class="flex items-center gap-4">
-            <p class="text-sm text-gray-900">
+          <div class="space-y-2">
+            <p class="text-xs text-gray-900">
               <span class="font-bold">{{ headcount.maleVisitors }}</span> Male
             </p>
-            <p class="text-sm text-gray-900">
+            <p class="text-xs text-gray-900">
               <span class="font-bold">{{ headcount.femaleVisitors }}</span>
               Female
             </p>
@@ -91,12 +99,13 @@
       </div>
 
       <div
-        class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between mt-auto"
+        class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center justify-between mt-3"
       >
-        <span class="text-sm font-bold text-gray-700 uppercase tracking-wider"
+        <span
+          class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-700"
           >Total Attendance</span
         >
-        <span class="text-2xl font-black text-black">{{ totalCount }}</span>
+        <span class="text-md font-black text-black">{{ totalCount }}</span>
       </div>
     </div>
 

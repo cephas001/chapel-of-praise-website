@@ -13,6 +13,12 @@ export const useErrorModal = () => {
     isOpen.value = true;
   };
 
+  const showError = (message, title = "Action Not Permitted") => {
+    errorMessage.value = message;
+    errorTitle.value = title;
+    isOpen.value = true;
+  };
+
   const closeModal = () => {
     isOpen.value = false;
     errorMessage.value = "";
@@ -24,5 +30,6 @@ export const useErrorModal = () => {
     errorTitle,
     triggerError,
     closeModal,
+    showError,
   };
 };

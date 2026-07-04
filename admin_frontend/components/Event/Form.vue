@@ -1,26 +1,28 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-5 pb-8 font-montserrat">
+  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
     <div>
-      <label class="block text-sm font-bold text-black mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Event Date</label
       >
       <input
         v-model="formData.eventDate"
         type="date"
         required
-        class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
       />
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-black mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Service Type</label
       >
       <div class="relative">
         <select
           v-model="formData.service"
           required
-          class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+          class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
         >
           <option value="" disabled>Select Service Type</option>
           <option value="PRAYER MEETING">PRAYER MEETING</option>
@@ -38,16 +40,19 @@
     </div>
 
     <template v-if="formData.service === 'SPECIAL PROGRAM'">
-      <div class="p-4 bg-gray-50 rounded-xl space-y-4 border border-gray-100">
+      <div
+        class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 space-y-5"
+      >
         <div>
-          <label class="block text-sm font-bold text-black mb-1.5"
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Special Program Category</label
           >
           <div class="relative">
             <select
               v-model="formData.specialProgram"
               required
-              class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+              class="w-full bg-white border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
             >
               <option value="" disabled>Select Program</option>
               <option value="WORKERS MEETING">WORKERS MEETING</option>
@@ -72,61 +77,65 @@
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-black mb-1.5"
+          <label
+            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Program Day / Label</label
           >
           <input
             v-model="formData.programDay"
             type="text"
             placeholder="e.g. Day 1, Grand Finale"
-            class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
           />
         </div>
       </div>
     </template>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-5">
       <div>
-        <label class="block text-sm font-bold text-black mb-1.5"
+        <label
+          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Start Time</label
         >
         <input
           v-model="formData.startTime"
           type="time"
           required
-          class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm font-jetbrains"
         />
       </div>
       <div>
-        <label class="block text-sm font-bold text-black mb-1.5"
+        <label
+          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >End Time</label
         >
         <input
           v-model="formData.endTime"
           type="time"
           required
-          class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm font-jetbrains"
         />
       </div>
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-black mb-1.5"
+      <label
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Event Description</label
       >
       <textarea
         v-model="formData.eventDescription"
         rows="4"
-        class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium resize-none"
+        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
         placeholder="Add details, notes, or focus points for this event..."
       ></textarea>
     </div>
 
-    <div class="pt-4">
+    <div class="pt-6 border-t border-gray-200">
       <button
         type="submit"
         :disabled="loading"
-        class="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer items-center"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"

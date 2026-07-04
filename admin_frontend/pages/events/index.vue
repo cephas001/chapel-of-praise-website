@@ -1,74 +1,88 @@
 <template>
-  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 font-montserrat">
+  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+    <!-- Page Header -->
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
-      <AppPageHeader
-        text="Event Management"
-        description="Manage all upcoming and past chapel events."
-        classList="mt-5"
-      />
+      <div>
+        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
+          Event Management
+        </h2>
+        <p class="text-gray-500 text-xs md:text-sm">
+          Manage all upcoming and past chapel events.
+        </p>
+      </div>
 
       <button
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-slate-950 dark:bg-white px-5 py-2.5 text-sm font-semibold text-white dark:text-slate-950 shadow-sm hover:bg-slate-800 dark:hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-950 dark:focus:ring-white transition-colors"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
-        <Icon name="heroicons:plus" class="mr-2 h-5 w-5" />
+        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         New Event
       </button>
     </div>
 
+    <!-- Main Container -->
     <div
-      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <div v-if="isFetching" class="p-12 text-center">
+      <!-- Loading State -->
+      <div v-if="isFetching" class="py-20 text-center">
         <Icon
           name="heroicons:arrow-path"
-          class="mx-auto h-8 w-8 text-slate-400 dark:text-slate-600 animate-spin mb-4"
+          class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
         />
-        <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Loading Events...</h3>
+        <h3
+          class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
+        >
+          Loading Events...
+        </h3>
       </div>
 
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
-          <thead class="bg-slate-50 dark:bg-slate-800/50">
+      <!-- Data Table -->
+      <div
+        v-else
+        class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200"
+      >
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50/50">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Event Details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Service Type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-nowrap"
+                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Date & Time
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr
               v-for="event in events"
               :key="event.id"
-              class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
+              class="group cursor-pointer px-6 py-5 hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <div class="text-sm font-bold text-slate-900 dark:text-white font-roboto">
+                  <div class="text-xs md:text-sm font-bold text-gray-900">
                     {{
                       event.service === "SPECIAL PROGRAM"
                         ? event.specialProgram
@@ -76,7 +90,7 @@
                     }}
                   </div>
                   <div
-                    class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-[200px] truncate"
+                    class="text-[11px] font-jetbrains text-gray-500 mt-0.5 max-w-[250px] truncate font-medium"
                   >
                     {{ event.eventDescription || "No description provided" }}
                   </div>
@@ -85,14 +99,14 @@
 
               <td class="px-6 py-4 whitespace-nowrap flex gap-2 flex-col">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold w-fit"
+                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider w-fit"
                   :class="getBadgeColor(event.service)"
                 >
                   {{ event.service }}
                 </span>
                 <div
                   v-if="event.programDay"
-                  class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold w-fit"
+                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider w-fit"
                   :class="getBadgeColor(event.service)"
                 >
                   {{ event.programDay }}
@@ -100,10 +114,12 @@
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-semibold text-gray-900">
+                <div class="text-xs md:text-sm font-bold text-gray-900">
                   {{ formatDate(event.eventDate) }}
                 </div>
-                <div class="text-xs text-gray-500 mt-0.5 font-medium">
+                <div
+                  class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide"
+                >
                   {{ event.startTime }} - {{ event.endTime }}
                 </div>
               </td>
@@ -114,24 +130,24 @@
                 <div class="flex items-center justify-end gap-1">
                   <button
                     @click="navigateTo(`/events/${event.id}`)"
-                    class="text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
                     title="Open Event"
                   >
-                    <Icon name="heroicons:eye" class="h-5 w-5" />
+                    <Icon name="heroicons:eye" class="h-4 w-4" />
                   </button>
                   <button
                     @click="openEditDrawer(event)"
-                    class="text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
                     title="Edit Event"
                   >
-                    <Icon name="heroicons:pencil-square" class="h-5 w-5" />
+                    <Icon name="heroicons:pencil-square" class="h-4 w-4" />
                   </button>
                   <button
                     @click="handleDeleteEvent(event.id)"
-                    class="text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                    class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
                     title="Delete Event"
                   >
-                    <Icon name="heroicons:trash" class="h-5 w-5" />
+                    <Icon name="heroicons:trash" class="h-4 w-4" />
                   </button>
                 </div>
               </td>
@@ -140,18 +156,20 @@
         </table>
       </div>
 
-      <div v-if="!isFetching && events.length === 0" class="p-12 text-center">
+      <!-- Empty State -->
+      <div v-if="!isFetching && events.length === 0" class="py-20 text-center">
         <Icon
           name="heroicons:calendar"
           class="mx-auto h-12 w-12 text-gray-300 mb-4"
         />
-        <h3 class="text-lg font-bold text-gray-900 mb-1">No events found</h3>
-        <p class="text-gray-500 text-sm">
+        <h3 class="text-sm font-bold text-black mb-1">No events found</h3>
+        <p class="text-gray-500 text-xs px-5">
           Get started by creating a new event for the chapel.
         </p>
       </div>
     </div>
 
+    <!-- SlideOver Drawer -->
     <SlideOver
       :is-open="isDrawerOpen"
       :title="selectedEvent ? 'Edit Event' : 'Create New Event'"

@@ -1,6 +1,9 @@
 @import "@fontsource/poppins";
 @import "@fontsource-variable/roboto";
 @import "@fontsource-variable/montserrat";
+@import "@fontsource/jetbrains-mono";
+@import "@fontsource/literata";
+@import "@fontsource/lora";
 @import "tailwindcss";
 @import "@nuxt/ui";
 
@@ -34,4 +37,7 @@ body {
   --font-montserrat: "Montserrat", sans-serif;
   --font-roboto: "Roboto", sans-serif;
   --font-poppins: "Poppins", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+  --font-literata: "Literata", sans-serif;
+  --font-lora: "Lora", serif;
 }

@@ -7,6 +7,10 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  routeRules: {
+    "/": { redirect: "/dashboard" },
+  },
+
   colorMode: {
     preference: "system",
     fallback: "light",
