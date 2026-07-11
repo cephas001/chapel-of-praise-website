@@ -43,12 +43,12 @@
 
     <div
       v-else
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 items-start"
     >
       <div
         v-for="(section, index) in dashboardSections"
         :key="section.id"
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full transition-all duration-200"
+        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all duration-200"
       >
         <div
           class="bg-gray-50/50 border-b border-gray-100 px-5 py-4 flex justify-between items-center"
@@ -57,52 +57,76 @@
             {{ section.title }}
           </h3>
 
-          <div v-if="isSuperAdmin" class="relative z-50">
+          <div class="flex items-center gap-1">
+            <!-- Collapse Button (Visible to everyone) -->
             <button
-              @click="toggleDropdown('category_' + section.id)"
+              @click="toggleCollapse(section.id)"
               class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
+              :title="
+                collapsedSections[section.id]
+                  ? 'Expand section'
+                  : 'Collapse section'
+              "
             >
-              <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
+              <Icon
+                name="heroicons:chevron-down"
+                class="h-5 w-5 transition-transform duration-200"
+                :class="{ 'rotate-180': !collapsedSections[section.id] }"
+              />
             </button>
 
-            <!-- Native Vue Dropdown Menu -->
-            <div
-              v-if="activeDropdown === 'category_' + section.id"
-              class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
-            >
+            <!-- Super Admin Dropdown -->
+            <div v-if="isSuperAdmin" class="relative z-50">
               <button
-                @click="
-                  openEditCategoryDrawer(section);
-                  closeDropdown();
-                "
-                class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+                @click="toggleDropdown('category_' + section.id)"
+                class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
               >
-                Edit Category
+                <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
               </button>
-              <button
-                @click="
-                  openAddLinkDrawer(section.id);
-                  closeDropdown();
-                "
-                class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+
+              <!-- Native Vue Dropdown Menu -->
+              <div
+                v-if="activeDropdown === 'category_' + section.id"
+                class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
               >
-                Add Link
-              </button>
-              <div class="my-1 border-t border-gray-100"></div>
-              <button
-                @click="
-                  handleDeleteCategory(section.id);
-                  closeDropdown();
-                "
-                class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
-              >
-                Delete Category
-              </button>
+                <button
+                  @click="
+                    openEditCategoryDrawer(section);
+                    closeDropdown();
+                  "
+                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+                >
+                  Edit Category
+                </button>
+                <button
+                  @click="
+                    openAddLinkDrawer(section.id);
+                    closeDropdown();
+                  "
+                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+                >
+                  Add Link
+                </button>
+                <div class="my-1 border-t border-gray-100"></div>
+                <button
+                  @click="
+                    handleDeleteCategory(section.id);
+                    closeDropdown();
+                  "
+                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
+                >
+                  Delete Category
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="p-3 flex-1 flex flex-col gap-1">
+        <!-- Links Container (Hidden when collapsed) -->
+        <div
+          v-show="!collapsedSections[section.id]"
+          class="p-3 flex-1 flex flex-col gap-1"
+        >
           <div
             v-if="!section.links || section.links.length === 0"
             class="text-center py-5"
@@ -336,6 +360,13 @@ const editingCategoryId = ref(null);
 const editingLinkId = ref(null);
 const editingSectionIdForLink = ref(null);
 
+// --- COLLAPSE STATE ---
+const collapsedSections = ref({});
+
+const toggleCollapse = (sectionId) => {
+  collapsedSections.value[sectionId] = !collapsedSections.value[sectionId];
+};
+
 // --- DROPDOWN STATE ---
 // Tracks which specific menu is currently open (e.g., 'category_123' or 'link_456')
 const activeDropdown = ref(null);
@@ -442,7 +473,7 @@ const submitNewCategory = async () => {
       );
       toast.success("Category updated successfully.");
     } else {
-      // CREATE CATEGORY (Your existing logic)
+      // CREATE CATEGORY
       await $fetch(`${config.public.apiBase}/dashboard-links/category`, {
         method: "POST",
         body: newCategoryData.value,
@@ -524,7 +555,7 @@ const submitNewLink = async () => {
       );
       toast.success("Link updated successfully");
     } else {
-      // CREATE LINK (Your existing logic)
+      // CREATE LINK
       await $fetch(`${config.public.apiBase}/dashboard-links/link`, {
         method: "POST",
         body: payload,
