@@ -1,5 +1,12 @@
 <template>
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+    <!-- INVISIBLE OVERLAY: Closes dropdowns when clicking outside -->
+    <div
+      v-if="activeDropdown"
+      @click="closeDropdown"
+      class="fixed inset-0 z-40"
+    ></div>
+
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
@@ -49,20 +56,56 @@
           <h3 class="text-sm font-jetbrains font-bold text-black">
             {{ section.title }}
           </h3>
-          <button
-            v-if="isSuperAdmin"
-            @click="openAddLinkDrawer(section.id)"
-            class="text-gray-400 hover:text-black transition-colors p-1 rounded-md hover:bg-gray-200/50"
-            title="Add Link"
-          >
-            <Icon name="heroicons:plus" class="h-4 w-4" />
-          </button>
+
+          <div v-if="isSuperAdmin" class="relative z-50">
+            <button
+              @click="toggleDropdown('category_' + section.id)"
+              class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
+            >
+              <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
+            </button>
+
+            <!-- Native Vue Dropdown Menu -->
+            <div
+              v-if="activeDropdown === 'category_' + section.id"
+              class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
+            >
+              <button
+                @click="
+                  openEditCategoryDrawer(section);
+                  closeDropdown();
+                "
+                class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+              >
+                Edit Category
+              </button>
+              <button
+                @click="
+                  openAddLinkDrawer(section.id);
+                  closeDropdown();
+                "
+                class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+              >
+                Add Link
+              </button>
+              <div class="my-1 border-t border-gray-100"></div>
+              <button
+                @click="
+                  handleDeleteCategory(section.id);
+                  closeDropdown();
+                "
+                class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
+              >
+                Delete Category
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="p-3 flex-1 flex flex-col gap-1">
           <div
             v-if="!section.links || section.links.length === 0"
-            class="text-center py-10"
+            class="text-center py-5"
           >
             <p
               class="text-[11px] font-jetbrains font-bold text-gray-400 uppercase tracking-widest"
@@ -84,19 +127,46 @@
             >
               {{ link.label }}
             </span>
-            <div class="flex items-center gap-3 shrink-0">
+
+            <div
+              v-if="isSuperAdmin"
+              class="shrink-0 relative z-50"
+              @click.prevent.stop
+            >
               <button
-                v-if="isSuperAdmin"
-                @click.prevent="handleDeleteLink(section.id, link.id)"
-                class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1 rounded hover:bg-red-50"
-                title="Remove Link"
+                @click="toggleDropdown('link_' + link.id)"
+                class="p-1 rounded hover:bg-gray-200 transition-colors"
               >
-                <Icon name="heroicons:trash" class="h-4 w-4" />
+                <Icon
+                  name="heroicons:ellipsis-vertical"
+                  class="h-4 w-4 text-gray-400 group-hover:text-black"
+                />
               </button>
-              <Icon
-                name="heroicons:arrow-top-right-on-square"
-                class="h-4 w-4 text-gray-400 group-hover:text-black transition-colors"
-              />
+
+              <!-- Native Vue Dropdown Menu -->
+              <div
+                v-if="activeDropdown === 'link_' + link.id"
+                class="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-lg shadow-xl p-1 flex flex-col"
+              >
+                <button
+                  @click="
+                    openEditLinkDrawer(section.id, link);
+                    closeDropdown();
+                  "
+                  class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                >
+                  Edit
+                </button>
+                <button
+                  @click="
+                    handleDeleteLink(section.id, link.id);
+                    closeDropdown();
+                  "
+                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </a>
         </div>
@@ -105,7 +175,7 @@
 
     <SlideOver
       :is-open="isDrawerOpen"
-      title="Add New Link"
+      :title="editingLinkId ? 'Edit Link' : 'Add New Link'"
       @close="closeDrawer"
     >
       <form @submit.prevent="submitNewLink" class="p-1 font-poppins space-y-6">
@@ -182,7 +252,13 @@
               name="heroicons:arrow-path"
               class="mr-2 h-4 w-4 animate-spin"
             />
-            {{ isSubmitting ? "Saving..." : "Save Link" }}
+            {{
+              isSubmitting
+                ? "Saving..."
+                : editingLinkId
+                  ? "Update Link"
+                  : "Save Link"
+            }}
           </button>
         </div>
       </form>
@@ -190,7 +266,7 @@
 
     <SlideOver
       :is-open="isCategoryDrawerOpen"
-      title="Add New Category"
+      :title="editingCategoryId ? 'Edit Category' : 'Add New Category'"
       @close="closeCategoryDrawer"
     >
       <form
@@ -223,7 +299,13 @@
               name="heroicons:arrow-path"
               class="mr-2 h-4 w-4 animate-spin"
             />
-            {{ isSubmittingCategory ? "Saving..." : "Create Category" }}
+            {{
+              isSubmittingCategory
+                ? "Saving..."
+                : editingCategoryId
+                  ? "Update Category"
+                  : "Create Category"
+            }}
           </button>
         </div>
       </form>
@@ -234,14 +316,11 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "@/composables/useAlertModal";
-import { useErrorModal } from "@/composables/useErrorModal";
 import { useAuthStore } from "@/stores/auth";
 
 const config = useRuntimeConfig();
-const alertModal = useAlertModal();
-const errorModal = useErrorModal();
 const authStore = useAuthStore();
+const toast = useAppToast();
 
 // Permission check
 const isSuperAdmin = computed(() => authStore.user?.role === "super_admin");
@@ -251,6 +330,23 @@ const isSubmitting = ref(false);
 const isDrawerOpen = ref(false);
 const isCategoryDrawerOpen = ref(false);
 const isSubmittingCategory = ref(false);
+
+// Add ID trackers for edit modes
+const editingCategoryId = ref(null);
+const editingLinkId = ref(null);
+const editingSectionIdForLink = ref(null);
+
+// --- DROPDOWN STATE ---
+// Tracks which specific menu is currently open (e.g., 'category_123' or 'link_456')
+const activeDropdown = ref(null);
+
+const toggleDropdown = (id) => {
+  activeDropdown.value = activeDropdown.value === id ? null : id;
+};
+
+const closeDropdown = () => {
+  activeDropdown.value = null;
+};
 
 const newLinkData = ref({
   label: "",
@@ -276,56 +372,14 @@ const fetchLinks = async () => {
     }
   } catch (error) {
     console.error("Failed to fetch quick links:", error);
-    errorModal.show({
-      title: "Fetch Error",
-      message: "Failed to load the dashboard links. Please try again.",
-    });
+    toast.error("Failed to fetch quick links");
   } finally {
     isFetching.value = false;
   }
 };
 
-// Drawer controls
-const openAddLinkDrawer = (sectionId) => {
-  newLinkData.value = { label: "", url: "", sectionId };
-  isDrawerOpen.value = true;
-};
-
 const closeDrawer = () => {
   isDrawerOpen.value = false;
-};
-
-// Submit new link
-const submitNewLink = async () => {
-  isSubmitting.value = true;
-  try {
-    const payload = {
-      categoryId: newLinkData.value.sectionId, // backend expects categoryId
-      label: newLinkData.value.label,
-      url: newLinkData.value.url,
-    };
-
-    await $fetch(`${config.public.apiBase}/dashboard-links/link`, {
-      method: "POST",
-      body: payload,
-    });
-
-    alertModal.show({
-      title: "Success",
-      message: "New link added successfully.",
-      type: "success",
-    });
-    closeDrawer();
-    await fetchLinks();
-  } catch (error) {
-    console.error("Failed to add link:", error);
-    errorModal.show({
-      title: "Save Error",
-      message: "There was an issue saving the new link.",
-    });
-  } finally {
-    isSubmitting.value = false;
-  }
 };
 
 // Delete link
@@ -351,47 +405,140 @@ const handleDeleteLink = async (sectionId, linkId) => {
     }
   } catch (error) {
     console.error("Failed to delete link:", error);
-    errorModal.show({
-      title: "Delete Error",
-      message: "Could not remove the link at this time.",
-    });
+    toast.error("Failed to delete link");
   }
-};
-
-// Category drawer controls
-const openAddCategoryDrawer = () => {
-  newCategoryData.value = { title: "" };
-  isCategoryDrawerOpen.value = true;
 };
 
 const closeCategoryDrawer = () => {
   isCategoryDrawerOpen.value = false;
 };
 
-// Submit new category
+// Open Edit Mode
+const openEditCategoryDrawer = (category) => {
+  editingCategoryId.value = category.id;
+  newCategoryData.value = { title: category.title };
+  isCategoryDrawerOpen.value = true;
+};
+
+// Modify your existing openAddCategoryDrawer to reset the ID
+const openAddCategoryDrawer = () => {
+  editingCategoryId.value = null;
+  newCategoryData.value = { title: "" };
+  isCategoryDrawerOpen.value = true;
+};
+
+// Modify your existing submitNewCategory to handle both POST and PUT
 const submitNewCategory = async () => {
   isSubmittingCategory.value = true;
   try {
-    await $fetch(`${config.public.apiBase}/dashboard-links/category`, {
-      method: "POST",
-      body: newCategoryData.value,
-    });
+    if (editingCategoryId.value) {
+      // UPDATE CATEGORY
+      await $fetch(
+        `${config.public.apiBase}/dashboard-links/category/${editingCategoryId.value}`,
+        {
+          method: "PUT",
+          body: newCategoryData.value,
+        },
+      );
+      toast.success("Category updated successfully.");
+    } else {
+      // CREATE CATEGORY (Your existing logic)
+      await $fetch(`${config.public.apiBase}/dashboard-links/category`, {
+        method: "POST",
+        body: newCategoryData.value,
+      });
+      toast.success("New category created successfully.");
+    }
 
-    alertModal.show({
-      title: "Success",
-      message: "New category created successfully.",
-      type: "success",
-    });
     closeCategoryDrawer();
     await fetchLinks();
   } catch (error) {
-    console.error("Failed to add category:", error);
-    errorModal.show({
-      title: "Save Error",
-      message: "There was an issue creating the category.",
-    });
+    console.error("Failed to save category:", error);
+    toast.error("Failed to save category");
   } finally {
     isSubmittingCategory.value = false;
+  }
+};
+
+const handleDeleteCategory = async (categoryId) => {
+  if (
+    !confirm(
+      "Are you sure you want to delete this entire category and all its links?",
+    )
+  )
+    return;
+
+  try {
+    await $fetch(
+      `${config.public.apiBase}/dashboard-links/category/${categoryId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    // Optimistic UI update
+    dashboardSections.value = dashboardSections.value.filter(
+      (s) => s.id !== categoryId,
+    );
+    toast.success("Category deleted successfully.");
+  } catch (error) {
+    console.error("Failed to delete category:", error);
+    toast.error("Failed to delete category");
+  }
+};
+
+// Open Edit Mode
+const openEditLinkDrawer = (sectionId, link) => {
+  editingLinkId.value = link.id;
+  editingSectionIdForLink.value = sectionId;
+  newLinkData.value = { label: link.label, url: link.url, sectionId };
+  isDrawerOpen.value = true;
+};
+
+// Modify your existing openAddLinkDrawer to reset the ID
+const openAddLinkDrawer = (sectionId) => {
+  editingLinkId.value = null;
+  editingSectionIdForLink.value = null;
+  newLinkData.value = { label: "", url: "", sectionId };
+  isDrawerOpen.value = true;
+};
+
+// Modify your existing submitNewLink to handle both POST and PUT
+const submitNewLink = async () => {
+  isSubmitting.value = true;
+  try {
+    const payload = {
+      categoryId: newLinkData.value.sectionId,
+      label: newLinkData.value.label,
+      url: newLinkData.value.url,
+    };
+
+    if (editingLinkId.value) {
+      // UPDATE LINK
+      await $fetch(
+        `${config.public.apiBase}/dashboard-links/${editingSectionIdForLink.value}/${editingLinkId.value}`,
+        {
+          method: "PUT",
+          body: payload,
+        },
+      );
+      toast.success("Link updated successfully");
+    } else {
+      // CREATE LINK (Your existing logic)
+      await $fetch(`${config.public.apiBase}/dashboard-links/link`, {
+        method: "POST",
+        body: payload,
+      });
+      toast.success("New link added successfully");
+    }
+
+    closeDrawer();
+    await fetchLinks();
+  } catch (error) {
+    console.error("Failed to save link:", error);
+    toast.error("Failed to save link");
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

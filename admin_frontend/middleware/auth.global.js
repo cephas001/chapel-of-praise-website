@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const token = useCookie("admin_token");
 
   // 2. Define your public routes (pages anyone can visit)
-  const publicRoutes = ["/auth/login", "/"]; // Add any other public paths here
+  const publicRoutes = ["/auth/login"]; // Add any other public paths here
 
   // 3. The Bouncer Logic: No token + trying to access a private page
   if (!token.value && !publicRoutes.includes(to.path)) {

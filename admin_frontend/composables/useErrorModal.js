@@ -1,4 +1,6 @@
 // composables/useErrorModal.js
+import { useState } from "#app";
+
 export const useErrorModal = () => {
   const isOpen = useState("error_modal_open", () => false);
   const errorMessage = useState("error_modal_message", () => "");

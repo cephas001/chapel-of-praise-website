@@ -207,14 +207,13 @@
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 // Extracted both formatters to keep it DRY!
 import { formatEventDisplay, formatDate } from "~/utils/formatters";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast();
 
 const altarCalls = ref([]);
 const events = ref([]);
@@ -233,9 +232,8 @@ const fetchData = async () => {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },
     );
-    altarCalls.value = callsRes;
 
-    console.log(altarCalls.value);
+    altarCalls.value = callsRes;
 
     // 2. Fetch Events to populate the searchable dropdown
     const evRes = await $fetch(`${config.public.apiBase}/events`, {
@@ -247,7 +245,7 @@ const fetchData = async () => {
       .sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
   } catch (error) {
     console.error("Fetch error:", error);
-    showAlert("Error", "Could not load global altar call data.", "error");
+    toast.error("Could not load global altar call data.");
   } finally {
     isFetching.value = false;
   }
@@ -274,11 +272,11 @@ const handleAltarCallSubmit = async (formData) => {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
-    showAlert("Success", "Altar call recorded successfully.", "success");
+    toast.success("Altar call recorded successfully.");
     closeDrawer();
     fetchData(); // Refresh the table automatically
   } catch (error) {
-    showAlert("Error", "Could not save the altar call record.", "error");
+    toast.error("Could not save the altar call record.");
   } finally {
     isSubmitting.value = false;
   }

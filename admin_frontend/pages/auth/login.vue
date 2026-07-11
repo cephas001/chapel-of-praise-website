@@ -111,7 +111,7 @@
 import { ref, reactive } from "vue";
 import { useAuthStore } from "~/stores/auth";
 import { useRuntimeConfig, navigateTo, useNuxtApp } from "#app";
-import { signInWithEmailAndPassword } from "firebase/auth"; // ADD THIS
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 definePageMeta({ layout: false });
 
@@ -121,6 +121,8 @@ const { $auth } = useNuxtApp(); // Get Firebase Auth from the plugin
 const loading = ref(false);
 const errorMessage = ref("");
 const showPassword = ref(false);
+
+const toast = useAppToast();
 
 const formData = reactive({
   email: "",
@@ -152,6 +154,8 @@ async function handleLogin() {
 
     // 4. Save to Pinia and Cookies (Just like before!)
     authStore.setAuth(response.user, firebaseToken);
+
+    toast.success("Login successful!");
     navigateTo("/dashboard");
   } catch (error) {
     // Map Firebase error codes to user-friendly messages

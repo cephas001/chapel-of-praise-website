@@ -11,13 +11,20 @@
     <header
       class="md:hidden flex justify-between items-center px-4 w-full bg-white border-b border-gray-200 absolute top-0 h-14 z-30"
     >
-      <div class="flex items-center gap-3">
+      <div class="flex items-center justify-between w-full gap-3">
         <button
           @click="isSidebarOpen = true"
           class="p-2 text-black hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center"
         >
           <Icon name="heroicons:bars-3" class="h-5 w-5" />
         </button>
+        <div class="pr-2">
+          <img
+            src="/coplogo.jpg"
+            alt="Logo"
+            class="h-8 w-8 md:hidden rounded-md"
+          />
+        </div>
       </div>
     </header>
 
@@ -30,13 +37,20 @@
     >
       <button
         @click="isSidebarOpen = false"
-        class="md:hidden absolute top-4 right-4 p-2 text-gray-800 transition-colors"
+        class="md:hidden absolute top-4 right-4 pr-2 py-2 text-gray-800 transition-colors flex items-center justify-between w-full pl-10"
       >
+        <div class="">
+          <img
+            src="/coplogo.jpg"
+            alt="Logo"
+            class="h-8 w-8 md:hidden rounded-md"
+          />
+        </div>
         <Icon name="heroicons:x-mark" class="h-6 w-6" />
       </button>
 
       <div class="flex-1 overflow-y-auto overflow-x-hidden px-4 sidebar-scroll">
-        <div class="space-y-6 pb-8 pt-10 pl-2">
+        <div class="space-y-6 pb-8 pt-12 pl-2">
           <div>
             <AppNavTabLabel v-model="showHelpMenu" label="Dashboard & Help" />
             <ul v-show="showHelpMenu" class="space-y-1 mt-2">
@@ -254,6 +268,7 @@
     <ForbiddenModal />
     <AlertModal />
     <ConfirmModal />
+    <ToastContainer />
   </div>
 </template>
 

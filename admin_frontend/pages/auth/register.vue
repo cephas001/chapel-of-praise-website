@@ -208,27 +208,6 @@
             </div>
           </div>
         </div>
-
-        <div v-if="successMessage" class="rounded-md bg-green-50 p-3 mt-3">
-          <div class="flex">
-            <div class="shrink-0">
-              <svg
-                class="h-5 w-5 text-green-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm text-green-800">{{ successMessage }}</h3>
-            </div>
-          </div>
-        </div>
       </form>
     </div>
   </div>
@@ -239,6 +218,7 @@ import { ref } from "vue";
 import { useRuntimeConfig } from "#app";
 
 const config = useRuntimeConfig();
+const toast = useAppToast();
 
 const formData = ref({
   name: "",
@@ -250,13 +230,11 @@ const formData = ref({
 
 const loading = ref(false);
 const errorMessage = ref("");
-const successMessage = ref("");
 const showPassword = ref(false);
 
 const handleRegister = async () => {
   loading.value = true;
   errorMessage.value = "";
-  successMessage.value = "";
 
   formData.value.type = formData.value.type.toLowerCase(); // Ensure type is lowercase
   formData.value.role = formData.value.role.toLowerCase(); // Ensure role is lowercase
@@ -267,7 +245,7 @@ const handleRegister = async () => {
       body: formData.value,
     });
 
-    successMessage.value = "Administrator successfully registered!";
+    toast.success("Administrator successfully registered!");
 
     // Clear the form
     formData.value = { name: "", email: "", password: "", type: "", role: "" };
