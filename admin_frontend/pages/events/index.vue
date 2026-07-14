@@ -187,12 +187,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
 import { useConfirm } from "~/composables/useConfirm";
 
 const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
 const confirm = useConfirm();
+const toast = useAppToast();
 
 const events = ref([]);
 const isFetching = ref(true);
@@ -208,7 +207,8 @@ const fetchEvents = async () => {
     const response = await $fetch(`${config.public.apiBase}/events`);
     events.value = response;
   } catch (error) {
-    showAlert("Failed to retrieve events from the server", "error");
+    console.log("Error fetching events:", error);
+    toast.error("Could not fetch events. Please try again.");
   } finally {
     isFetching.value = false;
   }
@@ -267,14 +267,17 @@ const handleFormSubmit = async (formData) => {
       events.value.unshift(response.event);
     }
 
-    showAlert("Event saved successfully", "success");
+    toast.success(
+      selectedEvent.value
+        ? "Event updated successfully!"
+        : "Event created successfully!",
+    );
     closeDrawer();
   } catch (error) {
     console.error("Submission error:", error);
-    showAlert(
-      "Action Failed",
-      error.data?.error || "Could not save the event.",
-      "error",
+    toast.error(
+      error.data?.error ||
+        "Could not submit the form. Please check your input and try again.",
     );
   } finally {
     isSubmitting.value = false;
@@ -303,14 +306,10 @@ const handleDeleteEvent = async (id) => {
 
     // Remove event from local state
     events.value = events.value.filter((e) => e.id !== id);
-    showAlert("Event deleted successfully", "success");
+    toast.success("Event deleted successfully");
   } catch (error) {
     console.error("Delete error:", error);
-    showAlert(
-      "Action Failed",
-      error.data?.error || "Could not delete the event.",
-      "error",
-    );
+    toast.error(error.data?.error || "Could not delete the event.");
   }
 };
 

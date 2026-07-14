@@ -9,10 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
-// Get homepage settings
+// Get all homepage sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("homepage");
+    const snapshot = await db.collection("homepage").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting homepage sections:", error);
+    res.status(500).json({ message: "Failed to fetch homepage sections" });
+  }
+});
+
+// Get a specific homepage section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("homepage").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -21,16 +39,20 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting homepage settings:", error);
-    res.status(500).json({ message: "Failed to fetch homepage settings" });
+    console.error(
+      `Error getting homepage section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch homepage section" });
   }
 });
 
-// Create or update homepage settings
-router.put("/", async (req, res) => {
+// Create or update a specific homepage section
+router.put("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("homepage");
+    const docRef = db.collection("homepage").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -51,16 +73,20 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating homepage settings:", error);
-    res.status(500).json({ message: "Failed to update homepage settings" });
+    console.error(
+      `Error updating homepage section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update homepage section" });
   }
 });
 
-// Allow POST to behave the same as PUT
-router.post("/", async (req, res) => {
+// Allow POST to behave the same as PUT for a specific section
+router.post("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("homepage");
+    const docRef = db.collection("homepage").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -81,8 +107,11 @@ router.post("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating homepage settings:", error);
-    res.status(500).json({ message: "Failed to update homepage settings" });
+    console.error(
+      `Error updating homepage section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update homepage section" });
   }
 });
 

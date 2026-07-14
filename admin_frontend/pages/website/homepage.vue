@@ -50,7 +50,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Shining the Gospel light"
@@ -62,7 +62,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Our Church"
@@ -74,7 +74,7 @@
                 >Background Video URL</label
               >
               <input
-                v-model="formData.heroVideo"
+                v-model="heroSection.heroVideoUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://example.com/video.mp4"
@@ -89,7 +89,7 @@
                 >Primary CTA Label</label
               >
               <input
-                v-model="formData.heroCta1Label"
+                v-model="heroSection.heroCta1Label"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Join Us"
@@ -101,7 +101,7 @@
                 >Primary CTA Link</label
               >
               <input
-                v-model="formData.heroCta1Link"
+                v-model="heroSection.heroCta1Link"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="/about"
@@ -113,7 +113,7 @@
                 >Secondary CTA Label</label
               >
               <input
-                v-model="formData.heroCta2Label"
+                v-model="heroSection.heroCta2Label"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Watch Live"
@@ -125,7 +125,7 @@
                 >Secondary CTA Link</label
               >
               <input
-                v-model="formData.heroCta2Link"
+                v-model="heroSection.heroCta2Link"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="/live"
@@ -137,86 +137,119 @@
 
       <!-- Section 2: Action Cards -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-gray-200"
       >
+        <!-- Left Column: Header Info -->
         <div class="md:col-span-1">
           <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
             Action Cards
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
-            Manage the three featured action cards below the hero.
+            Manage the featured action cards below the hero.
           </p>
         </div>
+
+        <!-- Right Column: Form Container (Needs md:col-span-2) -->
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border shadow-sm border-gray-200 flex flex-col"
         >
-          <div
-            v-for="(card, index) in formData.actionCards"
-            :key="'card' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
-          >
-            <span
-              class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
-              >Card {{ index + 1 }}</span
+          <!-- Cards Wrapper -->
+          <div class="p-6 space-y-6">
+            <div
+              v-for="(card, index) in actionCardsSection.actionCards"
+              :key="'card' + index"
+              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
             >
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Image URL</label
-                >
-                <input
-                  v-model="card.image"
-                  type="url"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                  placeholder="https://..."
+              <span
+                class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center justify-center gap-2"
+              >
+                Card {{ index + 1 }}
+
+                <Icon
+                  name="heroicons:minus-circle"
+                  class="h-4 w-4 text-red-500"
+                  @click="removeActionCard(index)"
                 />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Kicker</label
-                >
-                <input
-                  v-model="card.kicker"
-                  type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Title</label
-                >
-                <input
-                  v-model="card.title"
-                  type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >CTA Label</label
-                >
-                <input
-                  v-model="card.ctaLabel"
-                  type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >CTA Link</label
-                >
-                <input
-                  v-model="card.ctaLink"
-                  type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
+              </span>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Image URL
+                  </label>
+                  <input
+                    v-model="card.image"
+                    type="url"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Kicker
+                  </label>
+                  <input
+                    v-model="card.kicker"
+                    type="text"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Title
+                  </label>
+                  <input
+                    v-model="card.title"
+                    type="text"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    CTA Label
+                  </label>
+                  <input
+                    v-model="card.ctaLabel"
+                    type="text"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    CTA Link
+                  </label>
+                  <input
+                    v-model="card.ctaLink"
+                    type="text"
+                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
               </div>
             </div>
+          </div>
+
+          <!-- Save Button Container (Changed to natural flow layout) -->
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <button
+              class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+              @click.prevent="addActionCard"
+            >
+              Add Card
+            </button>
           </div>
         </div>
       </div>
@@ -243,7 +276,7 @@
                 >Welcome Badge</label
               >
               <input
-                v-model="formData.welcomeBadge"
+                v-model="welcomeSection.welcomeBadge"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -254,7 +287,7 @@
                 >Welcome Headline</label
               >
               <input
-                v-model="formData.welcomeHeadline"
+                v-model="welcomeSection.welcomeHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -265,7 +298,7 @@
                 >Welcome Description</label
               >
               <textarea
-                v-model="formData.welcomeDescription"
+                v-model="welcomeSection.welcomeDescription"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -296,7 +329,7 @@
                 >Background Image URL</label
               >
               <input
-                v-model="formData.championImage"
+                v-model="championsSection.championImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -308,7 +341,7 @@
                 >Champion Headline</label
               >
               <input
-                v-model="formData.championHeadline"
+                v-model="championsSection.championHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -319,7 +352,7 @@
                 >Champion Description</label
               >
               <textarea
-                v-model="formData.championDescription"
+                v-model="championsSection.championDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -330,7 +363,7 @@
                 >CTA Label</label
               >
               <input
-                v-model="formData.championCtaLabel"
+                v-model="championsSection.championCtaLabel"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Learn More"
@@ -342,7 +375,7 @@
                 >CTA Link</label
               >
               <input
-                v-model="formData.championCtaLink"
+                v-model="championsSection.championCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -367,49 +400,89 @@
           class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
         >
           <div
-            v-for="(slide, index) in formData.editorialSlides"
+            v-for="(slide, index) in editorialSection.editorialSlides"
             :key="'slide' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
+            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative mb-5"
           >
             <span
-              class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
-              >Slide {{ index + 1 }}</span
+              class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center gap-2"
             >
+              Slide {{ index + 1 }}
+              <Icon
+                name="heroicons:minus-circle"
+                class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
+                @click="removeEditorialCard(index)"
+              />
+            </span>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+              <!-- Text Details -->
               <div>
                 <label
                   class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Kicker</label
                 >
+                  Kicker
+                </label>
                 <input
                   v-model="slide.kicker"
                   type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                 />
               </div>
               <div>
                 <label
                   class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Title</label
                 >
+                  Title
+                </label>
                 <input
                   v-model="slide.title"
                   type="text"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                 />
               </div>
               <div class="md:col-span-2">
                 <label
                   class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Description</label
                 >
+                  Description
+                </label>
                 <textarea
                   v-model="slide.description"
                   rows="2"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none shadow-sm"
                 ></textarea>
               </div>
+
+              <!-- Image Array Grid -->
+              <div class="md:col-span-2 border-t border-gray-200 pt-5 mt-2">
+                <label
+                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-3"
+                >
+                  Slide Images (4 URLs Required)
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div v-for="imgIndex in 4" :key="`img-${index}-${imgIndex}`">
+                    <input
+                      v-model="slide.images[imgIndex - 1]"
+                      type="url"
+                      :placeholder="`Image ${imgIndex} URL`"
+                      class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <!-- Save Button Container (Changed to natural flow layout) -->
+          <div class="flex justify-end">
+            <button
+              class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+              @click.prevent="addEditorialCard"
+            >
+              Add Slide
+            </button>
           </div>
         </div>
       </div>
@@ -436,7 +509,7 @@
                 >Leadership Badge</label
               >
               <input
-                v-model="formData.leadershipBadge"
+                v-model="leadershipSection.leadershipBadge"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -447,7 +520,7 @@
                 >Leadership Headline</label
               >
               <input
-                v-model="formData.leadershipHeadline"
+                v-model="leadershipSection.leadershipHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -458,7 +531,7 @@
                 >Leadership Image URL</label
               >
               <input
-                v-model="formData.leadershipImage"
+                v-model="leadershipSection.leadershipImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -470,7 +543,7 @@
                 >Leadership Bio</label
               >
               <textarea
-                v-model="formData.leadershipBio"
+                v-model="leadershipSection.leadershipBio"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -481,7 +554,7 @@
                 >CTA Label</label
               >
               <input
-                v-model="formData.leadershipCtaLabel"
+                v-model="leadershipSection.leadershipCtaLabel"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Read More"
@@ -493,7 +566,7 @@
                 >CTA Link</label
               >
               <input
-                v-model="formData.leadershipCtaLink"
+                v-model="leadershipSection.leadershipCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -514,7 +587,7 @@
           <Icon
             v-if="isSaving"
             name="heroicons:arrow-path"
-            class="mr-2 h-5 w-5 animate-spin"
+            class="mr-2 h-4 w-4 animate-spin"
           />
           {{ isSaving ? "Saving..." : "Save Changes" }}
         </button>
@@ -526,40 +599,55 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
 
+// Config & Utilities
 const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
+const toast = useAppToast();
+const confirm = useConfirm();
 
+// State Flags
 const isFetching = ref(true);
 const isSaving = ref(false);
 
-const formData = reactive({
+// Section Data
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
-  heroVideo: "",
+  heroVideoUrl: "",
   heroCta1Label: "",
   heroCta1Link: "",
   heroCta2Label: "",
   heroCta2Link: "",
+});
+
+const welcomeSection = reactive({
   welcomeBadge: "",
   welcomeHeadline: "",
   welcomeDescription: "",
-  actionCards: [
-    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
-    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
-    { image: "", kicker: "", title: "", ctaLabel: "", ctaLink: "" },
-  ],
+});
+
+const actionCardsSection = reactive({
+  actionCards: [],
+});
+
+const championsSection = reactive({
   championHeadline: "",
   championDescription: "",
   championImage: "",
   championCtaLabel: "",
   championCtaLink: "",
+});
+
+// Explicitly initialize with 4 empty strings to ensure v-model binding works natively
+const editorialSection = reactive({
   editorialSlides: [
-    { kicker: "", title: "", description: "" },
-    { kicker: "", title: "", description: "" },
-    { kicker: "", title: "", description: "" },
+    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
+    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
+    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
   ],
+});
+
+const leadershipSection = reactive({
   leadershipBadge: "",
   leadershipHeadline: "",
   leadershipBio: "",
@@ -568,25 +656,94 @@ const formData = reactive({
   leadershipCtaLink: "",
 });
 
+// Section Map
+const sectionsMap = {
+  heroSection,
+  welcomeSection,
+  actionCardsSection,
+  championsSection,
+  editorialSection,
+  leadershipSection,
+};
+
+// Helpers: Add/Remove
+const addActionCard = () => {
+  actionCardsSection.actionCards.push({
+    image: "",
+    kicker: "",
+    title: "",
+    ctaLabel: "",
+    ctaLink: "",
+  });
+};
+
+const removeActionCard = async (index) => {
+  const answer = await confirm.ask({
+    title: "Remove Card",
+    message:
+      "Are you sure you want to delete this card? Once saved this action is irreversible.",
+    confirmText: "Remove",
+    cancelText: "Cancel",
+    isDestructive: true,
+  });
+
+  if (answer) {
+    actionCardsSection.actionCards.splice(index, 1);
+  }
+};
+
+const addEditorialCard = () => {
+  editorialSection.editorialSlides.push({
+    kicker: "",
+    title: "",
+    description: "",
+    images: ["", "", "", ""], // explicitly pushing 4 empty strings
+  });
+};
+
+const removeEditorialCard = async (index) => {
+  const answer = await confirm.ask({
+    title: "Remove Card",
+    message:
+      "Are you sure you want to delete this slide? Once saved this action is irreversible.",
+    confirmText: "Remove",
+    cancelText: "Cancel",
+    isDestructive: true,
+  });
+
+  if (answer) {
+    editorialSection.editorialSlides.splice(index, 1);
+  }
+};
+
+// API Calls
 const loadSettings = async () => {
   isFetching.value = true;
   try {
     const response = await $fetch(`${config.public.apiBase}/admin/homepage`);
-    if (response) {
-      Object.keys(formData).forEach((key) => {
-        if (response[key] !== undefined) {
-          if (Array.isArray(formData[key])) {
-            formData[key] =
-              response[key].length > 0 ? response[key] : formData[key];
-          } else {
-            formData[key] = response[key];
-          }
+
+    Object.entries(response).forEach(([key, value]) => {
+      if (sectionsMap[key]) {
+        if (key === "actionCardsSection" && value.actionCards) {
+          actionCardsSection.actionCards = value.actionCards;
+        } else if (key === "editorialSection" && value.editorialSlides) {
+          // Safeguard: Ensure the incoming data always has exactly 4 string slots for v-model to bind to
+          editorialSection.editorialSlides = value.editorialSlides.map(
+            (slide) => ({
+              ...slide,
+              images: Array.isArray(slide.images)
+                ? [...slide.images, "", "", "", ""].slice(0, 4)
+                : ["", "", "", ""],
+            }),
+          );
+        } else {
+          Object.assign(sectionsMap[key], value);
         }
-      });
-    }
+      }
+    });
   } catch (error) {
     console.error("Failed to load homepage settings:", error);
-    showAlert("Could not load current settings.", "error");
+    toast.error("Could not load settings. Please try again.");
   } finally {
     isFetching.value = false;
   }
@@ -595,16 +752,31 @@ const loadSettings = async () => {
 const saveSettings = async () => {
   isSaving.value = true;
   try {
-    await $fetch(`${config.public.apiBase}/admin/homepage`, {
-      method: "PUT",
-      body: formData,
-    });
-    showAlert("Homepage settings saved successfully!", "success");
+    for (const [sectionId, sectionData] of Object.entries(sectionsMap)) {
+      await $fetch(`${config.public.apiBase}/admin/homepage/${sectionId}`, {
+        method: "PUT",
+        body: sectionData,
+      });
+    }
+    toast.success("Homepage settings saved successfully!");
   } catch (error) {
     console.error("Failed to save homepage settings:", error);
-    showAlert("Could not save settings. Please try again.", "error");
+    toast.error("Could not save settings. Please try again.");
   } finally {
     isSaving.value = false;
+  }
+};
+
+const saveSection = async (sectionId, sectionData) => {
+  try {
+    await $fetch(`${config.public.apiBase}/admin/homepage/${sectionId}`, {
+      method: "PUT",
+      body: sectionData,
+    });
+    toast.success(`${sectionId} saved successfully!`);
+  } catch (error) {
+    console.error(`Failed to save ${sectionId}:`, error);
+    toast.error(`Could not save ${sectionId}. Please try again.`);
   }
 };
 
