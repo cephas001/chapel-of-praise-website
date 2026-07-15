@@ -1,5 +1,7 @@
 <!-- pages/members/index.vue -->
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div class="mb-8">
       <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">

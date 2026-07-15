@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="pt-5 font-montserrat">
     <div class="mb-8">
       <NuxtLink
@@ -39,20 +41,7 @@
       </div>
     </div>
 
-    <div v-if="isFetching" class="py-20 text-center">
-      <Icon
-        name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-      />
-
-      <h3
-        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
-      >
-        Loading Event...
-      </h3>
-    </div>
-
-    <div v-else-if="event" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <div v-if="event" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
       <div class="lg:col-span-1 space-y-6">
         <div
           class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"

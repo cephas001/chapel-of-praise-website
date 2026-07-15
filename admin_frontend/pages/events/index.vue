@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
     <div
@@ -26,24 +28,8 @@
     <div
       class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <!-- Loading State -->
-      <div v-if="isFetching" class="py-20 text-center">
-        <Icon
-          name="heroicons:arrow-path"
-          class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-        />
-        <h3
-          class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
-        >
-          Loading Events...
-        </h3>
-      </div>
-
       <!-- Data Table -->
-      <div
-        v-else
-        class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200"
-      >
+      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50/50">
             <tr>

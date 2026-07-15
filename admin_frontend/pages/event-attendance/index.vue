@@ -1,5 +1,7 @@
 <!-- pages/event-attendance/index.vue -->
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -107,10 +109,12 @@ import { formatEventDisplay } from "~/utils/formatters";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
+const toast = useAppToast();
 
 const events = ref([]);
 const selectedEventId = ref("");
 const selectedUnit = ref("");
+const isFetching = ref(true);
 
 const availableUnits = [
   "Choir",
@@ -140,6 +144,9 @@ onMounted(async () => {
     );
   } catch (error) {
     console.error("Failed to load events", error);
+    toast.error("Could not load events. Please try again later.");
+  } finally {
+    isFetching.value = false;
   }
 });
 </script>

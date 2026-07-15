@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- INVISIBLE OVERLAY: Closes dropdowns when clicking outside -->
     <div
@@ -29,20 +31,7 @@
       </button>
     </div>
 
-    <div v-if="isFetching" class="py-20 text-center">
-      <Icon
-        name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-      />
-      <h3
-        class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
-      >
-        Loading Quick Links...
-      </h3>
-    </div>
-
     <div
-      v-else
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 items-start"
     >
       <div

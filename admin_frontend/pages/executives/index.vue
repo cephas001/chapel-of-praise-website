@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
@@ -24,19 +26,7 @@
     <div
       class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <div v-if="isFetching" class="py-20 text-center">
-        <Icon
-          name="heroicons:arrow-path"
-          class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-        />
-        <h3
-          class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
-        >
-          Loading Executives...
-        </h3>
-      </div>
-
-      <div v-else class="overflow-x-auto">
+      <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50/50">
             <tr>

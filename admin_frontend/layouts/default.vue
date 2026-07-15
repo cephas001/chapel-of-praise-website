@@ -20,9 +20,9 @@
         </button>
         <div class="pr-2">
           <img
-            src="/coplogo.jpg"
+            src="@/assets/images/Chapel Of Praise Logo.png"
             alt="Logo"
-            class="h-8 w-8 md:hidden rounded-md"
+            class="w-15 md:hidden rounded-md invert"
           />
         </div>
       </div>
@@ -37,15 +37,8 @@
     >
       <button
         @click="isSidebarOpen = false"
-        class="md:hidden absolute top-4 right-4 pr-2 py-2 text-gray-800 transition-colors flex items-center justify-between w-full pl-10"
+        class="md:hidden absolute top-4 right-4 pr-2 py-2 text-gray-800 transition-colors flex items-center justify-end w-full pl-10"
       >
-        <div class="">
-          <img
-            src="/coplogo.jpg"
-            alt="Logo"
-            class="h-8 w-8 md:hidden rounded-md"
-          />
-        </div>
         <Icon name="heroicons:x-mark" class="h-6 w-6" />
       </button>
 

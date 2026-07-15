@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div class="mb-8">
       <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
@@ -9,20 +11,7 @@
       </p>
     </div>
 
-    <div v-if="isFetching" class="py-15 text-center">
-      <Icon
-        name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-      />
-      <h3
-        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
-      >
-        Loading Configuration...
-      </h3>
-    </div>
-
     <form
-      v-else
       @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
     >

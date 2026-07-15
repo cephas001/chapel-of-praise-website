@@ -1,5 +1,6 @@
 <template>
   <LoadingScreen :isLoading="pending" />
+
   <div class="bg-white text-black w-full font-sans">
     <!-- Static Hero Banner -->
     <section

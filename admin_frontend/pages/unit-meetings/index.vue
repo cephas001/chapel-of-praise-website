@@ -1,4 +1,6 @@
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -129,18 +131,6 @@
           <p class="text-xs text-gray-500 max-w-sm mx-auto px-3">
             Choose a unit above to load the attendance roster for the selected
             meeting date.
-          </p>
-        </div>
-
-        <div v-else-if="isFetching" class="py-16 text-center">
-          <Icon
-            name="heroicons:arrow-path"
-            class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-          />
-          <p
-            class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
-          >
-            Loading unit members...
           </p>
         </div>
 

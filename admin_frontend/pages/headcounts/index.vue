@@ -1,5 +1,7 @@
 <!-- pages/headcounts/index.vue -->
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -25,22 +27,7 @@
     <div
       class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
-      <div v-if="isFetching" class="py-20 text-center">
-        <Icon
-          name="heroicons:arrow-path"
-          class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-        />
-        <h3
-          class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
-        >
-          Loading aggregate headcounts...
-        </h3>
-      </div>
-
-      <div
-        v-else
-        class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200"
-      >
+      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50/50">
             <tr>

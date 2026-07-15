@@ -1,5 +1,7 @@
 <!-- pages/follow-ups/index.vue -->
 <template>
+  <LoadingScreen :isLoading="isFetching" />
+
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -23,22 +25,9 @@
       </button>
     </div>
 
-    <!-- Data State -->
-    <div v-if="isFetching" class="py-20 text-center">
-      <Icon
-        name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
-      />
-      <h3
-        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
-      >
-        Loading records...
-      </h3>
-    </div>
-
     <!-- The Grid of Cards -->
     <div
-      v-else-if="followUps.length > 0"
+      v-if="followUps.length > 0"
       class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
       <ActionCard
