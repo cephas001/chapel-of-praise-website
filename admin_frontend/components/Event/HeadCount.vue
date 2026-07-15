@@ -127,7 +127,6 @@
 import { ref, onMounted, computed } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const props = defineProps({
   eventId: {
@@ -138,7 +137,7 @@ const props = defineProps({
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const headcount = ref(null);
 const isFetching = ref(true);
@@ -167,7 +166,7 @@ const fetchHeadcount = async () => {
     headcount.value = response; // Will be null if it doesn't exist
   } catch (error) {
     console.error("Failed to fetch headcount:", error);
-    showAlert("Error", "Could not load headcount data.", "error");
+    toast.error("Could not load headcount data."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -200,11 +199,11 @@ const handleFormSubmit = async (formData) => {
     });
 
     headcount.value = response.data;
-    showAlert("Success", "Event demographics saved successfully.", "success");
+    toast.success("Event demographics saved successfully."); // migrated
     closeDrawer();
   } catch (error) {
     console.error("Submission error:", error);
-    showAlert("Action Failed", "Could not save the demographics.", "error");
+    toast.error("Could not save the demographics."); // migrated
   } finally {
     isSubmitting.value = false;
   }

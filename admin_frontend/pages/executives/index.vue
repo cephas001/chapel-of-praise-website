@@ -156,11 +156,10 @@
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const executives = ref([]);
 const isFetching = ref(true);
@@ -181,11 +180,7 @@ const fetchExecutives = async () => {
     executives.value = response;
   } catch (error) {
     console.error("Failed to fetch executives:", error);
-    showAlert(
-      "Error",
-      "Failed to retrieve executives from the server.",
-      "error",
-    );
+    toast.error("Failed to retrieve executives from the server."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -217,8 +212,7 @@ const handleFormSubmit = async (formData) => {
 
   try {
     if (selectedExecutive.value) {
-      // NOTE: You'll need to add a PUT route in memberRoutes.js if you want to support edits.
-      // For now, this mimics the event update flow.
+      // UPDATE existing executive
       const response = await $fetch(
         `${config.public.apiBase}/admin/members/executives/${selectedExecutive.value.id}`,
         {
@@ -231,9 +225,9 @@ const handleFormSubmit = async (formData) => {
         (e) => e.id === selectedExecutive.value.id,
       );
       if (index !== -1) executives.value[index] = response.data;
-      showAlert("Success", "Executive updated successfully", "success");
+      toast.success("Executive updated successfully"); // migrated
     } else {
-      // CREATE
+      // CREATE new executive
       const response = await $fetch(
         `${config.public.apiBase}/admin/members/executives`,
         {
@@ -243,17 +237,13 @@ const handleFormSubmit = async (formData) => {
         },
       );
       executives.value.unshift(response.data);
-      showAlert("Success", "Executive registered successfully", "success");
+      toast.success("Executive registered successfully"); // migrated
     }
 
     closeDrawer();
   } catch (error) {
     console.error("Submission error:", error);
-    showAlert(
-      "Action Failed",
-      error.data?.error || "Could not save the executive.",
-      "error",
-    );
+    toast.error(error.data?.error || "Could not save the executive."); // migrated
   } finally {
     isSubmitting.value = false;
   }

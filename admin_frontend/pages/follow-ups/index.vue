@@ -160,12 +160,11 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 import { formatEventDisplay } from "~/utils/formatters";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const followUps = ref([]);
 const events = ref([]);
@@ -201,7 +200,7 @@ const fetchData = async () => {
       .map((ev) => ({ ...ev, formattedName: formatEventDisplay(ev) }))
       .sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
   } catch (error) {
-    showAlert("Error", "Could not load data.", "error");
+    toast.error("Could not load data."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -230,11 +229,11 @@ const submitNewRecord = async () => {
       body: { ...form },
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
-    showAlert("Success", "Record created successfully.", "success");
+    toast.success("Record created successfully."); // migrated
     closeDrawer();
     fetchData();
   } catch (error) {
-    showAlert("Error", "Could not save the record.", "error");
+    toast.error("Could not save the record."); // migrated
   } finally {
     isCreating.value = false;
   }
@@ -247,7 +246,7 @@ const handleAddNote = async ({ id, text, onSuccess, onError }) => {
       method: "POST",
       body: {
         text,
-        authorName: authStore.user?.displayName || "Executive", // Ensure your auth store exposes displayName!
+        authorName: authStore.user?.displayName || "Executive",
       },
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
@@ -256,7 +255,7 @@ const handleAddNote = async ({ id, text, onSuccess, onError }) => {
     fetchData();
     onSuccess(); // Triggers the card to clear its input field
   } catch (error) {
-    showAlert("Error", "Failed to add note.", "error");
+    toast.error("Failed to add note."); // migrated
     onError();
   }
 };

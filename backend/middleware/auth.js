@@ -18,6 +18,7 @@ const verifyToken = async (req, res, next) => {
 
     // 3. Attach the user payload to the request
     req.user = decodedToken;
+
     next();
   } catch (error) {
     // 4. Log the actual error for your own debugging

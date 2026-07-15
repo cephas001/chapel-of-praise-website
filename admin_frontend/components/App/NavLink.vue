@@ -5,7 +5,7 @@
     :class="[
       'flex items-center px-2 py-2 text-xs md:text-sm font-jetbrains transition-colors duration-200 border-l-[3px] group tracking-wide',
       checkActiveRoute(url)
-        ? 'border-black text-black font-bold tracking-wider'
+        ? 'border-black text-black tracking-wider'
         : 'border-transparent text-black  hover:bg-gray-50 hover:border-gray-200',
     ]"
   >

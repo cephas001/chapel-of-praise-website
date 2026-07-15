@@ -214,7 +214,6 @@
 import { ref, watch, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 import { useAttendanceLogic } from "~/composables/useAttendanceLogic"; // The composable we just built!
 
 const props = defineProps({
@@ -224,7 +223,7 @@ const props = defineProps({
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const members = ref([]);
 const isFetching = ref(false);
@@ -269,7 +268,7 @@ const fetchData = async () => {
     // 3. Load into composable
     loadExistingRecord(attendanceRes);
   } catch (error) {
-    showAlert("Error", "Could not load the roster.", "error");
+    toast.error("Could not load the roster."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -294,9 +293,9 @@ const submitAttendance = async () => {
       body: payload,
     });
 
-    showAlert("Success", "Attendance records saved successfully.", "success");
+    toast.success("Attendance records saved successfully."); // migrated
   } catch (error) {
-    showAlert("Error", "Could not save records.", "error");
+    toast.error("Could not save records."); // migrated
   } finally {
     isSubmitting.value = false;
   }

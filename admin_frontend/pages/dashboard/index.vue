@@ -24,7 +24,7 @@
       <button
         v-if="isSuperAdmin"
         @click="openAddCategoryDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
         <Icon name="heroicons:folder-plus" class="mr-2 h-4 w-4" />
         Add Category

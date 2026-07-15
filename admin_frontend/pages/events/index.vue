@@ -148,8 +148,8 @@
           name="heroicons:calendar"
           class="mx-auto h-12 w-12 text-gray-300 mb-4"
         />
-        <h3 class="text-sm font-bold text-black mb-1">No events found</h3>
-        <p class="text-gray-500 text-xs px-5">
+        <h3 class="text-sm font-bold text-black mb-2">No events found</h3>
+        <p class="text-gray-500 text-xs px-5 font-mono">
           Get started by creating a new event for the chapel.
         </p>
       </div>

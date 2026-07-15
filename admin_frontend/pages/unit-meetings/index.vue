@@ -315,11 +315,10 @@
 import { computed, ref, watch } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const availableUnits = [
   "Choir",
@@ -417,7 +416,7 @@ async function loadMembersForUnit() {
   } catch (error) {
     console.error("Failed to load unit members", error);
     members.value = [];
-    showAlert("Could not load unit members for this meeting.", "error");
+    toast.error("Could not load unit members for this meeting."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -448,10 +447,10 @@ async function saveAttendance() {
     }
 
     lastSavedAt.value = record.updatedAt;
-    showAlert("Unit meeting attendance saved successfully.", "success");
+    toast.success("Unit meeting attendance saved successfully."); // migrated
   } catch (error) {
     console.error("Failed to save unit meeting attendance", error);
-    showAlert("Could not save the unit meeting attendance.", "error");
+    toast.error("Could not save the unit meeting attendance."); // migrated
   } finally {
     isSaving.value = false;
   }

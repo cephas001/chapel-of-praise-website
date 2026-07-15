@@ -80,11 +80,10 @@
 import { ref, computed, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const members = ref([]);
 const isFetching = ref(true);
@@ -122,7 +121,7 @@ onMounted(async () => {
     members.value = res;
   } catch (error) {
     console.error("Failed to load members:", error);
-    showAlert("Error", "Could not load the workforce directory.", "error");
+    toast.error("Could not load the workforce directory."); // migrated
   } finally {
     isFetching.value = false;
   }

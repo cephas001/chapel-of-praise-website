@@ -200,11 +200,10 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 const selectedAltarCall = ref(null);
 
 const eventId = route.params.id;
@@ -220,7 +219,7 @@ const fetchEventDetails = async () => {
     event.value = response;
   } catch (error) {
     console.error("Failed to fetch event details:", error);
-    showAlert("Could not retrieve event details.", "error");
+    toast.error("Could not retrieve event details."); // migrated
   } finally {
     isFetching.value = false;
   }

@@ -59,7 +59,7 @@
 
         <!-- Empty State -->
         <div v-if="pageData.ministries.length === 0" class="text-center py-12">
-          <p class="text-gray-500 font-light text-lg">
+          <p class="text-gray-500 font-light text-md md:text-lg px-5">
             No ministries listed at this time. Check back soon!
           </p>
         </div>
@@ -87,11 +87,17 @@ const { data: fetchedData, pending } = await useFetch(
 
 // Centralized computed property mapped to backend sections
 const pageData = computed(() => {
-  // Ensure we safely unwrap the data, handling cases where it might be nested in a 'data' object
   const apiData = fetchedData.value?.data || fetchedData.value || {};
 
   const hero = apiData.heroSection || {};
   const ministriesSec = apiData.ministriesSection || {};
+
+  // Filter ministries: exclude any object where one of its fields is an empty string
+  const ministries = (ministriesSec.ministries || []).filter((m) => {
+    return Object.values(m).every(
+      (val) => typeof val !== "string" || val.trim() !== "",
+    );
+  });
 
   return {
     hero: {
@@ -99,7 +105,7 @@ const pageData = computed(() => {
       kicker: hero.heroKicker || "Get Involved",
       headline: hero.heroHeadline || "Ministries",
     },
-    ministries: ministriesSec.ministries || [],
+    ministries,
   };
 });
 </script>

@@ -112,7 +112,6 @@
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const props = defineProps({
   eventId: {
@@ -129,7 +128,7 @@ const emit = defineEmits(["select-call"]);
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast();
 
 const altarCalls = ref([]);
 const isFetching = ref(true);
@@ -148,7 +147,7 @@ const fetchAltarCalls = async () => {
     altarCalls.value = response;
   } catch (error) {
     console.error("Failed to fetch altar calls:", error);
-    showAlert("Error", "Could not load altar call data.", "error");
+    toast.error("Failed to fetch altar calls. Please try again later.");
   } finally {
     isFetching.value = false;
   }
@@ -184,11 +183,15 @@ const handleFormSubmit = async (formData) => {
     );
 
     altarCalls.value.unshift(response.data);
-    showAlert("Success", "Altar call recorded successfully.", "success");
+    toast.success("Altar call recorded successfully!");
     closeDrawer();
   } catch (error) {
     console.error("Submission error:", error);
-    showAlert("Action Failed", "Could not save the altar call.", "error");
+
+    toast.error(
+      error.data?.error ||
+        "Could not submit the form. Please check your input and try again.",
+    );
   } finally {
     isSubmitting.value = false;
   }

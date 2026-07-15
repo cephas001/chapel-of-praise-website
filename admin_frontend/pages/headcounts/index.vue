@@ -201,12 +201,11 @@
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 import { formatEventDisplay } from "~/utils/formatters";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const headcounts = ref([]);
 const events = ref([]);
@@ -228,7 +227,7 @@ const formatDate = (dateStr) => {
 const fetchData = async () => {
   isFetching.value = true;
   try {
-    // 1. Fetch Headcounts (Requires a backend endpoint that joins headcount data with event details)
+    // 1. Fetch Headcounts
     const hcRes = await $fetch(`${config.public.apiBase}/admin/headcounts`);
     headcounts.value = hcRes;
     console.log(hcRes);
@@ -237,13 +236,12 @@ const fetchData = async () => {
     const evRes = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
-    // Add the formatted string to the object so SearchableSelect can filter by it
     events.value = evRes
       .map((ev) => ({ ...ev, formattedName: formatEventDisplay(ev) }))
       .sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
   } catch (error) {
     console.error("Fetch error:", error);
-    showAlert("Error", "Could not load event headcount data.", "error");
+    toast.error("Could not load event headcount data."); // migrated
   } finally {
     isFetching.value = false;
   }
@@ -263,18 +261,17 @@ const closeDrawer = () => {
 const handleHeadcountSubmit = async (formData) => {
   isSubmitting.value = true;
   try {
-    // Post to the exact same endpoint we used in the embedded view
     await $fetch(`${config.public.apiBase}/admin/headcounts`, {
       method: "POST",
       body: { eventId: selectedEventId.value, ...formData },
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
-    showAlert("Success", "Headcount saved successfully.", "success");
+    toast.success("Headcount saved successfully."); // migrated
     closeDrawer();
     fetchData(); // Refresh the table
   } catch (error) {
-    showAlert("Error", "Could not save the headcount.", "error");
+    toast.error("Could not save the headcount."); // migrated
   } finally {
     isSubmitting.value = false;
   }

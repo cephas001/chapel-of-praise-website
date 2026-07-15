@@ -1,6 +1,5 @@
 // plugins/api-interceptor.js
 import { defineNuxtPlugin, useCookie } from "#app";
-import { useErrorModal } from "~/composables/useErrorModal";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const customFetch = $fetch.create({
@@ -24,12 +23,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       const data = response._data;
 
       if (status === 403 || status === 401) {
-        const { triggerError } = useErrorModal();
+        const toast = useAppToast();
+
         const backendMessage =
           data?.error || "You do not have the required permissions.";
-        triggerError(
-          backendMessage,
-          status === 401 ? "Session Expired" : "Access Denied",
+        toast.error(
+          `${status === 401 ? "Session Expired:" : "Access Denied:"} ${backendMessage}`,
         );
 
         // NEW: Tag the response so local catch blocks know to ignore it!

@@ -167,7 +167,6 @@
 import { ref, watch } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
-import { useAlertModal } from "~/composables/useAlertModal";
 
 const props = defineProps({
   eventId: {
@@ -182,7 +181,7 @@ const props = defineProps({
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
-const { showAlert } = useAlertModal();
+const toast = useAppToast(); // auto-imported
 
 const responses = ref([]);
 const isFetching = ref(false);
@@ -209,7 +208,7 @@ watch(
       responses.value = res;
     } catch (error) {
       console.error("Failed to fetch responses:", error);
-      showAlert("Error", "Could not load individual responses.", "error");
+      toast.error("Could not load individual responses."); // migrated
     } finally {
       isFetching.value = false;
     }
@@ -246,11 +245,11 @@ const handleFormSubmit = async (formData) => {
     );
 
     responses.value.unshift(res.data);
-    showAlert("Success", "Individual response recorded.", "success");
+    toast.success("Individual response recorded."); // migrated
     closeDrawer();
   } catch (error) {
     console.error("Submission error:", error);
-    showAlert("Action Failed", "Could not save the response.", "error");
+    toast.error("Could not save the response."); // migrated
   } finally {
     isSubmitting.value = false;
   }

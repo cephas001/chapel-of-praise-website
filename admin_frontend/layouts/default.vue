@@ -237,6 +237,29 @@
               />
             </ul>
           </div>
+
+          <div v-if="auth.user?.role === 'super_admin'">
+            <AppNavTabLabel
+              v-model="showUserManagement"
+              label="User Management"
+            />
+            <ul v-show="showUserManagement" class="space-y-1 mt-2">
+              <AppNavLink
+                text="Register New User"
+                iconName="heroicons:user-plus"
+                url="/auth/register"
+                @click="closeOnMobile"
+                @open-tab="showUserManagement = true"
+              />
+              <AppNavLink
+                text="Manage Users"
+                iconName="heroicons:user-circle"
+                url="/users"
+                @click="closeOnMobile"
+                @open-tab="showUserManagement = true"
+              />
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -265,8 +288,8 @@
       <slot />
     </main>
 
-    <ForbiddenModal />
-    <AlertModal />
+    <!-- <ForbiddenModal /> -->
+    <!-- <AlertModal /> -->
     <ConfirmModal />
     <ToastContainer />
   </div>
@@ -286,6 +309,7 @@ const showEvangelism = ref(false);
 const showDataSummaries = ref(false);
 const showWebManagement = ref(false);
 const showHelpMenu = ref(false);
+const showUserManagement = ref(false);
 
 const isSidebarOpen = ref(false);
 
@@ -295,12 +319,7 @@ const closeOnMobile = () => {
   }
 };
 
-const userInitial = computed(() => {
-  if (auth.user?.email) {
-    return auth.user.email.charAt(0).toUpperCase();
-  }
-  return "A"; // Default to 'A' for Administrator
-});
+console.log(auth.user);
 
 function handleLogout() {
   auth.logout();

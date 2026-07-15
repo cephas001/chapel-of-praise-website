@@ -4,7 +4,7 @@
     @click="toggle"
   >
     <span
-      class="text-[11px] font-bold text-black uppercase tracking-widest font-jetbrains group-hover:text-black transition-colors duration-200"
+      class="text-[11px] text-black font-bold uppercase tracking-widest font-jetbrains transition-colors duration-200"
     >
       {{ label }}
     </span>
