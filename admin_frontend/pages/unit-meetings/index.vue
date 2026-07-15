@@ -416,7 +416,7 @@ async function loadMembersForUnit() {
   isFetching.value = true;
   try {
     const response = await $fetch(
-      `${config.public.apiBase}/members/unit/${selectedUnit.value}`,
+      `${config.public.apiBase}/admin/members/unit/${selectedUnit.value}`,
       {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },

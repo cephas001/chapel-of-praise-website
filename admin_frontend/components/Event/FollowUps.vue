@@ -201,7 +201,7 @@ watch(
     isFetching.value = true;
     try {
       const res = await $fetch(
-        `${config.public.apiBase}/altar-calls/responses/${newCall.id}`,
+        `${config.public.apiBase}/admin/altar-calls/responses/${newCall.id}`,
         {
           headers: { Authorization: `Bearer ${authStore.token}` },
         },
@@ -236,11 +236,14 @@ const handleFormSubmit = async (formData) => {
       ...formData,
     };
 
-    const res = await $fetch(`${config.public.apiBase}/altar-calls/responses`, {
-      method: "POST",
-      body: payload,
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
+    const res = await $fetch(
+      `${config.public.apiBase}/admin/altar-calls/responses`,
+      {
+        method: "POST",
+        body: payload,
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      },
+    );
 
     responses.value.unshift(res.data);
     showAlert("Success", "Individual response recorded.", "success");

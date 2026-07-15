@@ -5,11 +5,11 @@
     <div
       v-if="isSidebarOpen"
       @click="isSidebarOpen = false"
-      class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
+      class="fixed inset-0 z-70 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
     ></div>
 
     <header
-      class="md:hidden flex justify-between items-center px-4 w-full bg-white border-b border-gray-200 absolute top-0 h-14 z-30"
+      class="md:hidden flex justify-between items-center px-4 w-full bg-white border-b border-gray-200 absolute top-0 h-14 z-60"
     >
       <div class="flex items-center justify-between w-full gap-3">
         <button
@@ -31,7 +31,7 @@
     <aside
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed md:relative top-0 left-0 z-50 flex flex-col justify-between pt-6 md:pt-8 bg-white border-r border-gray-200 w-72 h-screen flex-shrink-0 transition-transform duration-300 ease-in-out md:translate-x-0',
+        'fixed md:relative top-0 left-0 z-80 flex flex-col justify-between pt-6 md:pt-8 bg-white border-r border-gray-200 w-72 h-screen flex-shrink-0 transition-transform duration-300 ease-in-out md:translate-x-0',
       ]"
       style="will-change: transform"
     >
@@ -130,6 +130,13 @@
                 text="Counseling Page"
                 iconName="heroicons:chat-bubble-left-ellipsis"
                 url="/website/counseling"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Events Page"
+                iconName="heroicons:calendar"
+                url="/website/events-calendar"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />

@@ -9,9 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
+// Get all giving sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("giving");
+    const snapshot = await db.collection("giving").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting giving sections:", error);
+    res.status(500).json({ message: "Failed to fetch giving sections" });
+  }
+});
+
+// Get a specific giving section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("giving").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -20,16 +39,21 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting giving settings:", error);
-    res.status(500).json({ message: "Failed to fetch giving settings" });
+    console.error(
+      `Error getting giving section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch giving section" });
   }
 });
 
-router.put("/", async (req, res) => {
+// Reusable function to create or update a specific giving section
+const saveGivingSettings = async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
 
-    const docRef = db.collection("settings").doc("giving");
+    const docRef = db.collection("giving").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -50,39 +74,16 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating giving settings:", error);
-    res.status(500).json({ message: "Failed to update giving settings" });
+    console.error(
+      `Error updating giving section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update giving section" });
   }
-});
+};
 
-router.post("/", async (req, res) => {
-  try {
-    const settingsData = req.body;
-
-    const docRef = db.collection("settings").doc("giving");
-    const doc = await docRef.get();
-
-    const dataToSave = {
-      ...settingsData,
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (req.user && req.user.uid) {
-      dataToSave.updatedBy = req.user.uid;
-    }
-
-    if (!doc.exists) {
-      dataToSave.createdAt = new Date().toISOString();
-      await docRef.set(dataToSave);
-    } else {
-      await docRef.update(dataToSave);
-    }
-
-    res.status(200).json(dataToSave);
-  } catch (error) {
-    console.error("Error updating giving settings:", error);
-    res.status(500).json({ message: "Failed to update giving settings" });
-  }
-});
+// Allow both PUT and POST to update specific sections
+router.put("/:sectionId", saveGivingSettings);
+router.post("/:sectionId", saveGivingSettings);
 
 module.exports = router;

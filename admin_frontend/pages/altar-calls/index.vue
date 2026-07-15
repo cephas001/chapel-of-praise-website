@@ -227,7 +227,7 @@ const fetchData = async () => {
   try {
     // 1. Fetch Event Altar Calls using the new endpoint we just made
     const callsRes = await $fetch(
-      `${config.public.apiBase}/altar-calls/global`,
+      `${config.public.apiBase}/admin/altar-calls/global`,
       {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },
@@ -236,7 +236,7 @@ const fetchData = async () => {
     altarCalls.value = callsRes;
 
     // 2. Fetch Events to populate the searchable dropdown
-    const evRes = await $fetch(`${config.public.apiBase}/events`, {
+    const evRes = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
@@ -266,7 +266,7 @@ const handleAltarCallSubmit = async (formData) => {
   isSubmitting.value = true;
   try {
     // POST to the standard altar call endpoint, attaching the selected event ID
-    await $fetch(`${config.public.apiBase}/altar-calls`, {
+    await $fetch(`${config.public.apiBase}/admin/altar-calls`, {
       method: "POST",
       body: { eventId: selectedEventId.value, ...formData },
       headers: { Authorization: `Bearer ${authStore.token}` },

@@ -49,7 +49,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Our Ministries"
@@ -61,7 +61,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -72,7 +72,7 @@
                 >Hero Image URL</label
               >
               <input
-                v-model="formData.heroImageUrl"
+                v-model="heroSection.heroImageUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -105,13 +105,13 @@
           class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
         >
           <div
-            v-if="formData.ministries.length === 0"
+            v-if="ministriesSection.ministries.length === 0"
             class="text-xs text-gray-500 text-center py-4"
           >
             No ministries added yet.
           </div>
           <div
-            v-for="(ministry, index) in formData.ministries"
+            v-for="(ministry, index) in ministriesSection.ministries"
             :key="'ministry' + index"
             class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
           >
@@ -122,12 +122,12 @@
             <button
               type="button"
               @click="removeMinistry(index)"
-              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1"
+              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
               title="Remove Ministry"
             >
-              <Icon name="heroicons:trash" class="h-4 w-4" />
+              <Icon name="heroicons:minus-circle" class="h-4 w-4" />
             </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
               <div>
                 <label
                   class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -174,7 +174,7 @@
       >
         <button
           type="button"
-          @click="fetchSettings"
+          @click="loadSettings"
           class="px-5 py-2.5 text-xs md:text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-jetbrains"
           :disabled="isSaving"
         >
@@ -198,51 +198,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useNuxtApp } from "#app";
-import { useAlertModal } from "@/composables/useAlertModal";
-import { useErrorModal } from "@/composables/useErrorModal";
+import { onMounted, reactive } from "vue";
 
-const { $api } = useNuxtApp();
-const alertModal = useAlertModal();
-const errorModal = useErrorModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = ref({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImageUrl: "",
+});
+
+const ministriesSection = reactive({
   ministries: [],
 });
 
-const fetchSettings = async () => {
-  isFetching.value = true;
-  try {
-    const { data } = await $api.get("/api/admin/ministries");
-    if (data) {
-      formData.value.heroKicker = data.heroKicker || "";
-      formData.value.heroHeadline = data.heroHeadline || "";
-      formData.value.heroImageUrl = data.heroImageUrl || "";
-      formData.value.ministries = Array.isArray(data.ministries)
-        ? data.ministries
-        : [];
-    }
-  } catch (error) {
-    console.error("Failed to fetch ministries settings:", error);
-    errorModal.show({
-      title: "Fetch Error",
-      message:
-        "Failed to fetch the ministries configuration. Please try again.",
-    });
-  } finally {
-    isFetching.value = false;
-  }
+const sectionsMap = {
+  heroSection,
+  ministriesSection,
 };
 
 const addMinistry = () => {
-  formData.value.ministries.push({
+  ministriesSection.ministries.push({
     name: "",
     subtitle: "",
     description: "",
@@ -250,31 +224,30 @@ const addMinistry = () => {
 };
 
 const removeMinistry = (index) => {
-  formData.value.ministries.splice(index, 1);
+  ministriesSection.ministries.splice(index, 1);
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $api.put("/api/admin/ministries", formData.value);
-    alertModal.show({
-      title: "Success",
-      message: "Ministries page configuration has been updated successfully.",
-      type: "success",
-    });
-  } catch (error) {
-    console.error("Failed to save ministries settings:", error);
-    errorModal.show({
-      title: "Save Error",
-      message:
-        "There was an issue saving your changes. Please check your connection and try again.",
-    });
-  } finally {
-    isSaving.value = false;
-  }
+// Custom parser to handle the specific array mapping for ministries page
+const ministriesPageParser = (response, map) => {
+  Object.entries(response).forEach(([key, value]) => {
+    if (map[key]) {
+      if (key === "ministriesSection" && value.ministries) {
+        map.ministriesSection.ministries = value.ministries;
+      } else {
+        Object.assign(map[key], value);
+      }
+    }
+  });
 };
+
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "ministries",
+  sectionsMap,
+  { customParser: ministriesPageParser },
+);
 
 onMounted(() => {
-  fetchSettings();
+  loadSettings();
 });
 </script>

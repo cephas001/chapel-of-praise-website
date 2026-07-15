@@ -114,7 +114,7 @@ const groupedMembers = computed(() => {
 onMounted(async () => {
   try {
     // Assuming you have a global GET /api/members route on your backend
-    const res = await $fetch(`${config.public.apiBase}/members`, {
+    const res = await $fetch(`${config.public.apiBase}/admin/members`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     members.value = res;

@@ -45,7 +45,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Giving & Tithes"
@@ -57,7 +57,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -68,7 +68,7 @@
                 >Hero Background Image URL</label
               >
               <input
-                v-model="formData.heroImage"
+                v-model="heroSection.heroImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -99,7 +99,7 @@
                 >Section Headline</label
               >
               <input
-                v-model="formData.sectionHeadline"
+                v-model="headlineSection.sectionHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Ways to Give"
@@ -111,7 +111,7 @@
                 >Section Description</label
               >
               <textarea
-                v-model="formData.sectionDescription"
+                v-model="headlineSection.sectionDescription"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter description text..."
@@ -142,7 +142,7 @@
                 >Bank Name</label
               >
               <input
-                v-model="formData.bankName"
+                v-model="bankDetailsSection.bankName"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Access Bank"
@@ -154,7 +154,7 @@
                 >Account Name</label
               >
               <input
-                v-model="formData.accountName"
+                v-model="bankDetailsSection.accountName"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Chapel of Praise"
@@ -166,7 +166,7 @@
                 >Account Number</label
               >
               <input
-                v-model="formData.accountNumber"
+                v-model="bankDetailsSection.accountNumber"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. 1234567890"
@@ -197,7 +197,7 @@
                 >Description Text</label
               >
               <textarea
-                v-model="formData.onlinePaymentDescription"
+                v-model="onlinePaymentSection.onlinePaymentDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="e.g. Pay securely online via Paystack"
@@ -209,7 +209,7 @@
                 >Button URL</label
               >
               <input
-                v-model="formData.onlinePaymentButtonUrl"
+                v-model="onlinePaymentSection.onlinePaymentButtonUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://paystack.com/..."
@@ -240,63 +240,43 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
+import { reactive, onMounted } from "vue";
 
-const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = reactive({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImage: "",
+});
+
+const headlineSection = reactive({
   sectionHeadline: "",
   sectionDescription: "",
+});
+
+const bankDetailsSection = reactive({
   bankName: "",
   accountName: "",
   accountNumber: "",
+});
+
+const onlinePaymentSection = reactive({
   onlinePaymentDescription: "",
   onlinePaymentButtonUrl: "",
 });
 
-const loadSettings = async () => {
-  isFetching.value = true;
-  try {
-    const response = await $fetch(`${config.public.apiBase}/admin/giving`);
-    if (response) {
-      Object.keys(formData).forEach((key) => {
-        if (response[key] !== undefined) {
-          formData[key] = response[key];
-        }
-      });
-    }
-  } catch (error) {
-    console.error("Failed to load giving settings:", error);
-    showAlert("Could not load current settings.", "error");
-  } finally {
-    isFetching.value = false;
-  }
+const sectionsMap = {
+  heroSection,
+  headlineSection,
+  bankDetailsSection,
+  onlinePaymentSection,
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $fetch(`${config.public.apiBase}/admin/giving`, {
-      method: "PUT",
-      body: formData,
-    });
-    showAlert("Giving page settings saved successfully!", "success");
-  } catch (error) {
-    console.error("Failed to save giving settings:", error);
-    showAlert("Could not save settings. Please try again.", "error");
-  } finally {
-    isSaving.value = false;
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "giving",
+  sectionsMap,
+  { reloadOnSave: true },
+);
 
 onMounted(() => {
   loadSettings();

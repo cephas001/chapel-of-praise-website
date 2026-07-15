@@ -45,7 +45,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Need Help?"
@@ -57,7 +57,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Request Counseling"
@@ -69,7 +69,7 @@
                 >Hero Background Image URL</label
               >
               <input
-                v-model="formData.heroImage"
+                v-model="heroSection.heroImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -101,7 +101,7 @@
                 >Form Heading</label
               >
               <input
-                v-model="formData.formHeading"
+                v-model="formSection.formHeading"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Schedule a Session"
@@ -113,7 +113,7 @@
                 >Form Description</label
               >
               <textarea
-                v-model="formData.formDescription"
+                v-model="formSection.formDescription"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter a brief description..."
@@ -125,7 +125,7 @@
                 >Form Footer Note</label
               >
               <input
-                v-model="formData.formFooterNote"
+                v-model="formSection.formFooterNote"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Your information is kept confidential."
@@ -164,73 +164,31 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig, useFetch } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
+import { reactive, onMounted } from "vue";
 
-const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = reactive({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImage: "",
+});
+
+const formSection = reactive({
   formHeading: "",
   formDescription: "",
   formFooterNote: "",
 });
 
-const loadSettings = async () => {
-  isFetching.value = true;
-  try {
-    const { data } = await useFetch(
-      `${config.public.apiBase}/api/admin/counseling`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("admin_token")}`,
-        },
-      },
-    );
-
-    if (data.value) {
-      Object.assign(formData, {
-        heroKicker: data.value.heroKicker || "",
-        heroHeadline: data.value.heroHeadline || "",
-        heroImage: data.value.heroImage || "",
-        formHeading: data.value.formHeading || "",
-        formDescription: data.value.formDescription || "",
-        formFooterNote: data.value.formFooterNote || "",
-      });
-    }
-  } catch (error) {
-    console.error("Error loading counseling settings", error);
-  } finally {
-    isFetching.value = false;
-  }
+const sectionsMap = {
+  heroSection,
+  formSection,
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $fetch(`${config.public.apiBase}/api/admin/counseling`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("admin_token")}`,
-      },
-      body: formData,
-    });
-    showAlert("Success", "Counseling settings updated successfully");
-  } catch (error) {
-    console.error("Error saving counseling settings", error);
-    showAlert("Error", "Failed to update counseling settings");
-  } finally {
-    isSaving.value = false;
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "counselling",
+  sectionsMap,
+  { reloadOnSave: true },
+);
 
 onMounted(() => {
   loadSettings();

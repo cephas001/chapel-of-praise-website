@@ -9,10 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
-// Get leadership settings
+// Get all leadership sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("leadership");
+    const snapshot = await db.collection("leadership").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting leadership sections:", error);
+    res.status(500).json({ message: "Failed to fetch leadership sections" });
+  }
+});
+
+// Get a specific leadership section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("leadership").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -21,16 +39,21 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting leadership settings:", error);
-    res.status(500).json({ message: "Failed to fetch leadership settings" });
+    console.error(
+      `Error getting leadership section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch leadership section" });
   }
 });
 
-// Create or update leadership settings
-router.put("/", async (req, res) => {
+// Reusable function to create or update a specific leadership section
+const saveLeadershipSettings = async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("leadership");
+
+    const docRef = db.collection("leadership").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -51,39 +74,16 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating leadership settings:", error);
-    res.status(500).json({ message: "Failed to update leadership settings" });
+    console.error(
+      `Error updating leadership section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update leadership section" });
   }
-});
+};
 
-// Allow POST to behave the same as PUT
-router.post("/", async (req, res) => {
-  try {
-    const settingsData = req.body;
-    const docRef = db.collection("settings").doc("leadership");
-    const doc = await docRef.get();
-
-    const dataToSave = {
-      ...settingsData,
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (req.user && req.user.uid) {
-      dataToSave.updatedBy = req.user.uid;
-    }
-
-    if (!doc.exists) {
-      dataToSave.createdAt = new Date().toISOString();
-      await docRef.set(dataToSave);
-    } else {
-      await docRef.update(dataToSave);
-    }
-
-    res.status(200).json(dataToSave);
-  } catch (error) {
-    console.error("Error updating leadership settings:", error);
-    res.status(500).json({ message: "Failed to update leadership settings" });
-  }
-});
+// Allow both PUT and POST to update specific sections
+router.put("/:sectionId", saveLeadershipSettings);
+router.post("/:sectionId", saveLeadershipSettings);
 
 module.exports = router;

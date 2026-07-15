@@ -45,7 +45,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Get in touch"
@@ -57,7 +57,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -68,7 +68,7 @@
                 >Hero Image URL</label
               >
               <input
-                v-model="formData.heroImage"
+                v-model="heroSection.heroImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -99,7 +99,7 @@
                 >Form Heading</label
               >
               <input
-                v-model="formData.formHeading"
+                v-model="formSection.formHeading"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -110,7 +110,7 @@
                 >Form Description</label
               >
               <textarea
-                v-model="formData.formDescription"
+                v-model="formSection.formDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -140,7 +140,7 @@
                 >Campus Location Name</label
               >
               <input
-                v-model="formData.campusName"
+                v-model="campusSection.campusName"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -151,7 +151,7 @@
                 >Service Times Title</label
               >
               <input
-                v-model="formData.serviceTimesTitle"
+                v-model="campusSection.serviceTimesTitle"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -162,7 +162,7 @@
                 >Campus Address</label
               >
               <textarea
-                v-model="formData.campusAddress"
+                v-model="campusSection.campusAddress"
                 rows="2"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -173,7 +173,7 @@
                 >Service Times Details</label
               >
               <textarea
-                v-model="formData.serviceTimesDetails"
+                v-model="campusSection.serviceTimesDetails"
                 rows="2"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -203,7 +203,7 @@
                 >Email</label
               >
               <input
-                v-model="formData.email"
+                v-model="contactSection.email"
                 type="email"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -214,7 +214,7 @@
                 >Phone</label
               >
               <input
-                v-model="formData.phone"
+                v-model="contactSection.phone"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -225,7 +225,7 @@
                 >Instagram URL</label
               >
               <input
-                v-model="formData.instagramUrl"
+                v-model="contactSection.instagramUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -236,7 +236,7 @@
                 >Twitter URL</label
               >
               <input
-                v-model="formData.twitterUrl"
+                v-model="contactSection.twitterUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -247,7 +247,7 @@
                 >Youtube URL</label
               >
               <input
-                v-model="formData.youtubeUrl"
+                v-model="contactSection.youtubeUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -285,26 +285,27 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
+import { reactive, onMounted } from "vue";
 
-const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = reactive({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImage: "",
+});
+
+const formSection = reactive({
   formHeading: "",
   formDescription: "",
+});
+
+const campusSection = reactive({
   campusName: "",
   campusAddress: "",
   serviceTimesTitle: "",
   serviceTimesDetails: "",
+});
+
+const contactSection = reactive({
   email: "",
   phone: "",
   instagramUrl: "",
@@ -312,40 +313,19 @@ const formData = reactive({
   youtubeUrl: "",
 });
 
-const loadSettings = async () => {
-  isFetching.value = true;
-  try {
-    const response = await $fetch(`${config.public.apiBase}/admin/contact`);
-    if (response) {
-      Object.keys(formData).forEach((key) => {
-        if (response[key] !== undefined) {
-          formData[key] = response[key];
-        }
-      });
-    }
-  } catch (err) {
-    showAlert("Error", "Failed to load contact settings.");
-    console.error(err);
-  } finally {
-    isFetching.value = false;
-  }
+const sectionsMap = {
+  heroSection,
+  formSection,
+  campusSection,
+  contactSection,
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $fetch(`${config.public.apiBase}/admin/contact`, {
-      method: "PUT",
-      body: formData,
-    });
-    showAlert("Success", "Contact settings saved successfully!");
-  } catch (err) {
-    showAlert("Error", "Failed to save contact settings.");
-    console.error(err);
-  } finally {
-    isSaving.value = false;
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "contact",
+  sectionsMap,
+  { reloadOnSave: true },
+);
 
 onMounted(() => {
   loadSettings();

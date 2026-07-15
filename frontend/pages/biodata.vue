@@ -1,13 +1,13 @@
 <template>
   <div
-    class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-montserrat"
+    class="min-h-screen bg-gray-50 flex flex-col justify-center pt-30 pb-10 px-6 lg:px-8 font-montserrat"
   >
     <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-black text-gray-900 tracking-tight">
+        <h2 class="text-xl font-black text-gray-900 tracking-tight">
           Chapel of Praise
         </h2>
-        <p class="mt-2 text-sm text-gray-600 font-medium">
+        <p class="mt-2 text-xs md:text-sm text-gray-600 font-medium font-mono">
           Official Worker Registration Portal
         </p>
       </div>
@@ -17,30 +17,29 @@
       >
         <div v-if="successMessage" class="text-center py-12">
           <div
-            class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6"
+            class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-5"
           >
-            <Icon name="heroicons:check" class="h-8 w-8 text-green-600" />
+            <Icon name="heroicons:check" class="h-6 w-6 text-green-600" />
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">
-            Registration Complete!
+          <h3 class="text-lg font-semibold tracking-wide text-gray-900 mb-5">
+            Registration <br class="md:hidden" />
+            Complete!
           </h3>
-          <p class="text-gray-500 mb-8 max-w-sm mx-auto">
-            {{ successMessage }}
-          </p>
+
           <button
             @click="resetForm"
-            class="inline-flex justify-center rounded-xl border border-transparent bg-black px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 transition-colors"
+            class="inline-flex justify-center rounded-xl border border-transparent bg-black px-4 md:px-6 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-900 transition-colors font-mono"
           >
             Register Another Worker
           </button>
         </div>
 
-        <form v-else @submit.prevent="handleRegister" class="space-y-8">
+        <form v-else @submit.prevent="handleRegister" class="space-y-9">
           <div
             class="bg-gray-50 p-5 rounded-xl border border-gray-200 space-y-4"
           >
             <h4
-              class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 flex items-center"
+              class="text-xs md:text-sm font-bold font-mono text-black uppercase tracking-wider mb-5 flex items-center"
             >
               <Icon
                 name="heroicons:shield-check"
@@ -51,14 +50,14 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                <label class="block text-xs md:text-sm text-black mb-1.5"
                   >Select Your Unit</label
                 >
                 <div class="relative">
                   <select
                     v-model="formData.chapelUnit"
                     required
-                    class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+                    class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Choose Unit...</option>
                     <option
@@ -81,7 +80,7 @@
               </div>
 
               <div>
-                <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                <label class="block text-xs md:text-sm text-black mb-1.5"
                   >Unit Passkey</label
                 >
                 <div class="relative">
@@ -94,7 +93,7 @@
                     v-model="formData.passkey"
                     type="password"
                     required
-                    class="block w-full pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium uppercase"
+                    class="block w-full pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                     placeholder="Enter 6-character key"
                   />
                 </div>
@@ -104,34 +103,34 @@
 
           <div>
             <h4
-              class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"
+              class="text-xs md:text-sm font-bold font-mono text-black uppercase tracking-wider mb-6 border-b border-gray-100 pb-2"
             >
               Personal Information
             </h4>
 
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                <label class="block text-xs md:text-sm text-black mb-1.5"
                   >Full Name</label
                 >
                 <input
                   v-model="formData.name"
                   type="text"
                   required
-                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                   placeholder="Surname Firstname"
                 />
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Gender</label
                   >
                   <select
                     v-model="formData.gender"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Select</option>
                     <option value="MALE">MALE</option>
@@ -139,55 +138,55 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Date of Birth</label
                   >
                   <input
                     v-model="formData.dateOfBirth"
                     type="date"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                   />
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Phone Number</label
                   >
                   <input
                     v-model="formData.phoneNumber"
                     type="tel"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                     placeholder="090..."
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >WhatsApp Number</label
                   >
                   <input
                     v-model="formData.whatsappPhoneNumber"
                     type="tel"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                     placeholder="090..."
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                <label class="block text-xs md:text-sm text-black mb-1.5"
                   >Email Address</label
                 >
                 <input
                   v-model="formData.emailAddress"
                   type="email"
                   required
-                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
-                  placeholder="student@mcpherson.edu.ng"
+                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
+                  placeholder="student@gmail.com"
                 />
               </div>
             </div>
@@ -195,7 +194,7 @@
 
           <div>
             <h4
-              class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2"
+              class="text-xs md:text-sm text-black font-mono font-bold uppercase tracking-wider mb-6 border-b border-gray-100 pb-2"
             >
               Academic Profile
             </h4>
@@ -203,24 +202,24 @@
             <div class="space-y-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Matric Number</label
                   >
                   <input
                     v-model="formData.matricNumber"
                     type="text"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Level</label
                   >
                   <select
                     v-model="formData.level"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Select</option>
                     <option value="100">100 Level</option>
@@ -234,25 +233,25 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >School Department</label
                   >
                   <input
                     v-model="formData.schoolDepartment"
                     type="text"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                     placeholder="e.g. Computer Science"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-bold text-gray-900 mb-1.5"
+                  <label class="block text-xs md:text-sm text-black mb-1.5"
                     >Relationship Status</label
                   >
                   <select
                     v-model="formData.relationshipStatus"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg sm:text-sm transition-colors text-black font-medium appearance-none bg-white"
+                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Select</option>
                     <option value="SINGLE">SINGLE</option>
@@ -274,7 +273,7 @@
                 name="heroicons:x-circle"
                 class="h-5 w-5 text-red-400 mr-3 shrink-0"
               />
-              <h3 class="text-sm font-semibold text-red-800">
+              <h3 class="text-xs md:text-sm font-semibold text-red-800">
                 {{ errorMessage }}
               </h3>
             </div>
@@ -284,7 +283,7 @@
             <button
               type="submit"
               :disabled="loading"
-              class="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer items-center"
+              class="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-sm text-xs md:text-sm text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer items-center font-mono"
             >
               <Icon
                 v-if="loading"

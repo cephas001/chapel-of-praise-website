@@ -9,9 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
+// Get all contact sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("contact");
+    const snapshot = await db.collection("contact").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting contact sections:", error);
+    res.status(500).json({ message: "Failed to fetch contact sections" });
+  }
+});
+
+// Get a specific contact section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("contact").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -20,15 +39,21 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting contact settings:", error);
-    res.status(500).json({ message: "Failed to fetch contact settings" });
+    console.error(
+      `Error getting contact section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch contact section" });
   }
 });
 
-router.put("/", async (req, res) => {
+// Create or update a specific contact section
+router.put("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("contact");
+
+    const docRef = db.collection("contact").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -49,15 +74,21 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating contact settings:", error);
-    res.status(500).json({ message: "Failed to update contact settings" });
+    console.error(
+      `Error updating contact section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update contact section" });
   }
 });
 
-router.post("/", async (req, res) => {
+// Allow POST to behave the same as PUT for a specific section
+router.post("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("contact");
+
+    const docRef = db.collection("contact").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -78,8 +109,11 @@ router.post("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating contact settings:", error);
-    res.status(500).json({ message: "Failed to update contact settings" });
+    console.error(
+      `Error updating contact section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update contact section" });
   }
 });
 

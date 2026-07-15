@@ -1,7 +1,7 @@
 <template>
   <footer class="w-full bg-[#991111] text-white pt-20 pb-12 px-4 md:px-12">
     <div
-      class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-20"
+      class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-17"
     >
       <div>
         <h3
@@ -9,7 +9,7 @@
         >
           Connect
         </h3>
-        <ul class="space-y-4 text-sm font-medium text-white/80">
+        <ul class="space-y-4 text-xs md:text-sm font-medium text-white/80">
           <li>
             <NuxtLink
               to="/"
@@ -47,7 +47,7 @@
         >
           Ministries
         </h3>
-        <ul class="space-y-4 text-sm font-medium text-white/80">
+        <ul class="space-y-4 text-xs md:text-sm font-medium text-white/80">
           <li>
             <NuxtLink
               to="/"
@@ -71,7 +71,7 @@
         >
           Resources
         </h3>
-        <ul class="space-y-4 text-sm font-medium text-white/80">
+        <ul class="space-y-4 text-xs md:text-sm font-medium text-white/80">
           <li>
             <NuxtLink
               to="/"
@@ -109,7 +109,7 @@
         >
           Media
         </h3>
-        <ul class="space-y-4 text-sm font-medium text-white/80">
+        <ul class="space-y-4 text-xs md:text-sm font-medium text-white/80">
           <li>
             <NuxtLink
               to="https://www.youtube.com/@mcucop"

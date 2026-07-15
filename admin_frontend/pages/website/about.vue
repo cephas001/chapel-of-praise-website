@@ -49,7 +49,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. The family at COP"
@@ -61,7 +61,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -72,7 +72,7 @@
                 >Hero Background Image URL</label
               >
               <input
-                v-model="formData.heroImage"
+                v-model="heroSection.heroImage"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -104,7 +104,7 @@
                 >Section Headline (Black Text)</label
               >
               <input
-                v-model="formData.visionHeadlineBlack"
+                v-model="visionSection.visionHeadlineBlack"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. We serve God"
@@ -116,7 +116,7 @@
                 >Section Headline (Colored Text)</label
               >
               <input
-                v-model="formData.visionHeadlineColored"
+                v-model="visionSection.visionHeadlineColored"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. By His Spirit"
@@ -128,7 +128,7 @@
                 >Content Column 1</label
               >
               <textarea
-                v-model="formData.visionContentCol1"
+                v-model="visionSection.visionContentCol1"
                 rows="6"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter the first column of text..."
@@ -140,7 +140,7 @@
                 >Content Column 2</label
               >
               <textarea
-                v-model="formData.visionContentCol2"
+                v-model="visionSection.visionContentCol2"
                 rows="6"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter the second column of text..."
@@ -172,60 +172,32 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig } from "#app";
-import { useAlertModal } from "~/composables/useAlertModal";
+import { reactive, onMounted } from "vue";
 
-const config = useRuntimeConfig();
-const { showAlert } = useAlertModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = reactive({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImage: "",
+});
+
+const visionSection = reactive({
   visionHeadlineBlack: "",
   visionHeadlineColored: "",
   visionContentCol1: "",
   visionContentCol2: "",
 });
 
-const loadSettings = async () => {
-  isFetching.value = true;
-  try {
-    const response = await $fetch(`${config.public.apiBase}/admin/about`);
-    if (response) {
-      Object.keys(formData).forEach((key) => {
-        if (response[key] !== undefined) {
-          formData[key] = response[key];
-        }
-      });
-    }
-  } catch (error) {
-    console.error("Failed to load about settings:", error);
-    showAlert("Could not load current settings.", "error");
-  } finally {
-    isFetching.value = false;
-  }
+const sectionsMap = {
+  heroSection,
+  visionSection,
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $fetch(`${config.public.apiBase}/admin/about`, {
-      method: "PUT",
-      body: formData,
-    });
-    showAlert("About page settings saved successfully!", "success");
-  } catch (error) {
-    console.error("Failed to save about settings:", error);
-    showAlert("Could not save settings. Please try again.", "error");
-  } finally {
-    isSaving.value = false;
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "about",
+  sectionsMap,
+  { reloadOnSave: true },
+);
 
 onMounted(() => {
   loadSettings();

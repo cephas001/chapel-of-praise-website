@@ -1,132 +1,290 @@
 <template>
-    <LoadingScreen :isLoading="pending" />
-    <div class="bg-white text-black w-full font-sans">
-        <!-- Static Hero Banner -->
-        <section class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white">
-            <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-            <img :src="page?.heroImage || '~/assets/images/connect.webp'" alt="Contact Us Hero" class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale" />
-            <div class="relative z-20 text-center px-4 mt-16">
-                <p class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]">{{ page?.heroKicker || 'Reach Out' }}</p>
-                <h1 class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg">
-                    {{ page?.heroHeadline || 'Contact Us' }}
-                </h1>
-            </div>
-        </section>
+  <LoadingScreen :isLoading="pending" />
+  <div class="bg-white text-black w-full font-sans">
+    <!-- Static Hero Banner -->
+    <section
+      class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white"
+    >
+      <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
 
-        <!-- Main Content Container -->
-        <main class="max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-                
-                <!-- Left: Professional Contact Form -->
+      <!-- Unified Hero Image -->
+      <img
+        :src="pageData.hero.image"
+        alt="Contact Us Hero"
+        class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale"
+      />
+
+      <div class="relative z-20 text-center px-4 mt-16">
+        <p
+          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]"
+        >
+          {{ pageData.hero.kicker }}
+        </p>
+        <h1
+          class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg"
+        >
+          {{ pageData.hero.headline }}
+        </h1>
+      </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <!-- Left: Professional Contact Form -->
+        <div>
+          <div class="mb-10">
+            <h2
+              class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black"
+            >
+              {{ pageData.form.heading }}
+            </h2>
+            <p
+              class="text-gray-600 text-base md:text-lg font-light leading-relaxed"
+            >
+              {{ pageData.form.description }}
+            </p>
+          </div>
+
+          <form class="space-y-6" @submit.prevent>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label
+                  for="firstName"
+                  class="block text-xs font-bold uppercase tracking-wider text-black/70"
+                  >First Name</label
+                >
+                <input
+                  type="text"
+                  id="firstName"
+                  class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div class="space-y-2">
+                <label
+                  for="lastName"
+                  class="block text-xs font-bold uppercase tracking-wider text-black/70"
+                  >Last Name</label
+                >
+                <input
+                  type="text"
+                  id="lastName"
+                  class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
+                  placeholder="Doe"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="email"
+                class="block text-xs font-bold uppercase tracking-wider text-black/70"
+                >Email Address</label
+              >
+              <input
+                type="email"
+                id="email"
+                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
+                placeholder="john@example.com"
+                required
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="message"
+                class="block text-xs font-bold uppercase tracking-wider text-black/70"
+                >Message</label
+              >
+              <textarea
+                id="message"
+                rows="5"
+                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all resize-y"
+                placeholder="How can we help you?"
+                required
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="bg-black hover:bg-[#e94e4e] text-white font-bold py-4 px-10 rounded-full transition-colors uppercase tracking-wider text-sm w-full md:w-auto"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Information Grid -->
+        <div class="flex flex-col justify-center">
+          <div
+            class="bg-gray-50 rounded-2xl p-8 md:p-12 border border-gray-100"
+          >
+            <h3 class="text-2xl font-impact uppercase mb-8 text-black">
+              Visit Us
+            </h3>
+
+            <div class="space-y-8">
+              <!-- Location -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black"
+                >
+                  <Icon name="heroicons:map-pin" class="w-5 h-5" />
+                </div>
                 <div>
-                    <div class="mb-10">
-                        <h2 class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black">{{ page?.formHeading || 'Send a Message' }}</h2>
-                        <p class="text-gray-600 text-base md:text-lg font-light leading-relaxed">
-                            {{ page?.formDescription || 'Have questions about our ministries, services, or events? Send us a message, and our team will get back to you as soon as possible.' }}
-                        </p>
-                    </div>
-
-                    <form class="space-y-6" @submit.prevent>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label for="firstName" class="block text-xs font-bold uppercase tracking-wider text-black/70">First Name</label>
-                                <input type="text" id="firstName" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all" placeholder="John" required />
-                            </div>
-                            <div class="space-y-2">
-                                <label for="lastName" class="block text-xs font-bold uppercase tracking-wider text-black/70">Last Name</label>
-                                <input type="text" id="lastName" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all" placeholder="Doe" required />
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label for="email" class="block text-xs font-bold uppercase tracking-wider text-black/70">Email Address</label>
-                            <input type="email" id="email" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all" placeholder="john@example.com" required />
-                        </div>
-
-                        <div class="space-y-2">
-                            <label for="message" class="block text-xs font-bold uppercase tracking-wider text-black/70">Message</label>
-                            <textarea id="message" rows="5" class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all resize-y" placeholder="How can we help you?" required></textarea>
-                        </div>
-
-                        <button type="submit" class="bg-black hover:bg-[#e94e4e] text-white font-bold py-4 px-10 rounded-full transition-colors uppercase tracking-wider text-sm w-full md:w-auto">
-                            Send Message
-                        </button>
-                    </form>
+                  <h4
+                    class="text-sm font-bold uppercase tracking-widest mb-1 text-black"
+                  >
+                    {{ pageData.campus.name }}
+                  </h4>
+                  <p
+                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed whitespace-pre-line"
+                  >
+                    {{ pageData.campus.address }}
+                  </p>
                 </div>
+              </div>
 
-                <!-- Right: Information Grid -->
-                <div class="flex flex-col justify-center">
-                    <div class="bg-gray-50 rounded-2xl p-8 md:p-12 border border-gray-100">
-                        <h3 class="text-2xl font-impact uppercase mb-8 text-black">Visit Us</h3>
-                        
-                        <div class="space-y-8">
-                            <!-- Location -->
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black">
-                                    <Icon name="heroicons:map-pin" class="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Main Campus</h4>
-                                    <p class="text-gray-600 font-light leading-relaxed">
-                                        {{ page?.mainCampusAddress || '123 Gospel Light Avenue,\nExcellence District, Lagos, Nigeria' }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Service Times -->
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black">
-                                    <Icon name="heroicons:clock" class="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Service Times</h4>
-                                    <p class="text-gray-600 font-light leading-relaxed">
-                                        {{ page?.serviceTimes || 'Sundays: 8:00 AM & 10:30 AM\nWednesdays (Mid-week): 6:00 PM' }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Contact Info -->
-                            <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black">
-                                    <Icon name="heroicons:envelope" class="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold uppercase tracking-widest mb-1 text-black">Contact Details</h4>
-                                    <p class="text-gray-600 font-light leading-relaxed">
-                                        Email: {{ page?.contactEmail || 'info@chapelofpraise.org' }}<br />
-                                        Phone: {{ page?.contactPhone || '+234 123 456 7890' }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Social Proof/Follow -->
-                        <div class="mt-10 pt-8 border-t border-gray-200">
-                            <h4 class="text-xs font-bold uppercase tracking-widest mb-4 text-gray-500">Follow Our Journey</h4>
-                            <div class="flex gap-4">
-                                <a href="#" class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"><Icon name="mdi:instagram" class="w-5 h-5" /></a>
-                                <a href="#" class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"><Icon name="mdi:twitter" class="w-5 h-5" /></a>
-                                <a href="#" class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"><Icon name="mdi:youtube" class="w-5 h-5" /></a>
-                            </div>
-                        </div>
-                    </div>
+              <!-- Service Times -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black"
+                >
+                  <Icon name="heroicons:clock" class="w-5 h-5" />
                 </div>
+                <div>
+                  <h4
+                    class="text-sm font-bold uppercase tracking-widest mb-1 text-black"
+                  >
+                    {{ pageData.campus.serviceTimesTitle }}
+                  </h4>
+                  <p
+                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed whitespace-pre-line"
+                  >
+                    {{ pageData.campus.serviceTimesDetails }}
+                  </p>
+                </div>
+              </div>
 
+              <!-- Contact Info -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-10 h-10 shrink-0 bg-white rounded-full border border-gray-200 flex items-center justify-center text-black"
+                >
+                  <Icon name="heroicons:envelope" class="w-5 h-5" />
+                </div>
+                <div>
+                  <h4
+                    class="text-sm font-bold uppercase tracking-widest mb-1 text-black"
+                  >
+                    Contact Details
+                  </h4>
+                  <p
+                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed"
+                  >
+                    Email: {{ pageData.contact.email }}<br />
+                    Phone: {{ pageData.contact.phone }}
+                  </p>
+                </div>
+              </div>
             </div>
-        </main>
-    </div>
+
+            <!-- Social Proof/Follow -->
+            <div class="mt-10 pt-8 border-t border-gray-200">
+              <h4
+                class="text-xs font-bold uppercase tracking-widest mb-4 text-gray-500"
+              >
+                Follow Our Journey
+              </h4>
+              <div class="flex gap-4">
+                <a
+                  :href="pageData.contact.instagramUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"
+                  ><Icon name="mdi:instagram" class="w-5 h-5"
+                /></a>
+                <a
+                  :href="pageData.contact.twitterUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"
+                  ><Icon name="mdi:twitter" class="w-5 h-5"
+                /></a>
+                <a
+                  :href="pageData.contact.youtubeUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#e94e4e] hover:-translate-y-1 transition-all"
+                  ><Icon name="mdi:youtube" class="w-5 h-5"
+                /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRuntimeConfig, useFetch } from '#app';
-const config = useRuntimeConfig();
-
-const { data: pageData, pending } = useFetch(`${config.public.apiBaseUrl}/public/contact`);
-const page = computed(() => pageData.value?.data || {});
+import { computed } from "vue";
+import { useRuntimeConfig, useFetch, useHead } from "#app";
+import defaultHeroImage from "~/assets/images/connect.webp";
 
 useHead({
-  title: 'Contact Us | Chapel of Praise'
-})
+  title: "Contact Us | Chapel of Praise",
+});
+
+const config = useRuntimeConfig();
+
+// Fetch data using Nuxt's useFetch with lazy and server enabled for optimal SSR
+const { data: fetchedData, pending } = await useFetch(
+  `${config.public.apiBaseUrl}/public/contact`,
+  { lazy: true, server: true },
+);
+
+// Centralized computed property mapped to backend sections
+const pageData = computed(() => {
+  const apiData = fetchedData.value || {};
+
+  const hero = apiData.heroSection || {};
+  const form = apiData.formSection || {};
+  const campus = apiData.campusSection || {};
+  const contact = apiData.contactSection || {};
+
+  return {
+    hero: {
+      image: hero.heroImage || defaultHeroImage,
+      kicker: hero.heroKicker || "Reach Out",
+      headline: hero.heroHeadline || "Contact Us",
+    },
+    form: {
+      heading: form.formHeading || "Send a Message",
+      description:
+        form.formDescription ||
+        "Have questions about our ministries, services, or events? Send us a message, and our team will get back to you as soon as possible.",
+    },
+    campus: {
+      name: campus.campusName || "Main Campus",
+      address:
+        campus.campusAddress ||
+        "123 Gospel Light Avenue,\nExcellence District, Lagos, Nigeria",
+      serviceTimesTitle: campus.serviceTimesTitle || "Service Times",
+      serviceTimesDetails:
+        campus.serviceTimesDetails ||
+        "Sundays: 8:00 AM & 10:30 AM\nWednesdays (Mid-week): 6:00 PM",
+    },
+    contact: {
+      email: contact.email || "info@chapelofpraise.org",
+      phone: contact.phone || "+234 123 456 7890",
+      instagramUrl: contact.instagramUrl || "#",
+      twitterUrl: contact.twitterUrl || "#",
+      youtubeUrl: contact.youtubeUrl || "#",
+    },
+  };
+});
 </script>

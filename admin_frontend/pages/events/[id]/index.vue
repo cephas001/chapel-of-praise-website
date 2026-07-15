@@ -225,7 +225,9 @@ const isFetching = ref(true);
 const fetchEventDetails = async () => {
   isFetching.value = true;
   try {
-    const response = await $fetch(`${config.public.apiBase}/events/${eventId}`);
+    const response = await $fetch(
+      `${config.public.apiBase}/admin/events/${eventId}`,
+    );
     event.value = response;
   } catch (error) {
     console.error("Failed to fetch event details:", error);

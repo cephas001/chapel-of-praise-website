@@ -196,13 +196,16 @@ const fetchData = async () => {
   isFetching.value = true;
   try {
     // Fetch Follow Ups
-    const followRes = await $fetch(`${config.public.apiBase}/follow-ups`, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
+    const followRes = await $fetch(
+      `${config.public.apiBase}/admin/follow-ups`,
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      },
+    );
     followUps.value = followRes;
 
     // Fetch Events for the dropdown
-    const evRes = await $fetch(`${config.public.apiBase}/events`, {
+    const evRes = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     events.value = evRes
@@ -233,7 +236,7 @@ const closeDrawer = () => (isDrawerOpen.value = false);
 const submitNewRecord = async () => {
   isCreating.value = true;
   try {
-    await $fetch(`${config.public.apiBase}/follow-ups`, {
+    await $fetch(`${config.public.apiBase}/admin/follow-ups`, {
       method: "POST",
       body: { ...form },
       headers: { Authorization: `Bearer ${authStore.token}` },
@@ -251,7 +254,7 @@ const submitNewRecord = async () => {
 // Handle the event emitted from the ActionCard
 const handleAddNote = async ({ id, text, onSuccess, onError }) => {
   try {
-    await $fetch(`${config.public.apiBase}/follow-ups/${id}/notes`, {
+    await $fetch(`${config.public.apiBase}/admin/follow-ups/${id}/notes`, {
       method: "POST",
       body: {
         text,

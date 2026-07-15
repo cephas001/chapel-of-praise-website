@@ -9,9 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
+// Get all about sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("about");
+    const snapshot = await db.collection("about").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting about sections:", error);
+    res.status(500).json({ message: "Failed to fetch about sections" });
+  }
+});
+
+// Get a specific about section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("about").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -20,16 +39,21 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting about settings:", error);
-    res.status(500).json({ message: "Failed to fetch about settings" });
+    console.error(
+      `Error getting about section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch about section" });
   }
 });
 
-router.put("/", async (req, res) => {
+// Create or update a specific about section
+router.put("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
 
-    const docRef = db.collection("settings").doc("about");
+    const docRef = db.collection("about").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -50,16 +74,21 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating about settings:", error);
-    res.status(500).json({ message: "Failed to update about settings" });
+    console.error(
+      `Error updating about section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update about section" });
   }
 });
 
-router.post("/", async (req, res) => {
+// Allow POST to behave the same as PUT for a specific section
+router.post("/:sectionId", async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
 
-    const docRef = db.collection("settings").doc("about");
+    const docRef = db.collection("about").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -80,8 +109,11 @@ router.post("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating about settings:", error);
-    res.status(500).json({ message: "Failed to update about settings" });
+    console.error(
+      `Error updating about section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update about section" });
   }
 });
 

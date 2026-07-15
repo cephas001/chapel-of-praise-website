@@ -597,17 +597,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig } from "#app";
+import { reactive, onMounted } from "vue";
 
 // Config & Utilities
-const config = useRuntimeConfig();
-const toast = useAppToast();
 const confirm = useConfirm();
-
-// State Flags
-const isFetching = ref(true);
-const isSaving = ref(false);
 
 // Section Data
 const heroSection = reactive({
@@ -716,69 +709,34 @@ const removeEditorialCard = async (index) => {
   }
 };
 
-// API Calls
-const loadSettings = async () => {
-  isFetching.value = true;
-  try {
-    const response = await $fetch(`${config.public.apiBase}/admin/homepage`);
-
-    Object.entries(response).forEach(([key, value]) => {
-      if (sectionsMap[key]) {
-        if (key === "actionCardsSection" && value.actionCards) {
-          actionCardsSection.actionCards = value.actionCards;
-        } else if (key === "editorialSection" && value.editorialSlides) {
-          // Safeguard: Ensure the incoming data always has exactly 4 string slots for v-model to bind to
-          editorialSection.editorialSlides = value.editorialSlides.map(
-            (slide) => ({
-              ...slide,
-              images: Array.isArray(slide.images)
-                ? [...slide.images, "", "", "", ""].slice(0, 4)
-                : ["", "", "", ""],
-            }),
-          );
-        } else {
-          Object.assign(sectionsMap[key], value);
-        }
+// Custom parser to handle the specific array mapping for homepage
+const homepageParser = (response, map) => {
+  Object.entries(response).forEach(([key, value]) => {
+    if (map[key]) {
+      if (key === "actionCardsSection" && value.actionCards) {
+        map.actionCardsSection.actionCards = value.actionCards;
+      } else if (key === "editorialSection" && value.editorialSlides) {
+        map.editorialSection.editorialSlides = value.editorialSlides.map(
+          (slide) => ({
+            ...slide,
+            images: Array.isArray(slide.images)
+              ? [...slide.images, "", "", "", ""].slice(0, 4)
+              : ["", "", "", ""],
+          }),
+        );
+      } else {
+        Object.assign(map[key], value);
       }
-    });
-  } catch (error) {
-    console.error("Failed to load homepage settings:", error);
-    toast.error("Could not load settings. Please try again.");
-  } finally {
-    isFetching.value = false;
-  }
-};
-
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    for (const [sectionId, sectionData] of Object.entries(sectionsMap)) {
-      await $fetch(`${config.public.apiBase}/admin/homepage/${sectionId}`, {
-        method: "PUT",
-        body: sectionData,
-      });
     }
-    toast.success("Homepage settings saved successfully!");
-  } catch (error) {
-    console.error("Failed to save homepage settings:", error);
-    toast.error("Could not save settings. Please try again.");
-  } finally {
-    isSaving.value = false;
-  }
+  });
 };
 
-const saveSection = async (sectionId, sectionData) => {
-  try {
-    await $fetch(`${config.public.apiBase}/admin/homepage/${sectionId}`, {
-      method: "PUT",
-      body: sectionData,
-    });
-    toast.success(`${sectionId} saved successfully!`);
-  } catch (error) {
-    console.error(`Failed to save ${sectionId}:`, error);
-    toast.error(`Could not save ${sectionId}. Please try again.`);
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "homepage",
+  sectionsMap,
+  { customParser: homepageParser },
+);
 
 onMounted(() => {
   loadSettings();

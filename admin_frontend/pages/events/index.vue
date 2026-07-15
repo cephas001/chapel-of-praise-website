@@ -204,7 +204,7 @@ const selectedEvent = ref(null);
 const fetchEvents = async () => {
   isFetching.value = true;
   try {
-    const response = await $fetch(`${config.public.apiBase}/events`);
+    const response = await $fetch(`${config.public.apiBase}/admin/events`);
     events.value = response;
   } catch (error) {
     console.log("Error fetching events:", error);
@@ -244,7 +244,7 @@ const handleFormSubmit = async (formData) => {
     if (selectedEvent.value) {
       // UPDATE Existing Event
       const response = await $fetch(
-        `${config.public.apiBase}/events/${selectedEvent.value.id}`,
+        `${config.public.apiBase}/admin/events/${selectedEvent.value.id}`,
         {
           method: "PUT",
           body: formData,
@@ -258,7 +258,7 @@ const handleFormSubmit = async (formData) => {
       if (index !== -1) events.value[index] = response.event;
     } else {
       // CREATE New Event
-      const response = await $fetch(`${config.public.apiBase}/events`, {
+      const response = await $fetch(`${config.public.apiBase}/admin/events`, {
         method: "POST",
         body: formData,
       });
@@ -300,7 +300,7 @@ const handleDeleteEvent = async (id) => {
   }
 
   try {
-    await $fetch(`${config.public.apiBase}/events/${id}`, {
+    await $fetch(`${config.public.apiBase}/admin/events/${id}`, {
       method: "DELETE",
     });
 

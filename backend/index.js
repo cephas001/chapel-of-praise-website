@@ -4,13 +4,13 @@ require("dotenv").config();
 
 const app = express();
 
-// 1. Define all possible allowed origins in an array
+// CORS Configuration
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.ADMIN_FRONTEND_URL,
   "http://localhost:3000",
   "http://localhost:3001",
-].filter(Boolean); // 2. Filter out any undefined values if env vars are missing
+].filter(Boolean);
 
 const corsOptions = {
   origin: allowedOrigins,
@@ -18,11 +18,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
 
-// Import Routes
+// -------------------- Route Imports --------------------
+// Admin Routes
 const adminAuthRoutes = require("./routes/admin/authRoutes");
 const eventRoutes = require("./routes/admin/eventRoutes");
 const adminHomepageRoutes = require("./routes/admin/homepageRoutes");
@@ -32,7 +32,16 @@ const adminGivingRoutes = require("./routes/admin/givingRoutes");
 const adminAboutRoutes = require("./routes/admin/aboutRoutes");
 const adminContactRoutes = require("./routes/admin/contactRoutes");
 const adminPrayerRoutes = require("./routes/admin/prayerRoutes");
-const adminCounselingRoutes = require("./routes/admin/counselingRoutes");
+const adminCounsellingRoutes = require("./routes/admin/counsellingRoutes");
+const adminAltarCallRoutes = require("./routes/admin/altarCallRoutes");
+const adminHeadcountRoutes = require("./routes/admin/headcountRoutes");
+const adminMemberRoutes = require("./routes/admin/memberRoutes");
+const adminEventAttendanceRoutes = require("./routes/admin/eventAttendanceRoutes");
+const adminFollowUpRoutes = require("./routes/admin/followUpRoutes");
+const adminDashboardLinksRoutes = require("./routes/admin/dashboardLinksRoutes");
+const adminEventsCalendarRoutes = require("./routes/admin/eventsCalendarRoutes");
+
+// Public Routes
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
 const publicAboutRoutes = require("./routes/public/aboutRoutes");
 const publicContactRoutes = require("./routes/public/contactRoutes");
@@ -40,18 +49,14 @@ const publicLeadershipRoutes = require("./routes/public/leadershipRoutes");
 const publicMinistriesRoutes = require("./routes/public/ministriesRoutes");
 const publicGivingRoutes = require("./routes/public/givingRoutes");
 const publicPrayerRoutes = require("./routes/public/prayerRoutes");
-const publicCounselingRoutes = require("./routes/public/counselingRoutes");
-const altarCallRoutes = require("./routes/admin/altarCallRoutes");
-const headcountRoutes = require("./routes/admin/headcountRoutes");
+const publiccounsellingRoutes = require("./routes/public/counsellingRoutes");
 const publicMemberRoutes = require("./routes/public/memberRoutes");
-const adminMemberRoutes = require("./routes/admin/memberRoutes");
-const eventAttendanceRoutes = require("./routes/admin/eventAttendanceRoutes");
-const followUpRoutes = require("./routes/admin/followUpRoutes");
-const dashboardLinksRoutes = require("./routes/admin/dashboardLinksRoutes");
+const publicEventsCalendarRoutes = require("./routes/public/eventsCalendarRoutes");
 
-// --- API ROUTES ---
-app.use("/api/auth", adminAuthRoutes);
-app.use("/api/events", eventRoutes);
+// -------------------- API Routes --------------------
+// Admin APIs
+app.use("/api/admin/auth", adminAuthRoutes);
+app.use("/api/admin/events", eventRoutes);
 app.use("/api/admin/homepage", adminHomepageRoutes);
 app.use("/api/admin/leadership", adminLeadershipRoutes);
 app.use("/api/admin/ministries", adminMinistriesRoutes);
@@ -59,7 +64,16 @@ app.use("/api/admin/giving", adminGivingRoutes);
 app.use("/api/admin/about", adminAboutRoutes);
 app.use("/api/admin/contact", adminContactRoutes);
 app.use("/api/admin/prayer", adminPrayerRoutes);
-app.use("/api/admin/counseling", adminCounselingRoutes);
+app.use("/api/admin/counselling", adminCounsellingRoutes);
+app.use("/api/admin/altar-calls", adminAltarCallRoutes);
+app.use("/api/admin/headcounts", adminHeadcountRoutes);
+app.use("/api/admin/members", adminMemberRoutes);
+app.use("/api/admin/event-attendance", adminEventAttendanceRoutes);
+app.use("/api/admin/follow-ups", adminFollowUpRoutes);
+app.use("/api/admin/dashboard-links", adminDashboardLinksRoutes);
+app.use("/api/admin/events-calendar", adminEventsCalendarRoutes);
+
+// Public APIs
 app.use("/api/public/homepage", publicHomepageRoutes);
 app.use("/api/public/about", publicAboutRoutes);
 app.use("/api/public/contact", publicContactRoutes);
@@ -67,18 +81,11 @@ app.use("/api/public/leadership", publicLeadershipRoutes);
 app.use("/api/public/ministries", publicMinistriesRoutes);
 app.use("/api/public/giving", publicGivingRoutes);
 app.use("/api/public/prayer", publicPrayerRoutes);
-app.use("/api/public/counseling", publicCounselingRoutes);
-app.use("/api/altar-calls", altarCallRoutes);
-app.use("/api/headcounts", headcountRoutes);
-app.use("/api/members", publicMemberRoutes); // Public routes (e.g., worker registration)
-app.use("/api/members", adminMemberRoutes); // Admin routes (e.g., executive management)
-app.use("/api/event-attendance", eventAttendanceRoutes);
-app.use("/api/follow-ups", followUpRoutes);
-app.use("/api/dashboard-links", dashboardLinksRoutes);
+app.use("/api/public/counselling", publiccounsellingRoutes);
+app.use("/api/members", publicMemberRoutes); // Worker registration
+app.use("/api/public/events-calendar", publicEventsCalendarRoutes);
 
-// Mount API Routes
-
-// Start Server
+// -------------------- Server Startup --------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Chapel of Praise API running on port ${PORT}`);

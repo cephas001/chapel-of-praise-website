@@ -49,7 +49,7 @@
                 >Hero Kicker</label
               >
               <input
-                v-model="formData.heroKicker"
+                v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Our Leaders"
@@ -61,7 +61,7 @@
                 >Hero Headline</label
               >
               <input
-                v-model="formData.heroHeadline"
+                v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -72,7 +72,7 @@
                 >Hero Background Image URL</label
               >
               <input
-                v-model="formData.heroImageUrl"
+                v-model="heroSection.heroImageUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="https://..."
@@ -104,7 +104,7 @@
                 >Headline</label
               >
               <input
-                v-model="formData.teamHeadline"
+                v-model="teamSection.teamHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
@@ -115,7 +115,7 @@
                 >Description</label
               >
               <textarea
-                v-model="formData.teamDescription"
+                v-model="teamSection.teamDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
@@ -147,13 +147,13 @@
           class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
         >
           <div
-            v-if="formData.chaplaincyList.length === 0"
+            v-if="chaplaincySection.chaplaincyList.length === 0"
             class="text-xs text-gray-500 text-center py-4"
           >
             No chaplains added yet.
           </div>
           <div
-            v-for="(chaplain, index) in formData.chaplaincyList"
+            v-for="(chaplain, index) in chaplaincySection.chaplaincyList"
             :key="'chaplain' + index"
             class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
           >
@@ -164,12 +164,12 @@
             <button
               type="button"
               @click="removeChaplain(index)"
-              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1"
+              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
               title="Remove Chaplain"
             >
-              <Icon name="heroicons:trash" class="h-4 w-4" />
+              <Icon name="heroicons:minus-circle" class="h-4 w-4" />
             </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
               <div>
                 <label
                   class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -243,13 +243,15 @@
           class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
         >
           <div
-            v-if="formData.studentExecutivesList.length === 0"
+            v-if="studentExecutivesSection.studentExecutivesList.length === 0"
             class="text-xs text-gray-500 text-center py-4"
           >
             No student executives added yet.
           </div>
           <div
-            v-for="(exec, index) in formData.studentExecutivesList"
+            v-for="(
+              exec, index
+            ) in studentExecutivesSection.studentExecutivesList"
             :key="'exec' + index"
             class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
           >
@@ -322,7 +324,7 @@
       >
         <button
           type="button"
-          @click="fetchSettings"
+          @click="loadSettings"
           class="px-5 py-2.5 text-xs md:text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-jetbrains"
           :disabled="isSaving"
         >
@@ -346,83 +348,77 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useNuxtApp } from "#app";
-import { useAlertModal } from "@/composables/useAlertModal";
-import { useErrorModal } from "@/composables/useErrorModal";
+import { onMounted, reactive } from "vue";
 
 definePageMeta({
   layout: "default",
 });
 
-const { $api } = useNuxtApp();
-const { showAlert } = useAlertModal();
-const { showError } = useErrorModal();
-
-const isFetching = ref(true);
-const isSaving = ref(false);
-
-const formData = ref({
+const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
   heroImageUrl: "",
+});
+
+const teamSection = reactive({
   teamHeadline: "",
   teamDescription: "",
+});
+
+const chaplaincySection = reactive({
   chaplaincyList: [],
+});
+const studentExecutivesSection = reactive({
   studentExecutivesList: [],
 });
+
+const sectionsMap = {
+  heroSection,
+  teamSection,
+  chaplaincySection,
+  studentExecutivesSection,
+};
 
 const defaultChaplain = () => ({ name: "", title: "", bio: "", imageUrl: "" });
 const defaultExecutive = () => ({ name: "", title: "", bio: "", imageUrl: "" });
 
-const addChaplain = () => formData.value.chaplaincyList.push(defaultChaplain());
+const addChaplain = () =>
+  chaplaincySection.chaplaincyList.push(defaultChaplain());
 const removeChaplain = (index) =>
-  formData.value.chaplaincyList.splice(index, 1);
+  chaplaincySection.chaplaincyList.splice(index, 1);
 
 const addExecutive = () =>
-  formData.value.studentExecutivesList.push(defaultExecutive());
+  studentExecutivesSection.studentExecutivesList.push(defaultExecutive());
 const removeExecutive = (index) =>
-  formData.value.studentExecutivesList.splice(index, 1);
+  studentExecutivesSection.studentExecutivesList.splice(index, 1);
 
-const fetchSettings = async () => {
-  isFetching.value = true;
-  try {
-    const response = await $api.get("/admin/leadership");
-    if (response.data && Object.keys(response.data).length > 0) {
-      formData.value = {
-        heroKicker: response.data.heroKicker || "",
-        heroHeadline: response.data.heroHeadline || "",
-        heroImageUrl: response.data.heroImageUrl || "",
-        teamHeadline: response.data.teamHeadline || "",
-        teamDescription: response.data.teamDescription || "",
-        chaplaincyList: response.data.chaplaincyList || [],
-        studentExecutivesList: response.data.studentExecutivesList || [],
-      };
+// Custom parser to handle the specific array mapping for leadership page
+const leadershipPageParser = (response, map) => {
+  Object.entries(response).forEach(([key, value]) => {
+    if (map[key]) {
+      if (key === "chaplaincySection" && value.chaplaincyList) {
+        map.chaplaincySection.chaplaincyList = value.chaplaincyList;
+      } else if (
+        key === "studentExecutivesSection" &&
+        value.studentExecutivesList
+      ) {
+        map.studentExecutivesSection.studentExecutivesList =
+          value.studentExecutivesList;
+      } else {
+        Object.assign(map[key], value);
+      }
     }
-  } catch (err) {
-    showError("Failed to load leadership configuration.");
-  } finally {
-    isFetching.value = false;
-  }
+  });
 };
 
-const saveSettings = async () => {
-  isSaving.value = true;
-  try {
-    await $api.put("/admin/leadership", formData.value);
-    showAlert(
-      "Success!",
-      "Leadership configuration updated successfully.",
-      "success",
-    );
-  } catch (err) {
-    showError("Failed to save configuration. Please try again.");
-  } finally {
-    isSaving.value = false;
-  }
-};
+// Initialize the composable
+const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
+  "leadership",
+  sectionsMap,
+  { customParser: leadershipPageParser },
+);
 
 onMounted(() => {
-  fetchSettings();
+  loadSettings();
 });
 </script>

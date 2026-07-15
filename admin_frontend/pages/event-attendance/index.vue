@@ -130,7 +130,7 @@ const availableUnits = [
 // Fetch events to populate the dropdown
 onMounted(async () => {
   try {
-    const res = await $fetch(`${config.public.apiBase}/events`, {
+    const res = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 

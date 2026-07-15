@@ -242,12 +242,12 @@ const fetchData = async () => {
   isFetching.value = true;
   try {
     // 1. Fetch Headcounts (Requires a backend endpoint that joins headcount data with event details)
-    const hcRes = await $fetch(`${config.public.apiBase}/headcounts`);
+    const hcRes = await $fetch(`${config.public.apiBase}/admin/headcounts`);
     headcounts.value = hcRes;
     console.log(hcRes);
 
     // 2. Fetch Events for the dropdown
-    const evRes = await $fetch(`${config.public.apiBase}/events`, {
+    const evRes = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     // Add the formatted string to the object so SearchableSelect can filter by it
@@ -277,7 +277,7 @@ const handleHeadcountSubmit = async (formData) => {
   isSubmitting.value = true;
   try {
     // Post to the exact same endpoint we used in the embedded view
-    await $fetch(`${config.public.apiBase}/headcounts`, {
+    await $fetch(`${config.public.apiBase}/admin/headcounts`, {
       method: "POST",
       body: { eventId: selectedEventId.value, ...formData },
       headers: { Authorization: `Bearer ${authStore.token}` },

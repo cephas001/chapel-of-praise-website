@@ -145,7 +145,7 @@ async function handleLogin() {
     const firebaseToken = await userCredential.user.getIdToken();
 
     // 3. Sync with your backend using the new login-sync route
-    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
+    const response = await $fetch(`${config.public.apiBase}/admin/auth/login`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${firebaseToken}`, // Pass the token manually this one time

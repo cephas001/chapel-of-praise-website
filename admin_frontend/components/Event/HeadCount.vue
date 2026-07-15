@@ -159,7 +159,7 @@ const fetchHeadcount = async () => {
   isFetching.value = true;
   try {
     const response = await $fetch(
-      `${config.public.apiBase}/headcounts/event/${props.eventId}`,
+      `${config.public.apiBase}/admin/headcounts/event/${props.eventId}`,
       {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },
@@ -193,7 +193,7 @@ const handleFormSubmit = async (formData) => {
       ...formData,
     };
 
-    const response = await $fetch(`${config.public.apiBase}/headcounts`, {
+    const response = await $fetch(`${config.public.apiBase}/admin/headcounts`, {
       method: "POST",
       body: payload,
       headers: { Authorization: `Bearer ${authStore.token}` },

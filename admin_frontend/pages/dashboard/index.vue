@@ -147,7 +147,7 @@
             class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
           >
             <span
-              class="text-xs md:text-sm font-semibold text-gray-800 tracking-wide transition-colors truncate pr-4"
+              class="text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4"
             >
               {{ link.label }}
             </span>
@@ -395,9 +395,12 @@ const dashboardSections = ref([]);
 const fetchLinks = async () => {
   isFetching.value = true;
   try {
-    const data = await $fetch(`${config.public.apiBase}/dashboard-links`, {
-      method: "GET",
-    });
+    const data = await $fetch(
+      `${config.public.apiBase}/admin/dashboard-links`,
+      {
+        method: "GET",
+      },
+    );
     if (data && Array.isArray(data)) {
       dashboardSections.value = data;
     }
@@ -419,7 +422,7 @@ const handleDeleteLink = async (sectionId, linkId) => {
 
   try {
     await $fetch(
-      `${config.public.apiBase}/dashboard-links/${sectionId}/${linkId}`,
+      `${config.public.apiBase}/admin/dashboard-links/${sectionId}/${linkId}`,
       {
         method: "DELETE",
       },
@@ -465,7 +468,7 @@ const submitNewCategory = async () => {
     if (editingCategoryId.value) {
       // UPDATE CATEGORY
       await $fetch(
-        `${config.public.apiBase}/dashboard-links/category/${editingCategoryId.value}`,
+        `${config.public.apiBase}/admin/dashboard-links/category/${editingCategoryId.value}`,
         {
           method: "PUT",
           body: newCategoryData.value,
@@ -474,7 +477,7 @@ const submitNewCategory = async () => {
       toast.success("Category updated successfully.");
     } else {
       // CREATE CATEGORY
-      await $fetch(`${config.public.apiBase}/dashboard-links/category`, {
+      await $fetch(`${config.public.apiBase}/admin/dashboard-links/category`, {
         method: "POST",
         body: newCategoryData.value,
       });
@@ -501,7 +504,7 @@ const handleDeleteCategory = async (categoryId) => {
 
   try {
     await $fetch(
-      `${config.public.apiBase}/dashboard-links/category/${categoryId}`,
+      `${config.public.apiBase}/admin/dashboard-links/category/${categoryId}`,
       {
         method: "DELETE",
       },
@@ -547,7 +550,7 @@ const submitNewLink = async () => {
     if (editingLinkId.value) {
       // UPDATE LINK
       await $fetch(
-        `${config.public.apiBase}/dashboard-links/${editingSectionIdForLink.value}/${editingLinkId.value}`,
+        `${config.public.apiBase}/admin/dashboard-links/${editingSectionIdForLink.value}/${editingLinkId.value}`,
         {
           method: "PUT",
           body: payload,
@@ -556,7 +559,7 @@ const submitNewLink = async () => {
       toast.success("Link updated successfully");
     } else {
       // CREATE LINK
-      await $fetch(`${config.public.apiBase}/dashboard-links/link`, {
+      await $fetch(`${config.public.apiBase}/admin/dashboard-links/link`, {
         method: "POST",
         body: payload,
       });

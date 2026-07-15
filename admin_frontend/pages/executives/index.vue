@@ -183,7 +183,7 @@ const fetchExecutives = async () => {
   isFetching.value = true;
   try {
     const response = await $fetch(
-      `${config.public.apiBase}/members/executives`,
+      `${config.public.apiBase}/admin/members/executives`,
       {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },
@@ -230,7 +230,7 @@ const handleFormSubmit = async (formData) => {
       // NOTE: You'll need to add a PUT route in memberRoutes.js if you want to support edits.
       // For now, this mimics the event update flow.
       const response = await $fetch(
-        `${config.public.apiBase}/members/executives/${selectedExecutive.value.id}`,
+        `${config.public.apiBase}/admin/members/executives/${selectedExecutive.value.id}`,
         {
           method: "PUT",
           body: formData,
@@ -245,7 +245,7 @@ const handleFormSubmit = async (formData) => {
     } else {
       // CREATE
       const response = await $fetch(
-        `${config.public.apiBase}/members/executives`,
+        `${config.public.apiBase}/admin/members/executives`,
         {
           method: "POST",
           body: formData,

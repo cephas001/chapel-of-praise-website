@@ -276,7 +276,7 @@ const categoryLinks = [
   {
     title: "Resources",
     links: [
-      { label: "Counselling", to: "/counseling" },
+      { label: "Counselling", to: "/counselling" },
       { label: "Prayer Request", to: "/prayer" },
       { label: "Our History", to: "/about" },
     ],

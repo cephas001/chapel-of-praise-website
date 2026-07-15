@@ -240,10 +240,13 @@ const handleRegister = async () => {
   formData.value.role = formData.value.role.toLowerCase(); // Ensure role is lowercase
 
   try {
-    const response = await $fetch(`${config.public.apiBase}/auth/register`, {
-      method: "POST",
-      body: formData.value,
-    });
+    const response = await $fetch(
+      `${config.public.apiBase}/admin/auth/register`,
+      {
+        method: "POST",
+        body: formData.value,
+      },
+    );
 
     toast.success("Administrator successfully registered!");
 

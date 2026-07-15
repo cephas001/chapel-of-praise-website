@@ -140,7 +140,7 @@ const fetchAltarCalls = async () => {
   isFetching.value = true;
   try {
     const response = await $fetch(
-      `${config.public.apiBase}/altar-calls/event/${props.eventId}`,
+      `${config.public.apiBase}/admin/altar-calls/event/${props.eventId}`,
       {
         headers: { Authorization: `Bearer ${authStore.token}` },
       },
@@ -174,11 +174,14 @@ const handleFormSubmit = async (formData) => {
       ...formData,
     };
 
-    const response = await $fetch(`${config.public.apiBase}/altar-calls`, {
-      method: "POST",
-      body: payload,
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
+    const response = await $fetch(
+      `${config.public.apiBase}/admin/altar-calls`,
+      {
+        method: "POST",
+        body: payload,
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      },
+    );
 
     altarCalls.value.unshift(response.data);
     showAlert("Success", "Altar call recorded successfully.", "success");

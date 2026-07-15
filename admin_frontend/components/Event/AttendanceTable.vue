@@ -255,13 +255,13 @@ const fetchData = async () => {
   try {
     // 1. Fetch Workers
     const membersRes = await $fetch(
-      `${config.public.apiBase}/members/unit/${props.unitName}`,
+      `${config.public.apiBase}/admin/members/unit/${props.unitName}`,
     );
     members.value = membersRes.sort((a, b) => a.name.localeCompare(b.name));
 
     // 2. Fetch Existing Attendance Record
     const attendanceRes = await $fetch(
-      `${config.public.apiBase}/event-attendance/${props.eventId}/${props.unitName}`,
+      `${config.public.apiBase}/admin/event-attendance/${props.eventId}/${props.unitName}`,
     );
 
     additionalComments.value = attendanceRes.additionalComments || "";
@@ -289,7 +289,7 @@ const submitAttendance = async () => {
       ...getPayload(), // gets officiatingIds, presentIds, pardonedIds
     };
 
-    await $fetch(`${config.public.apiBase}/event-attendance`, {
+    await $fetch(`${config.public.apiBase}/admin/event-attendance`, {
       method: "POST",
       body: payload,
     });

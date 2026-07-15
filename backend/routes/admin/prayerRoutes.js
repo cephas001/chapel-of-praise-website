@@ -9,10 +9,28 @@ const {
 router.use(verifyToken);
 router.use(requireStaticTypeAccess("executive"));
 
-// Get prayer settings
+// Get all prayer sections
 router.get("/", async (req, res) => {
   try {
-    const docRef = db.collection("settings").doc("prayer");
+    const snapshot = await db.collection("prayer").get();
+
+    const sections = {};
+    snapshot.forEach((doc) => {
+      sections[doc.id] = doc.data();
+    });
+
+    res.status(200).json(sections);
+  } catch (error) {
+    console.error("Error getting prayer sections:", error);
+    res.status(500).json({ message: "Failed to fetch prayer sections" });
+  }
+});
+
+// Get a specific prayer section
+router.get("/:sectionId", async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const docRef = db.collection("prayer").doc(sectionId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -21,16 +39,21 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(doc.data());
   } catch (error) {
-    console.error("Error getting prayer settings:", error);
-    res.status(500).json({ message: "Failed to fetch prayer settings" });
+    console.error(
+      `Error getting prayer section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to fetch prayer section" });
   }
 });
 
-// Create or update prayer settings
-router.put("/", async (req, res) => {
+// Reusable function to create or update a specific prayer section
+const savePrayerSettings = async (req, res) => {
   try {
+    const { sectionId } = req.params;
     const settingsData = req.body;
-    const docRef = db.collection("settings").doc("prayer");
+
+    const docRef = db.collection("prayer").doc(sectionId);
     const doc = await docRef.get();
 
     const dataToSave = {
@@ -51,39 +74,16 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(dataToSave);
   } catch (error) {
-    console.error("Error updating prayer settings:", error);
-    res.status(500).json({ message: "Failed to update prayer settings" });
+    console.error(
+      `Error updating prayer section ${req.params.sectionId}:`,
+      error,
+    );
+    res.status(500).json({ message: "Failed to update prayer section" });
   }
-});
+};
 
-// Allow POST to behave the same as PUT
-router.post("/", async (req, res) => {
-  try {
-    const settingsData = req.body;
-    const docRef = db.collection("settings").doc("prayer");
-    const doc = await docRef.get();
-
-    const dataToSave = {
-      ...settingsData,
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (req.user && req.user.uid) {
-      dataToSave.updatedBy = req.user.uid;
-    }
-
-    if (!doc.exists) {
-      dataToSave.createdAt = new Date().toISOString();
-      await docRef.set(dataToSave);
-    } else {
-      await docRef.update(dataToSave);
-    }
-
-    res.status(200).json(dataToSave);
-  } catch (error) {
-    console.error("Error updating prayer settings:", error);
-    res.status(500).json({ message: "Failed to update prayer settings" });
-  }
-});
+// Allow both PUT and POST to update specific sections
+router.put("/:sectionId", savePrayerSettings);
+router.post("/:sectionId", savePrayerSettings);
 
 module.exports = router;
