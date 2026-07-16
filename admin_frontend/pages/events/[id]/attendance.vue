@@ -66,6 +66,10 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const route = useRoute();
 const eventId = route.params.id;
 const selectedUnit = ref("");

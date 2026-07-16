@@ -201,6 +201,10 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useRuntimeConfig } from "#app";
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const route = useRoute();
 const config = useRuntimeConfig();
 const toast = useAppToast(); // auto-imported

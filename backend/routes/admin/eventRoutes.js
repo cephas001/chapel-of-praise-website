@@ -8,7 +8,7 @@ const {
 
 // Apply verifyToken middleware to all event routes
 router.use(verifyToken);
-router.use(requireStaticTypeAccess("executive"));
+router.use(requireStaticTypeAccess(["executive"]));
 // Only allow users with type 'executive' or 'all' to access these routes
 
 // Create Event

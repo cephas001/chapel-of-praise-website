@@ -9,7 +9,7 @@ const {
 
 router.use(verifyToken);
 // Ensure only executives/admins can modify attendance
-router.use(requireStaticTypeAccess("executive"));
+router.use(requireStaticTypeAccess(["executive"]));
 
 router.get("/:eventId/:unitName", async (req, res) => {
   try {

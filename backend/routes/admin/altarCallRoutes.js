@@ -7,7 +7,7 @@ const {
 } = require("../../middleware/auth");
 
 router.use(verifyToken);
-router.use(requireStaticTypeAccess("executive"));
+router.use(requireStaticTypeAccess(["executive"]));
 
 // Aggregate Routes
 router.get("/event/:eventId", async (req, res) => {

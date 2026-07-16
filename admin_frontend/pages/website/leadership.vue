@@ -339,7 +339,7 @@
 import { onMounted, reactive } from "vue";
 
 definePageMeta({
-  layout: "default",
+  allowedUserTypes: ["website"],
 });
 
 const heroSection = reactive({

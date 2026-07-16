@@ -188,6 +188,10 @@
 <script setup>
 import { onMounted, reactive } from "vue";
 
+definePageMeta({
+  allowedUserTypes: ["website"],
+});
+
 const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",

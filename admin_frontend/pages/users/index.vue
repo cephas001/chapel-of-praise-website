@@ -284,6 +284,10 @@ import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
 import { useConfirm } from "~/composables/useConfirm";
 
+definePageMeta({
+  accessToSuperAdminOnly: true,
+});
+
 // Directive to detect outside clicks
 const vClickOutside = {
   mounted(el, binding) {

@@ -7,7 +7,7 @@ const {
 } = require("../../middleware/auth");
 
 router.use(verifyToken);
-router.use(requireStaticTypeAccess("executive"));
+router.use(requireStaticTypeAccess(["executive"]));
 
 // Get all headcounts
 router.get("/", async (req, res) => {

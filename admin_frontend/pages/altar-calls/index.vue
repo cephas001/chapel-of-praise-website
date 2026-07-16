@@ -208,6 +208,10 @@ const isDrawerOpen = ref(false);
 const isSubmitting = ref(false);
 const selectedEventId = ref("");
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const fetchData = async () => {
   isFetching.value = true;
   try {

@@ -3,9 +3,13 @@ const express = require("express");
 const router = express.Router();
 const { db } = require("../../config/firebase");
 const admin = require("firebase-admin");
-const { verifyToken } = require("../../middleware/auth");
+const {
+  verifyToken,
+  requireStaticTypeAccess,
+} = require("../../middleware/auth");
 
 router.use(verifyToken);
+router.use(requireStaticTypeAccess(["executive"]));
 
 // Get all follow-ups
 router.get("/", async (req, res) => {

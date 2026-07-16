@@ -34,7 +34,7 @@ const requireSuperAdmin = (req, res, next) => {
   }
   return res
     .status(403)
-    .json({ error: "Forbidden: Only Super Admins can perform this action." });
+    .json({ error: "Only Super Admins can perform this action." });
 };
 
 // 3. Dynamic Type Check (Matches route params like /api/applications/:type)
@@ -54,26 +54,35 @@ const requireDynamicTypeAccess = (req, res, next) => {
   }
 
   return res.status(403).json({
-    error: `Forbidden: You do not have permission to manage ${requiredType} operations.`,
+    error: `You do not have permission to manage ${requiredType} operations.`,
   });
 };
 
 // 4. Static Type Check (Pass the type directly into the middleware)
-const requireStaticTypeAccess = (requiredType) => {
+const requireStaticTypeAccess = (requiredTypes) => {
+  // Normalize to array of strings
+  const allowed = Array.isArray(requiredTypes)
+    ? requiredTypes
+    : [requiredTypes];
+
   return (req, res, next) => {
     const user = req.user;
 
     if (user.role === "super_admin") return next();
 
-    if (
-      user.role === "admin" &&
-      (user.type === requiredType || user.type === "all")
-    ) {
-      return next();
+    if (user.role === "admin") {
+      // Allow if user's type matches any required type or is "all"
+      const hasAccess = allowed.some(
+        (t) => user.type === t || user.type === "all",
+      );
+
+      if (hasAccess) return next();
     }
 
     return res.status(403).json({
-      error: `Forbidden: You do not have permission to manage ${requiredType} operations.`,
+      error: `You do not have permission to manage ${allowed.join(
+        ", ",
+      )} operations.`,
     });
   };
 };

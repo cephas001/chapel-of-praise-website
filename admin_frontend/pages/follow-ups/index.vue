@@ -162,6 +162,10 @@ import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
 import { formatEventDisplay } from "~/utils/formatters";
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast(); // auto-imported

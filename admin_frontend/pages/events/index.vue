@@ -175,6 +175,10 @@ import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useConfirm } from "~/composables/useConfirm";
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const config = useRuntimeConfig();
 const confirm = useConfirm();
 const toast = useAppToast();

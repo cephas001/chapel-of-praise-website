@@ -75,8 +75,6 @@ router.post("/login", verifyToken, async (req, res) => {
 
     const userData = userDoc.data();
 
-    console.log(userData);
-
     // We no longer mint our own token, we just return the user data needed for frontend state
     res.status(200).json({
       message: "User data synced successfully",
@@ -141,6 +139,62 @@ router.get("/users", verifyToken, requireSuperAdmin, async (req, res) => {
   } catch (error) {
     console.error("List users error:", error);
     res.status(500).json({ error: "Server error while listing users." });
+  }
+});
+
+// --- GET SINGLE USER ---
+// Allows a user to fetch their own profile, or a super_admin to fetch any profile.
+router.get("/:uid", verifyToken, async (req, res) => {
+  try {
+    const { uid } = req.params;
+
+    // Security check: Only allow users to fetch their own data unless they are a super admin
+    if (req.user.uid !== uid && req.user.role !== "super_admin") {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to access this profile." });
+    }
+
+    // 1. Fetch from Firebase Auth
+    const userRecord = await auth.getUser(uid);
+
+    // 2. Fetch from Firestore metadata
+    const userDoc = await db.collection("users").doc(uid).get();
+    const docData = userDoc.exists ? userDoc.data() : {};
+
+    // 3. Consolidate role and type
+    const role =
+      docData.role ||
+      (userRecord.customClaims && userRecord.customClaims.role) ||
+      "admin";
+    const type =
+      docData.type ||
+      (userRecord.customClaims && userRecord.customClaims.type) ||
+      "website";
+
+    // 4. Return formatted data matching frontend expectations
+    res.status(200).json({
+      uid: userRecord.uid,
+      name: docData.name || userRecord.displayName || "",
+      email: userRecord.email,
+      email_verified: userRecord.emailVerified,
+      role,
+      type,
+      createdAt: docData.createdAt || userRecord.metadata.creationTime,
+      updatedAt: docData.updatedAt || null,
+      firebase: {
+        sign_in_provider: userRecord.providerData[0]?.providerId || "password",
+        identities: userRecord.providerData,
+      },
+    });
+  } catch (error) {
+    console.error("Get user error:", error);
+    if (error.code === "auth/user-not-found") {
+      return res.status(404).json({ error: "User not found." });
+    }
+    res
+      .status(500)
+      .json({ error: "Server error while fetching user details." });
   }
 });
 

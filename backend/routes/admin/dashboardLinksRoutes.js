@@ -2,10 +2,7 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("crypto"); // Needed to generate unique IDs for array items
 const { db } = require("../../config/firebase");
-const {
-  verifyToken,
-  requireStaticTypeAccess,
-} = require("../../middleware/auth");
+const { verifyToken, requireSuperAdmin } = require("../../middleware/auth");
 
 router.use(verifyToken);
 
@@ -32,7 +29,7 @@ router.get("/", async (req, res) => {
 // ==========================================
 
 // Create a Category
-router.post("/category", async (req, res) => {
+router.post("/category", requireSuperAdmin, async (req, res) => {
   try {
     // Accepting 'title' or 'name' to ensure frontend compatibility
     const title = req.body.title || req.body.name;
@@ -56,7 +53,7 @@ router.post("/category", async (req, res) => {
 });
 
 // Update a Category (e.g., rename it)
-router.put("/category/:categoryId", async (req, res) => {
+router.put("/category/:categoryId", requireSuperAdmin, async (req, res) => {
   try {
     const { categoryId } = req.params;
     const { title } = req.body;
@@ -75,7 +72,7 @@ router.put("/category/:categoryId", async (req, res) => {
 });
 
 // Delete a Category
-router.delete("/category/:categoryId", async (req, res) => {
+router.delete("/category/:categoryId", requireSuperAdmin, async (req, res) => {
   try {
     const { categoryId } = req.params;
     await db.collection("dashboardLinks").doc(categoryId).delete();
@@ -92,7 +89,7 @@ router.delete("/category/:categoryId", async (req, res) => {
 // ==========================================
 
 // Add a Link to a Category
-router.post("/link", async (req, res) => {
+router.post("/link", requireSuperAdmin, async (req, res) => {
   try {
     // Accepting categoryId or sectionId to match your frontend props
     const targetId = req.body.categoryId || req.body.sectionId;
@@ -134,7 +131,7 @@ router.post("/link", async (req, res) => {
 });
 
 // Update a specific Link
-router.put("/:categoryId/:linkId", async (req, res) => {
+router.put("/:categoryId/:linkId", requireSuperAdmin, async (req, res) => {
   try {
     const { categoryId, linkId } = req.params;
     const { label, url } = req.body;
@@ -171,7 +168,7 @@ router.put("/:categoryId/:linkId", async (req, res) => {
 });
 
 // Delete a specific Link
-router.delete("/:categoryId/:linkId", async (req, res) => {
+router.delete("/:categoryId/:linkId", requireSuperAdmin, async (req, res) => {
   try {
     const { categoryId, linkId } = req.params;
 

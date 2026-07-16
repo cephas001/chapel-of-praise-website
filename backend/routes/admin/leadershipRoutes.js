@@ -7,7 +7,7 @@ const {
 } = require("../../middleware/auth");
 
 router.use(verifyToken);
-router.use(requireStaticTypeAccess("executive"));
+router.use(requireStaticTypeAccess(["website"]));
 
 // Get all leadership sections
 router.get("/", async (req, res) => {

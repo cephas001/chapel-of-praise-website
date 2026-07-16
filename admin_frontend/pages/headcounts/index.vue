@@ -187,7 +187,7 @@
             class="h-8 w-8 text-gray-300 mx-auto mb-3"
           />
           <p
-            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
+            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest px-5"
           >
             Please select an event above first.
           </p>
@@ -202,6 +202,10 @@ import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
 import { formatEventDisplay } from "~/utils/formatters";
+
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();

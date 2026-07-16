@@ -233,6 +233,10 @@
 <script setup>
 import { reactive, onMounted } from "vue";
 
+definePageMeta({
+  allowedUserTypes: ["website"],
+});
+
 // Config & Utilities
 const confirm = useConfirm();
 

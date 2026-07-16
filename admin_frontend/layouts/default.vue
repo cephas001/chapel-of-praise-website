@@ -23,6 +23,7 @@
             src="@/assets/images/Chapel Of Praise Logo.png"
             alt="Logo"
             class="w-15 md:hidden rounded-md invert"
+            @click="navigateTo('/dashboard')"
           />
         </div>
       </div>
@@ -58,6 +59,13 @@
                 text="Help & Support"
                 iconName="heroicons:question-mark-circle"
                 url="/dashboard/help"
+                @click="closeOnMobile"
+                @open-tab="showHelpMenu = true"
+              />
+              <AppNavLink
+                text="Your Profile"
+                iconName="heroicons:user-circle"
+                url="/dashboard/profile"
                 @click="closeOnMobile"
                 @open-tab="showHelpMenu = true"
               />
@@ -266,7 +274,7 @@
       <div
         class="border-t border-gray-100 py-4 mt-auto flex items-center justify-between px-6"
       >
-        <p class="text-xs text-black truncate">
+        <p class="text-xs text-black truncate font-mono">
           {{ auth.user?.email || "Administrator" }}
         </p>
 

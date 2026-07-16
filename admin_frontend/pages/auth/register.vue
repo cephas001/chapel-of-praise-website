@@ -192,6 +192,10 @@ import { useRuntimeConfig } from "#app";
 const config = useRuntimeConfig();
 const toast = useAppToast(); // Assuming this is auto-imported
 
+definePageMeta({
+  accessToSuperAdminOnly: true,
+});
+
 const formData = ref({
   name: "",
   email: "",

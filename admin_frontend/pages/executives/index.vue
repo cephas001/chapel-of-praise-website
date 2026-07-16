@@ -157,6 +157,10 @@ import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
 
+definePageMeta({
+  accessToSuperAdminOnly: true,
+});
+
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast(); // auto-imported

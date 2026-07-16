@@ -2,13 +2,18 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../../config/firebase");
-const { verifyToken, requireSuperAdmin } = require("../../middleware/auth");
+const {
+  verifyToken,
+  requireSuperAdmin,
+  requireStaticTypeAccess,
+} = require("../../middleware/auth");
 
 // ==========================================
 // PROTECTED ROUTES
 // ==========================================
 // Apply the token verification middleware to all routes below this line
 router.use(verifyToken);
+router.use(requireStaticTypeAccess(["executive"]));
 
 // General Admin Routes
 // Used to fetch lists for attendance dropping

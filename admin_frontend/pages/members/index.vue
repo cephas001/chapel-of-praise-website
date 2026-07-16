@@ -81,6 +81,10 @@ import { ref, computed, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
 
+definePageMeta({
+  allowedUserTypes: ["executive"],
+});
+
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast(); // auto-imported

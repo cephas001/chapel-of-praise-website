@@ -111,7 +111,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
-import { useAuthStore } from "~/stores/auth";
 
 const props = defineProps({
   eventId: {
@@ -127,7 +126,6 @@ const props = defineProps({
 const emit = defineEmits(["select-call"]);
 
 const config = useRuntimeConfig();
-const authStore = useAuthStore();
 const toast = useAppToast();
 
 const altarCalls = ref([]);
@@ -140,9 +138,6 @@ const fetchAltarCalls = async () => {
   try {
     const response = await $fetch(
       `${config.public.apiBase}/admin/altar-calls/event/${props.eventId}`,
-      {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      },
     );
     altarCalls.value = response;
   } catch (error) {
@@ -178,7 +173,6 @@ const handleFormSubmit = async (formData) => {
       {
         method: "POST",
         body: payload,
-        headers: { Authorization: `Bearer ${authStore.token}` },
       },
     );
 
