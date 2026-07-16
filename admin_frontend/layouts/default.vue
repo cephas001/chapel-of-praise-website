@@ -56,6 +56,17 @@
                 @open-tab="showHelpMenu = true"
               />
               <AppNavLink
+                text="Quick Links"
+                iconName="heroicons:link"
+                url="/dashboard/quick-links"
+                @click="closeOnMobile"
+                @open-tab="showHelpMenu = true"
+                v-if="
+                  auth?.user?.type == 'executive' ||
+                  auth?.user?.role == 'super_admin'
+                "
+              />
+              <AppNavLink
                 text="Help & Support"
                 iconName="heroicons:question-mark-circle"
                 url="/dashboard/help"
@@ -72,7 +83,11 @@
             </ul>
           </div>
 
-          <div>
+          <div
+            v-if="
+              auth?.user?.type == 'website' || auth?.user?.role == 'super_admin'
+            "
+          >
             <AppNavTabLabel
               v-model="showWebManagement"
               label="Website Management"
@@ -144,7 +159,12 @@
             </ul>
           </div>
 
-          <div>
+          <div
+            v-if="
+              auth?.user?.type == 'executive' ||
+              auth?.user?.role == 'super_admin'
+            "
+          >
             <AppNavTabLabel
               v-model="showEventOversight"
               label="Event Oversight"
@@ -181,7 +201,12 @@
             </ul>
           </div>
 
-          <div>
+          <div
+            v-if="
+              auth?.user?.type == 'executive' ||
+              auth?.user?.role == 'super_admin'
+            "
+          >
             <AppNavTabLabel
               v-model="showUnitManagement"
               label="Unit Management"
@@ -210,7 +235,12 @@
             </ul>
           </div>
 
-          <div>
+          <div
+            v-if="
+              auth?.user?.type == 'executive' ||
+              auth?.user?.role == 'super_admin'
+            "
+          >
             <AppNavTabLabel v-model="showEvangelism" label="Evangelism" />
             <ul v-show="showEvangelism" class="space-y-1 mt-2">
               <AppNavLink
@@ -223,7 +253,12 @@
             </ul>
           </div>
 
-          <div>
+          <div
+            v-if="
+              auth?.user?.type == 'executive' ||
+              auth?.user?.role == 'super_admin'
+            "
+          >
             <AppNavTabLabel
               v-model="showDataSummaries"
               label="Data Inference"
@@ -295,11 +330,6 @@
     >
       <slot />
     </main>
-
-    <!-- <ForbiddenModal /> -->
-    <!-- <AlertModal /> -->
-    <ConfirmModal />
-    <ToastContainer />
   </div>
 </template>
 

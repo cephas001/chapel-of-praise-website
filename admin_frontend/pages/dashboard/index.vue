@@ -2,570 +2,352 @@
   <LoadingScreen :isLoading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <!-- INVISIBLE OVERLAY: Closes dropdowns when clicking outside -->
-    <div
-      v-if="activeDropdown"
-      @click="closeDropdown"
-      class="fixed inset-0 z-40"
-    ></div>
-
+    <!-- Welcome Header -->
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
     >
       <div>
         <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Dashboard Quick Links
+          Admin Overview
         </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Access external services and operational tools.
+        <p class="text-gray-600 text-xs md:text-sm">
+          Welcome back, {{ authStore.user?.name?.split(" ")[0] || "Admin" }}.
+          Here is what is happening today.
         </p>
       </div>
 
-      <button
-        v-if="isSuperAdmin"
-        @click="openAddCategoryDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-      >
-        <Icon name="heroicons:folder-plus" class="mr-2 h-4 w-4" />
-        Add Category
-      </button>
-    </div>
-
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 items-start"
-    >
-      <div
-        v-for="(section, index) in dashboardSections"
-        :key="section.id"
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all duration-200"
-      >
+      <div class="flex items-center gap-3">
         <div
-          class="bg-gray-50/50 border-b border-gray-100 px-5 py-4 flex justify-between items-center"
-        >
-          <h3 class="text-sm font-jetbrains font-bold text-black">
-            {{ section.title }}
-          </h3>
-
-          <div class="flex items-center gap-1">
-            <!-- Collapse Button (Visible to everyone) -->
-            <button
-              @click="toggleCollapse(section.id)"
-              class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
-              :title="
-                collapsedSections[section.id]
-                  ? 'Expand section'
-                  : 'Collapse section'
-              "
-            >
-              <Icon
-                name="heroicons:chevron-down"
-                class="h-5 w-5 transition-transform duration-200"
-                :class="{ 'rotate-180': !collapsedSections[section.id] }"
-              />
-            </button>
-
-            <!-- Super Admin Dropdown -->
-            <div v-if="isSuperAdmin" class="relative z-50">
-              <button
-                @click="toggleDropdown('category_' + section.id)"
-                class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
-              >
-                <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
-              </button>
-
-              <!-- Native Vue Dropdown Menu -->
-              <div
-                v-if="activeDropdown === 'category_' + section.id"
-                class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
-              >
-                <button
-                  @click="
-                    openEditCategoryDrawer(section);
-                    closeDropdown();
-                  "
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
-                >
-                  Edit Category
-                </button>
-                <button
-                  @click="
-                    openAddLinkDrawer(section.id);
-                    closeDropdown();
-                  "
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
-                >
-                  Add Link
-                </button>
-                <div class="my-1 border-t border-gray-100"></div>
-                <button
-                  @click="
-                    handleDeleteCategory(section.id);
-                    closeDropdown();
-                  "
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
-                >
-                  Delete Category
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Links Container (Hidden when collapsed) -->
-        <div
-          v-show="!collapsedSections[section.id]"
-          class="p-3 flex-1 flex flex-col gap-1"
+          class="hidden sm:flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl"
         >
           <div
-            v-if="!section.links || section.links.length === 0"
-            class="text-center py-5"
+            class="h-2 w-2 rounded-full bg-green-500 animate-pulse mr-2"
+          ></div>
+          <span
+            class="text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest"
           >
-            <p
-              class="text-[11px] font-jetbrains font-bold text-gray-400 uppercase tracking-widest"
-            >
-              No links available
-            </p>
-          </div>
-
-          <a
-            v-for="link in section.links"
-            :key="link.id"
-            :href="link.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
-          >
-            <span
-              class="text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4"
-            >
-              {{ link.label }}
-            </span>
-
-            <div
-              v-if="isSuperAdmin"
-              class="shrink-0 relative z-50"
-              @click.prevent.stop
-            >
-              <button
-                @click="toggleDropdown('link_' + link.id)"
-                class="p-1 rounded hover:bg-gray-200 transition-colors"
-              >
-                <Icon
-                  name="heroicons:ellipsis-vertical"
-                  class="h-4 w-4 text-gray-400 group-hover:text-black"
-                />
-              </button>
-
-              <!-- Native Vue Dropdown Menu -->
-              <div
-                v-if="activeDropdown === 'link_' + link.id"
-                class="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-lg shadow-xl p-1 flex flex-col"
-              >
-                <button
-                  @click="
-                    openEditLinkDrawer(section.id, link);
-                    closeDropdown();
-                  "
-                  class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
-                >
-                  Edit
-                </button>
-                <button
-                  @click="
-                    handleDeleteLink(section.id, link.id);
-                    closeDropdown();
-                  "
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </a>
+            System Operational
+          </span>
         </div>
       </div>
     </div>
 
-    <SlideOver
-      :is-open="isDrawerOpen"
-      :title="editingLinkId ? 'Edit Link' : 'Add New Link'"
-      @close="closeDrawer"
+    <!-- Top Stats Row -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
     >
-      <form @submit.prevent="submitNewLink" class="p-1 font-poppins space-y-6">
-        <div>
-          <label
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+      <div
+        v-for="(stat, index) in quickStats"
+        :key="index"
+        class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 relative overflow-hidden group"
+      >
+        <div class="flex justify-between items-start mb-4">
+          <div
+            class="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 group-hover:bg-black group-hover:text-white transition-colors"
           >
-            Link Label
-          </label>
-          <input
-            v-model="newLinkData.label"
-            type="text"
-            required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-            placeholder="e.g. Staff Directory"
-          />
+            <Icon :name="stat.icon" class="h-5 w-5" />
+          </div>
+          <span
+            class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-jetbrains font-bold tracking-wider"
+            :class="
+              stat.trend > 0
+                ? 'bg-green-50 text-green-700'
+                : 'bg-gray-100 text-gray-600'
+            "
+          >
+            <Icon
+              :name="
+                stat.trend > 0
+                  ? 'heroicons:arrow-trending-up'
+                  : 'heroicons:minus'
+              "
+              class="h-3 w-3 mr-1"
+            />
+            {{ Math.abs(stat.trend) }}%
+          </span>
         </div>
+        <p
+          class="text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-1"
+        >
+          {{ stat.label }}
+        </p>
+        <h4 class="text-2xl font-black text-gray-900">
+          {{ stat.value }}
+        </h4>
+      </div>
+    </div>
 
-        <div>
-          <label
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-          >
-            URL
-          </label>
-          <input
-            v-model="newLinkData.url"
-            type="url"
-            required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-            placeholder="https://..."
-          />
-        </div>
-
-        <div>
-          <label
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-          >
-            Category
-          </label>
-          <div class="relative">
-            <select
-              v-model="newLinkData.sectionId"
-              required
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
-            >
-              <option value="" disabled>Select Category...</option>
-              <option
-                v-for="section in dashboardSections"
-                :key="section.id"
-                :value="section.id"
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Module Navigation -->
+      <div class="lg:col-span-2 space-y-6">
+        <div
+          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+        >
+          <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
+            <h3 class="text-sm font-jetbrains font-bold text-black">
+              Core Modules
+            </h3>
+          </div>
+          <div class="p-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <NuxtLink
+                v-for="module in coreModules"
+                :key="module.id"
+                :to="module.route"
+                class="group flex items-start p-4 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all cursor-pointer"
               >
-                {{ section.title }}
-              </option>
-            </select>
-            <div
-              class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-            >
-              <Icon
-                name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-400"
-              />
+                <div
+                  class="h-10 w-10 rounded-lg border border-gray-100 bg-white flex items-center justify-center shrink-0 shadow-sm group-hover:border-gray-300 transition-colors"
+                >
+                  <Icon
+                    :name="module.icon"
+                    class="h-5 w-5 text-gray-600 group-hover:text-black"
+                  />
+                </div>
+                <div class="ml-4 flex-1">
+                  <div class="flex items-center justify-between mb-1">
+                    <h4
+                      class="text-sm font-bold text-black group-hover:text-black transition-colors"
+                    >
+                      {{ module.title }}
+                    </h4>
+                    <Icon
+                      name="heroicons:arrow-right"
+                      class="h-4 w-4 text-gray-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                    />
+                  </div>
+                  <p class="text-xs text-gray-700 font-medium leading-relaxed">
+                    {{ module.description }}
+                  </p>
+                </div>
+              </NuxtLink>
             </div>
           </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-200">
+        <!-- Secondary/External Links Preview -->
+        <div
+          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col sm:flex-row items-center justify-between p-6"
+        >
+          <div class="flex items-center gap-4 mb-4 sm:mb-0">
+            <div
+              class="h-12 w-12 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0"
+            >
+              <Icon name="heroicons:link" class="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 class="text-sm font-jetbrains font-bold text-black mb-1">
+                External Tools & Quick Links
+              </h3>
+              <p class="text-xs text-gray-500">
+                Access external services, drive folders and other operational
+                tools.
+              </p>
+            </div>
+          </div>
           <button
-            type="submit"
-            :disabled="isSubmitting"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            @click="navigateTo('/admin/quick-links')"
+            class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-5 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains shrink-0 w-full sm:w-auto"
           >
-            <Icon
-              v-if="isSubmitting"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
-            {{
-              isSubmitting
-                ? "Saving..."
-                : editingLinkId
-                  ? "Update Link"
-                  : "Save Link"
-            }}
+            Open Quick Links
           </button>
         </div>
-      </form>
-    </SlideOver>
+      </div>
 
-    <SlideOver
-      :is-open="isCategoryDrawerOpen"
-      :title="editingCategoryId ? 'Edit Category' : 'Add New Category'"
-      @close="closeCategoryDrawer"
-    >
-      <form
-        @submit.prevent="submitNewCategory"
-        class="p-1 font-poppins space-y-6"
-      >
-        <div>
-          <label
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+      <!-- Right Column: Context & Helpful Info -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- Permissions Explainer Panel -->
+        <div
+          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+        >
+          <!-- Standardized Card Header -->
+          <div
+            class="bg-gray-50/50 border-b border-gray-100 px-6 py-5 flex items-center gap-2"
           >
-            Category Title
-          </label>
-          <input
-            v-model="newCategoryData.title"
-            type="text"
-            required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-            placeholder="e.g. Media & Assets"
-          />
-        </div>
+            <Icon name="heroicons:shield-check" class="h-4 w-4 text-gray-400" />
+            <h3 class="text-sm font-jetbrains font-bold text-black">
+              Access & Permissions
+            </h3>
+          </div>
 
-        <div class="pt-6 border-t border-gray-200">
-          <button
-            type="submit"
-            :disabled="isSubmittingCategory"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
-          >
-            <Icon
-              v-if="isSubmittingCategory"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
-            {{
-              isSubmittingCategory
-                ? "Saving..."
-                : editingCategoryId
-                  ? "Update Category"
-                  : "Create Category"
-            }}
-          </button>
+          <div class="p-6">
+            <p class="text-xs font-medium leading-relaxed text-black mb-6">
+              To keep Chapel data secure, your account is configured with
+              specific access levels. Here is how it works:
+            </p>
+
+            <!-- Scannable Feature List -->
+            <ul class="space-y-5 mb-6">
+              <li class="flex items-start gap-3">
+                <div
+                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100"
+                >
+                  <Icon
+                    name="heroicons:lock-closed"
+                    class="h-3 w-3 text-gray-600"
+                  />
+                </div>
+                <div>
+                  <strong
+                    class="text-[11px] font-jetbrains uppercase tracking-widest text-black block mb-1"
+                  >
+                    Secure Sessions
+                  </strong>
+                  <p class="text-xs text-gray-700 leading-relaxed font-medium">
+                    You must remain actively signed in. Inactive sessions will
+                    securely lock you out to protect data.
+                  </p>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div
+                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100"
+                >
+                  <Icon name="heroicons:users" class="h-3 w-3 text-gray-600" />
+                </div>
+                <div>
+                  <strong
+                    class="text-[11px] font-jetbrains uppercase tracking-widest text-black block mb-1"
+                  >
+                    Tailored Access
+                  </strong>
+                  <p class="text-xs text-gray-700 leading-relaxed font-medium">
+                    Your permissions are tied to your role (e.g., Website,
+                    Executive). You will only see the tools you need.
+                  </p>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div
+                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100"
+                >
+                  <Icon name="heroicons:star" class="h-3 w-3 text-[#e94e4e]" />
+                </div>
+                <div>
+                  <strong
+                    class="text-[11px] font-jetbrains uppercase tracking-widest text-black block mb-1"
+                  >
+                    Super Admins
+                  </strong>
+                  <p class="text-xs text-gray-700 leading-relaxed font-medium">
+                    Users with Super Admin privileges bypass all restrictions
+                    and have full control over the system.
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+            <!-- Info Callout -->
+            <div class="p-4 bg-gray-50 border border-gray-100 rounded-xl">
+              <div class="flex items-start gap-2.5">
+                <Icon
+                  name="heroicons:information-circle"
+                  class="h-4 w-4 text-gray-600 shrink-0 mt-0.5"
+                />
+                <p
+                  class="text-[11px] text-gray-700 leading-relaxed font-medium"
+                >
+                  If you attempt to open a restricted page, you will see a quick
+                  alert and be safely redirected back to your dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </form>
-    </SlideOver>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRuntimeConfig } from "#app";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
-const config = useRuntimeConfig();
-const authStore = useAuthStore();
+const router = useRouter();
 const toast = useAppToast();
-
-// Permission check
-const isSuperAdmin = computed(() => authStore.user?.role === "super_admin");
+const authStore = useAuthStore();
 
 const isFetching = ref(true);
-const isSubmitting = ref(false);
-const isDrawerOpen = ref(false);
-const isCategoryDrawerOpen = ref(false);
-const isSubmittingCategory = ref(false);
 
-// Add ID trackers for edit modes
-const editingCategoryId = ref(null);
-const editingLinkId = ref(null);
-const editingSectionIdForLink = ref(null);
-
-// --- COLLAPSE STATE ---
-const collapsedSections = ref({});
-
-const toggleCollapse = (sectionId) => {
-  collapsedSections.value[sectionId] = !collapsedSections.value[sectionId];
+const showDismissToast = () => {
+  toast.success("Tip dismissed");
 };
 
-// --- DROPDOWN STATE ---
-// Tracks which specific menu is currently open (e.g., 'category_123' or 'link_456')
-const activeDropdown = ref(null);
-
-const toggleDropdown = (id) => {
-  activeDropdown.value = activeDropdown.value === id ? null : id;
+const navigateTo = (path) => {
+  router.push(path);
 };
 
-const closeDropdown = () => {
-  activeDropdown.value = null;
+// --- Mock Data for Dashboard Layout ---
+
+const quickStats = ref([
+  { label: "Website Users", value: "-", trend: 0, icon: "heroicons:users" },
+  {
+    label: "Events This Month",
+    value: "-",
+    trend: 0,
+    icon: "heroicons:calendar-days",
+  },
+  {
+    label: "Recent Responders",
+    value: "-",
+    trend: 0,
+    icon: "heroicons:megaphone",
+  },
+]);
+
+const coreModules = ref([
+  {
+    id: "events",
+    title: "Event Operations",
+    description:
+      "Manage upcoming services, special programs, and view historical event data.",
+    icon: "heroicons:calendar",
+    route: "/events",
+  },
+  {
+    id: "altar-calls",
+    title: "Altar Call Records",
+    description:
+      "Track responses, assign follow-ups, and manage salvation and rededication records.",
+    icon: "heroicons:megaphone",
+    route: "/altar-calls",
+  },
+  {
+    id: "website",
+    title: "Website Content",
+    description:
+      "Edit the chapel website's pages, update content, and manage media.",
+    icon: "heroicons:globe-alt",
+    route: "/homepage",
+  },
+
+  {
+    id: "profile",
+    title: "My Profile",
+    description:
+      "Update your personal details, secure your account, and revoke active sessions.",
+    icon: "heroicons:finger-print",
+    route: "/dashboard/profile",
+  },
+]);
+
+// --- Helpers ---
+const extractMonth = (dateString) => {
+  return new Date(dateString).toLocaleString("en-US", { month: "short" });
 };
 
-const newLinkData = ref({
-  label: "",
-  url: "",
-  sectionId: "",
-});
-
-const newCategoryData = ref({
-  title: "",
-});
-
-const dashboardSections = ref([]);
-
-// Fetch all dashboard links
-const fetchLinks = async () => {
-  isFetching.value = true;
-  try {
-    const data = await $fetch(
-      `${config.public.apiBase}/admin/dashboard-links`,
-      {
-        method: "GET",
-      },
-    );
-    if (data && Array.isArray(data)) {
-      dashboardSections.value = data;
-    }
-  } catch (error) {
-    console.error("Failed to fetch quick links:", error);
-    toast.error("Failed to fetch quick links");
-  } finally {
-    isFetching.value = false;
-  }
-};
-
-const closeDrawer = () => {
-  isDrawerOpen.value = false;
-};
-
-// Delete link
-const handleDeleteLink = async (sectionId, linkId) => {
-  if (!confirm("Are you sure you want to remove this link?")) return;
-
-  try {
-    await $fetch(
-      `${config.public.apiBase}/admin/dashboard-links/${sectionId}/${linkId}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    // Optimistic UI update
-    const sectionIndex = dashboardSections.value.findIndex(
-      (s) => s.id === sectionId,
-    );
-    if (sectionIndex !== -1) {
-      dashboardSections.value[sectionIndex].links = dashboardSections.value[
-        sectionIndex
-      ].links.filter((l) => l.id !== linkId);
-    }
-  } catch (error) {
-    console.error("Failed to delete link:", error);
-    toast.error("Failed to delete link");
-  }
-};
-
-const closeCategoryDrawer = () => {
-  isCategoryDrawerOpen.value = false;
-};
-
-// Open Edit Mode
-const openEditCategoryDrawer = (category) => {
-  editingCategoryId.value = category.id;
-  newCategoryData.value = { title: category.title };
-  isCategoryDrawerOpen.value = true;
-};
-
-// Modify your existing openAddCategoryDrawer to reset the ID
-const openAddCategoryDrawer = () => {
-  editingCategoryId.value = null;
-  newCategoryData.value = { title: "" };
-  isCategoryDrawerOpen.value = true;
-};
-
-// Modify your existing submitNewCategory to handle both POST and PUT
-const submitNewCategory = async () => {
-  isSubmittingCategory.value = true;
-  try {
-    if (editingCategoryId.value) {
-      // UPDATE CATEGORY
-      await $fetch(
-        `${config.public.apiBase}/admin/dashboard-links/category/${editingCategoryId.value}`,
-        {
-          method: "PUT",
-          body: newCategoryData.value,
-        },
-      );
-      toast.success("Category updated successfully.");
-    } else {
-      // CREATE CATEGORY
-      await $fetch(`${config.public.apiBase}/admin/dashboard-links/category`, {
-        method: "POST",
-        body: newCategoryData.value,
-      });
-      toast.success("New category created successfully.");
-    }
-
-    closeCategoryDrawer();
-    await fetchLinks();
-  } catch (error) {
-    console.error("Failed to save category:", error);
-    toast.error("Failed to save category");
-  } finally {
-    isSubmittingCategory.value = false;
-  }
-};
-
-const handleDeleteCategory = async (categoryId) => {
-  if (
-    !confirm(
-      "Are you sure you want to delete this entire category and all its links?",
-    )
-  )
-    return;
-
-  try {
-    await $fetch(
-      `${config.public.apiBase}/admin/dashboard-links/category/${categoryId}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    // Optimistic UI update
-    dashboardSections.value = dashboardSections.value.filter(
-      (s) => s.id !== categoryId,
-    );
-    toast.success("Category deleted successfully.");
-  } catch (error) {
-    console.error("Failed to delete category:", error);
-    toast.error("Failed to delete category");
-  }
-};
-
-// Open Edit Mode
-const openEditLinkDrawer = (sectionId, link) => {
-  editingLinkId.value = link.id;
-  editingSectionIdForLink.value = sectionId;
-  newLinkData.value = { label: link.label, url: link.url, sectionId };
-  isDrawerOpen.value = true;
-};
-
-// Modify your existing openAddLinkDrawer to reset the ID
-const openAddLinkDrawer = (sectionId) => {
-  editingLinkId.value = null;
-  editingSectionIdForLink.value = null;
-  newLinkData.value = { label: "", url: "", sectionId };
-  isDrawerOpen.value = true;
-};
-
-// Modify your existing submitNewLink to handle both POST and PUT
-const submitNewLink = async () => {
-  isSubmitting.value = true;
-  try {
-    const payload = {
-      categoryId: newLinkData.value.sectionId,
-      label: newLinkData.value.label,
-      url: newLinkData.value.url,
-    };
-
-    if (editingLinkId.value) {
-      // UPDATE LINK
-      await $fetch(
-        `${config.public.apiBase}/admin/dashboard-links/${editingSectionIdForLink.value}/${editingLinkId.value}`,
-        {
-          method: "PUT",
-          body: payload,
-        },
-      );
-      toast.success("Link updated successfully");
-    } else {
-      // CREATE LINK
-      await $fetch(`${config.public.apiBase}/admin/dashboard-links/link`, {
-        method: "POST",
-        body: payload,
-      });
-      toast.success("New link added successfully");
-    }
-
-    closeDrawer();
-    await fetchLinks();
-  } catch (error) {
-    console.error("Failed to save link:", error);
-    toast.error("Failed to save link");
-  } finally {
-    isSubmitting.value = false;
-  }
+const extractDay = (dateString) => {
+  return new Date(dateString).toLocaleString("en-US", { day: "2-digit" });
 };
 
 onMounted(() => {
-  fetchLinks();
+  // Simulate initial data load
+  setTimeout(() => {
+    isFetching.value = false;
+  }, 600);
 });
 </script>

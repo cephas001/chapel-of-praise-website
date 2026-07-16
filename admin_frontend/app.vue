@@ -4,4 +4,7 @@
       <NuxtPage />
     </NuxtLayout>
   </div>
+
+  <ConfirmModal />
+  <ToastContainer />
 </template>

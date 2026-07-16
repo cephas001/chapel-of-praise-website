@@ -92,16 +92,6 @@
           />
           {{ loading ? "Signing in..." : "Sign In" }}
         </button>
-
-        <div v-if="errorMessage" class="rounded-md bg-red-50 p-3 mt-3">
-          <div>
-            <h3
-              class="text-xs md:text-sm text-red-800 text-center font-literata tracking-wide"
-            >
-              {{ errorMessage }}
-            </h3>
-          </div>
-        </div>
       </form>
     </div>
   </div>
@@ -119,7 +109,6 @@ const authStore = useAuthStore();
 const config = useRuntimeConfig();
 const { $auth } = useNuxtApp(); // Get Firebase Auth from the plugin
 const loading = ref(false);
-const errorMessage = ref("");
 const showPassword = ref(false);
 
 const toast = useAppToast();
@@ -131,8 +120,6 @@ const formData = reactive({
 
 async function handleLogin() {
   loading.value = true;
-  errorMessage.value = "";
-
   try {
     // 1. Log in via Firebase FIRST
     const userCredential = await signInWithEmailAndPassword(
@@ -164,9 +151,9 @@ async function handleLogin() {
       error.code === "auth/invalid-credential" ||
       error.code === "auth/wrong-password"
     ) {
-      errorMessage.value = "Invalid email or password";
+      toast.error("Invalid email or password");
     } else {
-      errorMessage.value = "An error occurred during login";
+      toast.error("An error occurred during login");
     }
   } finally {
     loading.value = false;

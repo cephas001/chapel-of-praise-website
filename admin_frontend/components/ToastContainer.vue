@@ -22,7 +22,7 @@
 
         <div class="py-3 px-4 flex-grow flex flex-col justify-center">
           <h4
-            class="text-xs md:text-sm font-black font-poppins text-gray-900 leading-tight"
+            class="text-xs md:text-sm font-black text-gray-900 leading-tight font-jetbrains"
           >
             {{ toast.title }}
           </h4>
