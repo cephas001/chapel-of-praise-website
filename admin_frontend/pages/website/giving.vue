@@ -15,6 +15,7 @@
       @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
     >
+      <!-- Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
           <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
@@ -25,9 +26,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -64,9 +65,16 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
+          </div>
         </div>
       </div>
 
+      <!-- Section Content -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
@@ -79,9 +87,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -107,9 +115,16 @@
               ></textarea>
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.headlineSection"
+              @click="handleSaveSection('headlineSection', headlineSection)"
+            />
+          </div>
         </div>
       </div>
 
+      <!-- Bank Transfer Details -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
@@ -122,9 +137,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -162,9 +177,18 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.bankDetailsSection"
+              @click="
+                handleSaveSection('bankDetailsSection', bankDetailsSection)
+              "
+            />
+          </div>
         </div>
       </div>
 
+      <!-- Online Payment -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
@@ -177,9 +201,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -205,9 +229,18 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.onlinePaymentSection"
+              @click="
+                handleSaveSection('onlinePaymentSection', onlinePaymentSection)
+              "
+            />
+          </div>
         </div>
       </div>
 
+      <!-- Sticky Footer -->
       <div
         class="fixed bottom-0 right-0 w-full md:w-[calc(100%-18rem)] bg-white/80 backdrop-blur-md border-t border-gray-200 p-4 flex justify-end z-30"
       >
@@ -264,12 +297,27 @@ const sectionsMap = {
   onlinePaymentSection,
 };
 
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  headlineSection: false,
+  bankDetailsSection: false,
+  onlinePaymentSection: false,
+});
+
 // Initialize the composable
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "giving",
-  sectionsMap,
-  { reloadOnSave: true },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("giving", sectionsMap, { reloadOnSave: true });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();

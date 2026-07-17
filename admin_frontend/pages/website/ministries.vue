@@ -28,9 +28,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -67,6 +67,12 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
+          </div>
         </div>
       </div>
 
@@ -90,68 +96,76 @@
           </button>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div
-            v-if="ministriesSection.ministries.length === 0"
-            class="text-xs text-gray-500 text-center py-4"
-          >
-            No ministries added yet.
-          </div>
-          <div
-            v-for="(ministry, index) in ministriesSection.ministries"
-            :key="'ministry' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
-          >
-            <span
-              class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
-              >Ministry {{ index + 1 }}</span
+          <div class="p-6 space-y-6">
+            <div
+              v-if="ministriesSection.ministries.length === 0"
+              class="text-xs text-gray-500 text-center py-4"
             >
-            <button
-              type="button"
-              @click="removeMinistry(index)"
-              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
-              title="Remove Ministry"
+              No ministries added yet.
+            </div>
+            <div
+              v-for="(ministry, index) in ministriesSection.ministries"
+              :key="'ministry' + index"
+              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
             >
-              <Icon name="heroicons:minus-circle" class="h-4 w-4" />
-            </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Name</label
-                >
-                <input
-                  v-model="ministry.name"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                  placeholder="e.g. Youth Ministry"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Subtitle / Alias</label
-                >
-                <input
-                  v-model="ministry.subtitle"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                  placeholder="e.g. T.L.C"
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Description</label
-                >
-                <textarea
-                  v-model="ministry.description"
-                  rows="3"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-                ></textarea>
+              <span
+                class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
+                >Ministry {{ index + 1 }}</span
+              >
+              <button
+                type="button"
+                @click="removeMinistry(index)"
+                class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
+                title="Remove Ministry"
+              >
+                <Icon name="heroicons:minus-circle" class="h-4 w-4" />
+              </button>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Name</label
+                  >
+                  <input
+                    v-model="ministry.name"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    placeholder="e.g. Youth Ministry"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Subtitle / Alias</label
+                  >
+                  <input
+                    v-model="ministry.subtitle"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    placeholder="e.g. T.L.C"
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Description</label
+                  >
+                  <textarea
+                    v-model="ministry.description"
+                    rows="3"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                  ></textarea>
+                </div>
               </div>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.ministriesSection"
+              @click="handleSaveSection('ministriesSection', ministriesSection)"
+            />
           </div>
         </div>
       </div>
@@ -207,6 +221,12 @@ const sectionsMap = {
   ministriesSection,
 };
 
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  ministriesSection: false,
+});
+
 const addMinistry = () => {
   ministriesSection.ministries.push({
     name: "",
@@ -233,11 +253,20 @@ const ministriesPageParser = (response, map) => {
 };
 
 // Initialize the composable
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "ministries",
-  sectionsMap,
-  { customParser: ministriesPageParser },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("ministries", sectionsMap, {
+    customParser: ministriesPageParser,
+  });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();

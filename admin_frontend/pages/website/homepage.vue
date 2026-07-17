@@ -1,4 +1,3 @@
-<!-- pages/homepage.vue -->
 <template>
   <LoadingScreen :isLoading="isFetching" />
 
@@ -29,14 +28,15 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Hero Kicker</label
               >
+                Hero Kicker
+              </label>
               <input
                 v-model="heroSection.heroKicker"
                 type="text"
@@ -47,8 +47,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Hero Headline</label
               >
+                Hero Headline
+              </label>
               <input
                 v-model="heroSection.heroHeadline"
                 type="text"
@@ -59,8 +60,9 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Background Video URL</label
               >
+                Background Video URL
+              </label>
               <input
                 v-model="heroSection.heroVideoUrl"
                 type="url"
@@ -74,8 +76,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Primary CTA Label</label
               >
+                Primary CTA Label
+              </label>
               <input
                 v-model="heroSection.heroCta1Label"
                 type="text"
@@ -86,8 +89,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Primary CTA Link</label
               >
+                Primary CTA Link
+              </label>
               <input
                 v-model="heroSection.heroCta1Link"
                 type="text"
@@ -98,8 +102,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Secondary CTA Label</label
               >
+                Secondary CTA Label
+              </label>
               <input
                 v-model="heroSection.heroCta2Label"
                 type="text"
@@ -110,8 +115,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Secondary CTA Link</label
               >
+                Secondary CTA Link
+              </label>
               <input
                 v-model="heroSection.heroCta2Link"
                 type="text"
@@ -120,6 +126,12 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
+          </div>
         </div>
       </div>
 
@@ -127,7 +139,6 @@
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-gray-200"
       >
-        <!-- Left Column: Header Info -->
         <div class="md:col-span-1">
           <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
             Action Cards
@@ -136,12 +147,9 @@
             Manage the featured action cards below the hero.
           </p>
         </div>
-
-        <!-- Right Column: Form Container (Needs md:col-span-2) -->
         <div
           class="md:col-span-2 bg-white rounded-xl border shadow-sm border-gray-200 flex flex-col"
         >
-          <!-- Cards Wrapper -->
           <div class="p-6 space-y-6">
             <div
               v-for="(card, index) in actionCardsSection.actionCards"
@@ -152,10 +160,9 @@
                 class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center justify-center gap-2"
               >
                 Card {{ index + 1 }}
-
                 <Icon
                   name="heroicons:minus-circle"
-                  class="h-4 w-4 text-red-500"
+                  class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
                   @click="removeActionCard(index)"
                 />
               </span>
@@ -170,11 +177,10 @@
                   <input
                     v-model="card.image"
                     type="url"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                     placeholder="https://..."
                   />
                 </div>
-
                 <div>
                   <label
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -184,10 +190,9 @@
                   <input
                     v-model="card.kicker"
                     type="text"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                   />
                 </div>
-
                 <div>
                   <label
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -197,10 +202,9 @@
                   <input
                     v-model="card.title"
                     type="text"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                   />
                 </div>
-
                 <div>
                   <label
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -210,10 +214,9 @@
                   <input
                     v-model="card.ctaLabel"
                     type="text"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                   />
                 </div>
-
                 <div>
                   <label
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -223,21 +226,25 @@
                   <input
                     v-model="card.ctaLink"
                     type="text"
-                    class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
                   />
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Save Button Container (Changed to natural flow layout) -->
-          <div class="px-6 pb-6 pt-2 flex justify-end">
+          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addActionCard"
             >
               Add Card
             </button>
+            <SaveSectionButton
+              :is-loading="sectionSavingState.actionCardsSection"
+              @click="
+                handleSaveSection('actionCardsSection', actionCardsSection)
+              "
+            />
           </div>
         </div>
       </div>
@@ -255,14 +262,15 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Welcome Badge</label
               >
+                Welcome Badge
+              </label>
               <input
                 v-model="welcomeSection.welcomeBadge"
                 type="text"
@@ -272,8 +280,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Welcome Headline</label
               >
+                Welcome Headline
+              </label>
               <input
                 v-model="welcomeSection.welcomeHeadline"
                 type="text"
@@ -283,14 +292,21 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Welcome Description</label
               >
+                Welcome Description
+              </label>
               <textarea
                 v-model="welcomeSection.welcomeDescription"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.welcomeSection"
+              @click="handleSaveSection('welcomeSection', welcomeSection)"
+            />
           </div>
         </div>
       </div>
@@ -308,14 +324,15 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Background Image URL</label
               >
+                Background Image URL
+              </label>
               <input
                 v-model="championsSection.championImage"
                 type="url"
@@ -326,8 +343,9 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Champion Headline</label
               >
+                Champion Headline
+              </label>
               <input
                 v-model="championsSection.championHeadline"
                 type="text"
@@ -337,8 +355,9 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Champion Description</label
               >
+                Champion Description
+              </label>
               <textarea
                 v-model="championsSection.championDescription"
                 rows="3"
@@ -348,8 +367,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >CTA Label</label
               >
+                CTA Label
+              </label>
               <input
                 v-model="championsSection.championCtaLabel"
                 type="text"
@@ -360,14 +380,21 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >CTA Link</label
               >
+                CTA Link
+              </label>
               <input
                 v-model="championsSection.championCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.championsSection"
+              @click="handleSaveSection('championsSection', championsSection)"
+            />
           </div>
         </div>
       </div>
@@ -385,92 +412,96 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div
-            v-for="(slide, index) in editorialSection.editorialSlides"
-            :key="'slide' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative mb-5"
-          >
-            <span
-              class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center gap-2"
+          <div class="p-6 space-y-6">
+            <div
+              v-for="(slide, index) in editorialSection.editorialSlides"
+              :key="'slide' + index"
+              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
             >
-              Slide {{ index + 1 }}
-              <Icon
-                name="heroicons:minus-circle"
-                class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
-                @click="removeEditorialCard(index)"
-              />
-            </span>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
-              <!-- Text Details -->
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >
-                  Kicker
-                </label>
-                <input
-                  v-model="slide.kicker"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+              <span
+                class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center gap-2"
+              >
+                Slide {{ index + 1 }}
+                <Icon
+                  name="heroicons:minus-circle"
+                  class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
+                  @click="removeEditorialCard(index)"
                 />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >
-                  Title
-                </label>
-                <input
-                  v-model="slide.title"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >
-                  Description
-                </label>
-                <textarea
-                  v-model="slide.description"
-                  rows="2"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none shadow-sm"
-                ></textarea>
-              </div>
+              </span>
 
-              <!-- Image Array Grid -->
-              <div class="md:col-span-2 border-t border-gray-200 pt-5 mt-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-3"
-                >
-                  Slide Images (4 URLs Required)
-                </label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div v-for="imgIndex in 4" :key="`img-${index}-${imgIndex}`">
-                    <input
-                      v-model="slide.images[imgIndex - 1]"
-                      type="url"
-                      :placeholder="`Image ${imgIndex} URL`"
-                      class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                    />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Kicker
+                  </label>
+                  <input
+                    v-model="slide.kicker"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Title
+                  </label>
+                  <input
+                    v-model="slide.title"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    v-model="slide.description"
+                    rows="2"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none shadow-sm"
+                  ></textarea>
+                </div>
+                <div class="md:col-span-2 border-t border-gray-200 pt-5 mt-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-3"
+                  >
+                    Slide Images (4 URLs Required)
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div
+                      v-for="imgIndex in 4"
+                      :key="`img-${index}-${imgIndex}`"
+                    >
+                      <input
+                        v-model="slide.images[imgIndex - 1]"
+                        type="url"
+                        :placeholder="`Image ${imgIndex} URL`"
+                        class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Save Button Container (Changed to natural flow layout) -->
-          <div class="flex justify-end">
+          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addEditorialCard"
             >
               Add Slide
             </button>
+            <SaveSectionButton
+              :is-loading="sectionSavingState.editorialSection"
+              @click="handleSaveSection('editorialSection', editorialSection)"
+            />
           </div>
         </div>
       </div>
@@ -488,14 +519,15 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Leadership Badge</label
               >
+                Leadership Badge
+              </label>
               <input
                 v-model="leadershipSection.leadershipBadge"
                 type="text"
@@ -505,8 +537,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Leadership Headline</label
               >
+                Leadership Headline
+              </label>
               <input
                 v-model="leadershipSection.leadershipHeadline"
                 type="text"
@@ -516,8 +549,9 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Leadership Image URL</label
               >
+                Leadership Image URL
+              </label>
               <input
                 v-model="leadershipSection.leadershipImage"
                 type="url"
@@ -528,8 +562,9 @@
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >Leadership Bio</label
               >
+                Leadership Bio
+              </label>
               <textarea
                 v-model="leadershipSection.leadershipBio"
                 rows="4"
@@ -539,8 +574,9 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >CTA Label</label
               >
+                CTA Label
+              </label>
               <input
                 v-model="leadershipSection.leadershipCtaLabel"
                 type="text"
@@ -551,14 +587,21 @@
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                >CTA Link</label
               >
+                CTA Link
+              </label>
               <input
                 v-model="leadershipSection.leadershipCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
               />
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.leadershipSection"
+              @click="handleSaveSection('leadershipSection', leadershipSection)"
+            />
           </div>
         </div>
       </div>
@@ -570,14 +613,14 @@
         <button
           type="submit"
           :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
         >
           <Icon
             v-if="isSaving"
             name="heroicons:arrow-path"
             class="mr-2 h-4 w-4 animate-spin"
           />
-          {{ isSaving ? "Saving..." : "Save Changes" }}
+          {{ isSaving ? "Saving Everything..." : "Save All Changes" }}
         </button>
       </div>
     </form>
@@ -650,6 +693,16 @@ const sectionsMap = {
   editorialSection,
   leadershipSection,
 };
+
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  welcomeSection: false,
+  actionCardsSection: false,
+  championsSection: false,
+  editorialSection: false,
+  leadershipSection: false,
+});
 
 // Helpers: Add/Remove
 const addActionCard = () => {
@@ -724,11 +777,18 @@ const homepageParser = (response, map) => {
 };
 
 // Initialize the composable
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "homepage",
-  sectionsMap,
-  { customParser: homepageParser },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("homepage", sectionsMap, { customParser: homepageParser });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();

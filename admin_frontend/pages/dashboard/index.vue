@@ -245,11 +245,9 @@
               <div class="flex items-start gap-2.5">
                 <Icon
                   name="heroicons:information-circle"
-                  class="h-4 w-4 text-gray-600 shrink-0 mt-0.5"
+                  class="h-4 w-4 text-gray-700 shrink-0 mt-0.5"
                 />
-                <p
-                  class="text-[11px] text-gray-700 leading-relaxed font-medium"
-                >
+                <p class="text-[11px] text-black leading-relaxed font-medium">
                   If you attempt to open a restricted page, you will see a quick
                   alert and be safely redirected back to your dashboard.
                 </p>

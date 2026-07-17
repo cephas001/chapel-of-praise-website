@@ -136,7 +136,7 @@
             class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
           >
             <span
-              class="text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4"
+              class="text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4 font-jetbrains"
             >
               {{ link.label }}
             </span>

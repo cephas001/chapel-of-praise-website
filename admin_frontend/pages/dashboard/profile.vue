@@ -32,7 +32,7 @@
       <!-- Left Column: Identity Card -->
       <div class="lg:col-span-1 space-y-6">
         <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col items-center p-8 text-center relative"
+          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col items-center px-8 pt-8 pb-12 text-center relative"
         >
           <!-- Verification Badge (Absolute Top Right) -->
           <div class="absolute top-4 right-4">
@@ -84,40 +84,14 @@
 
             <!-- Access Type Badge -->
             <span
-              class="inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-jetbrains uppercase tracking-widest bg-blue-50 text-blue-700 border border-blue-100 shadow-sm"
+              class="inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-jetbrains uppercase tracking-widest bg-white text-black border border-blue-100 shadow-sm font-semibold"
             >
               <Icon
                 name="heroicons:server-stack"
-                class="h-4 w-4 mr-1.5 text-blue-500"
+                class="h-4 w-4 mr-1.5 text-gray-900"
               />
               {{ formatType(currentUser.type) }} Access
             </span>
-          </div>
-
-          <!-- Conditional Action: Verify Email -->
-          <div
-            v-if="!currentUser.email_verified"
-            class="w-full mt-6 pt-6 border-t border-gray-100"
-          >
-            <button
-              @click="sendVerificationEmail"
-              :disabled="isSendingVerification"
-              class="w-full inline-flex items-center justify-center rounded-lg bg-amber-50 px-4 py-2.5 text-[10px] md:text-xs font-bold text-amber-700 hover:bg-amber-100 transition-colors font-jetbrains"
-            >
-              <Icon
-                v-if="isSendingVerification"
-                name="heroicons:arrow-path"
-                class="mr-2 h-3 w-3 animate-spin"
-              />
-              <Icon
-                v-else
-                name="heroicons:paper-airplane"
-                class="mr-2 h-3 w-3"
-              />
-              {{
-                isSendingVerification ? "Sending..." : "Send Verification Link"
-              }}
-            </button>
           </div>
         </div>
       </div>
@@ -242,26 +216,25 @@
                 </p>
               </button>
 
-              <!-- Revoke Sessions -->
+              <!-- Verifiy Email -->
               <button
-                @click="revokeSessions"
-                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-red-500 hover:bg-red-50 transition-all group text-left bg-white"
+                @click="initiateEmailVerification"
+                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
+                v-if="!currentUser.email_verified"
               >
                 <div
-                  class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-red-100 group-hover:text-red-600 transition-colors text-gray-600"
+                  class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-black group-hover:text-white transition-colors text-gray-600"
                 >
-                  <Icon name="heroicons:shield-exclamation" class="h-4 w-4" />
+                  <Icon name="heroicons:envelope" class="h-4 w-4" />
                 </div>
                 <h4
-                  class="text-xs font-jetbrains font-bold text-gray-900 group-hover:text-red-700 uppercase tracking-wide mb-2 transition-colors"
+                  class="text-xs font-jetbrains font-bold text-gray-900 uppercase tracking-wide mb-2"
                 >
-                  Revoke Sessions
+                  Verify Email Address
                 </h4>
-                <p
-                  class="text-xs text-gray-500 group-hover:text-red-600/80 font-medium leading-relaxed transition-colors"
-                >
-                  Sign out of all active devices immediately if you suspect
-                  unauthorized access.
+                <p class="text-xs text-gray-500 font-medium leading-relaxed">
+                  Send a verification link to your email to confirm your account
+                  ownership.
                 </p>
               </button>
             </div>
@@ -503,25 +476,20 @@ const initiatePasswordReset = async () => {
   }
 };
 
-const revokeSessions = async () => {
+const initiateEmailVerification = async () => {
   const answer = await confirm.ask({
-    title: "Revoke Sessions",
-    message:
-      "This will forcefully sign you out of all active devices. You will need to log in again. Proceed?",
-    confirmText: "Revoke All",
+    title: "Verify Email Address",
+    message: "This will send a verification link to your email. Proceed?",
+    confirmText: "Send Link",
     cancelText: "Cancel",
-    isDestructive: true,
   });
 
   if (answer) {
     try {
       // TODO: Connect to backend endpoint when ready
-      toast.success(
-        "All active sessions have been terminated. Redirecting to login...",
-      );
-      // e.g., authStore.logout();
+      toast.success("A verification link has been sent to your email.");
     } catch (error) {
-      toast.error("Failed to revoke sessions.");
+      toast.error("Failed to send verification email.");
     }
   }
 };

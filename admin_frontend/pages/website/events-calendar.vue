@@ -1,4 +1,3 @@
-<!-- pages/events-calendar.vue -->
 <template>
   <LoadingScreen :isLoading="isFetching" />
 
@@ -29,9 +28,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -68,6 +67,12 @@
                 placeholder="e.g. Events Calendar"
               />
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
           </div>
         </div>
       </div>
@@ -197,14 +202,18 @@
             </div>
           </div>
 
-          <!-- Add Button Container -->
-          <div class="px-6 pb-6 pt-2 flex justify-end">
+          <!-- Add & Save Button Container -->
+          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addEvent"
             >
               Add Event
             </button>
+            <SaveSectionButton
+              :is-loading="sectionSavingState.eventsSection"
+              @click="handleSaveSection('eventsSection', eventsSection)"
+            />
           </div>
         </div>
       </div>
@@ -257,6 +266,12 @@ const sectionsMap = {
   eventsSection,
 };
 
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  eventsSection: false,
+});
+
 // Helpers: Add/Remove Events
 const addEvent = () => {
   eventsSection.events.push({
@@ -298,11 +313,20 @@ const eventsCalendarParser = (response, map) => {
 };
 
 // Initialize the composable utilizing the pageEndpoint "events-calendar"
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "events-calendar",
-  sectionsMap,
-  { customParser: eventsCalendarParser },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("events-calendar", sectionsMap, {
+    customParser: eventsCalendarParser,
+  });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();

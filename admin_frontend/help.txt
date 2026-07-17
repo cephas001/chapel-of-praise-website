@@ -1,0 +1,645 @@
+# Chapel of Praise — Admin CMS: System Documentation
+
+> **Project:** Chapel of Praise Website  
+> **Admin Frontend:** Nuxt 4 + Vue 3 + Pinia + Tailwind CSS  
+> **Backend:** Express 5 + Firebase Admin SDK (Firestore + Auth)  
+> **Public Frontend:** Nuxt 4 (separate app, no Firebase dependency)
+
+---
+
+## Table of Contents
+
+1. [System Architecture & Data Flow](#1-system-architecture--data-flow)
+2. [Key Features & Modules](#2-key-features--modules)
+3. [State & Permissions](#3-state--permissions)
+4. [Common Workflows](#4-common-workflows)
+5. [Troubleshooting & Edge Cases](#5-troubleshooting--edge-cases)
+
+---
+
+## 1. System Architecture & Data Flow
+
+### 1.1 Project Topology
+
+```
+┌─────────────────┐       ┌──────────────────┐       ┌─────────────────────┐
+│  Public Website  │ ────▶ │   Backend (API)  │ ◀──── │   Admin CMS Panel   │
+│  (Nuxt 4 / SPA)  │       │   Express +      │       │   (Nuxt 4 / SPA)    │
+│  port 3000       │       │   Firebase Admin │       │   port 3001         │
+│  No Firebase     │       │   port 5000      │       │   Firebase Client   │
+└─────────────────┘       └────────┬─────────┘       └─────────────────────┘
+                                   │
+                                   ▼
+                        ┌─────────────────────┐
+                        │   Firebase           │
+                        │   ┌───────────────┐  │
+                        │   │  Firestore    │  │
+                        │   │  (NoSQL DB)   │  │
+                        │   ├───────────────┤  │
+                        │   │  Auth         │  │
+                        │   │  (Identity)   │  │
+                        │   └───────────────┘  │
+                        └─────────────────────┘
+```
+
+- **Admin Frontend** (`admin_frontend/`): The CMS used by church administrators to manage events, members, website content, follow-ups, and user accounts. Runs as a client-side SPA (`ssr: false`).
+- **Backend** (`backend/`): Express 5 REST API server. Authenticates requests via Firebase ID tokens and interfaces with Firestore and Firebase Auth.
+- **Public Frontend** (`frontend/`): The public-facing website. Makes read-only GET requests to `/api/public/*` endpoints. Does **not** include Firebase or authentication.
+
+### 1.2 Authentication & Authorization Flow
+
+```
+User Login ──▶ Firebase Client SDK ──▶ ID Token ──▶ Backend verifyToken ──▶ req.user
+  ▲                                    │                                     │
+  │                                    ▼                                     ▼
+  └─────────── Token stored ──── admin_token cookie ────────── Axios interceptor
+                              (60 min expiry)                (attaches Bearer token
+                                                              to every request)
+```
+
+1. **Admin login** (`/auth/login`): User provides email + password.
+2. **Firebase Client SDK** (`plugins/firebase.client.js`): Signs in via `signInWithEmailAndPassword`. Returns an ID token.
+3. **Backend sync** (`POST /api/admin/auth/login`): Frontend sends the ID token to the backend. Backend verifies via `admin.auth().verifyIdToken()`, reads the user's Firestore doc at `users/{uid}`, and returns the user profile (name, email, role, type).
+4. **Token persistence**: The token is stored in both a Pinia store (`useAuthStore`) and a cookie (`admin_token`) with a 60-minute max-age. The user profile is stored in a separate cookie (`admin_user`) with an 8-hour expiry.
+5. **Automatic token refresh**: An `onIdTokenChanged` listener in the Firebase plugin automatically refreshes the ID token when it's about to expire and resyncs it with the cookie and store.
+6. **Outbound requests**: The `api-interceptor.js` plugin reads the `admin_token` cookie and attaches it as `Authorization: Bearer <token>` on every `$fetch` call.
+7. **Session expiry**: On any 401 or 403 response, the interceptor shows an error toast ("Session Expired" or "Access Denied") and tags the response as handled globally.
+
+### 1.3 Role & Type Authorization (Backend Middleware)
+
+There are four middleware functions in `backend/middleware/auth.js`:
+
+| Middleware | Purpose | Applied To |
+|---|---|---|
+| `verifyToken` | Extracts and verifies the Firebase ID token from the `Authorization` header. Attaches decoded claims to `req.user`. | All admin routes |
+| `requireSuperAdmin` | Checks `req.user.role === "super_admin"`. Returns 403 if false. | Auth user management, executive creation, dashboard links mutations |
+| `requireDynamicTypeAccess` | Compares `req.params.type` against the user's `type` field. Super admins bypass. | (Not currently used in route mounts) |
+| `requireStaticTypeAccess(types)` | Factory: checks if user's `type` is in the allowed array, or is `"all"`. Super admins bypass. | All feature-specific admin route groups |
+
+**Important**: The user objects stored in Firestore have a `role` field (`"super_admin"` or `"admin"`) and a `type` field (`"website"`, `"executive"`, or `"all"`). These are also set as Firebase custom claims on the Auth user record.
+
+### 1.4 API Mapping
+
+**Base URL** (configurable via `.env`): `http://localhost:5000/api`
+
+#### Admin-Protected Endpoints (require authentication)
+
+| Group | Mount Path | Allowed Types | Firestore Collection(s) |
+|---|---|---|---|
+| Auth | `/admin/auth` | Mixed (see routes) | `users` |
+| Events | `/admin/events` | executive | `events` |
+| Homepage | `/admin/homepage` | website | `homepage` |
+| Leadership | `/admin/leadership` | website | `leadership` |
+| Ministries | `/admin/ministries` | website | `ministries` |
+| Giving | `/admin/giving` | website | `giving` |
+| About | `/admin/about` | website | `about` |
+| Contact | `/admin/contact` | website | `contact` |
+| Prayer | `/admin/prayer` | website | `prayer` |
+| Counselling | `/admin/counselling` | website | `counselling` |
+| Altar Calls | `/admin/altar-calls` | executive | `altarCalls`, `altarCallResponses` |
+| Headcounts | `/admin/headcounts` | executive | `headcounts` |
+| Members | `/admin/members` | executive | `members` |
+| Event Attendance | `/admin/event-attendance` | executive | `eventUnitAttendance` |
+| Follow-ups | `/admin/follow-ups` | executive | `followUps` |
+| Dashboard Links | `/admin/dashboard-links` | (all auth'd users read, super_admin write) | `dashboardLinks` |
+| Events Calendar | `/admin/events-calendar` | website | `events-calendar` |
+
+#### Public Endpoints (no authentication)
+
+| Group | Mount Path | Firestore Collection | Methods |
+|---|---|---|---|
+| Homepage | `/public/homepage` | `homepage` | GET |
+| About | `/public/about` | `about` | GET |
+| Contact | `/public/contact` | `contact` | GET |
+| Leadership | `/public/leadership` | `leadership` | GET |
+| Ministries | `/public/ministries` | `ministries` | GET |
+| Giving | `/public/giving` | `giving` | GET |
+| Prayer | `/public/prayer` | `prayer` | GET |
+| Counselling | `/public/counselling` | `counselling` | GET |
+| Members | `/members` | `members`, `unitPasskeys` | POST (worker registration) |
+| Events Calendar | `/public/events-calendar` | `events-calendar` | GET |
+
+### 1.5 Firestore Document Model
+
+Each public-facing content page (homepage, about, contact, leadership, ministries, giving, prayer, counselling, events-calendar) stores content in a **single Firestore document per page**, where each document field is a content "section". The document ID is the page name (e.g., `homepage` doc in the `homepage` collection).
+
+Example structure for the `homepage` document:
+```json
+{
+  "heroBannerSection": {
+    "heroKicker": "string",
+    "heroHeadline": "string",
+    "heroVideoUrl": "string",
+    "heroCta1Label": "string",
+    "heroCta1Link": "string",
+    "heroCta2Label": "string",
+    "heroCta2Link": "string"
+  },
+  "actionCardsSection": {
+    "actionCards": [ /* array of card objects */ ]
+  },
+  "editorialSection": {
+    "editorialSlides": [ /* array of slide objects */ ]
+  }
+}
+```
+
+---
+
+## 2. Key Features & Modules
+
+### 2.1 Dashboard (`/dashboard`)
+
+- **Purpose**: Landing page after login. Displays welcome message with the user's first name, placeholder stat cards (Website Users, Events This Month, Recent Responders), and navigation tiles to core modules.
+- **Current status**: Stats are mock data (simulated 600ms delay). Not yet connected to real API endpoints.
+- **Access**: All authenticated users.
+
+### 2.2 User Profile (`/dashboard/profile`)
+
+- **Displays**: Identity card with avatar initials, name, email, verified/unverified badge, role badge, access type badge.
+- **Security section**: Masked UID (with copy button), sign-in provider, last authenticated timestamp, session expiry info.
+- **Actions**:
+  - Edit Profile Name (opens slide-over drawer)
+  - Change Password (via Firebase)
+  - Verify Email (shown only if not yet verified)
+- **API calls**: `GET /admin/auth/:uid`, `PUT /admin/auth/update/:uid`
+
+### 2.3 Quick Links (`/dashboard/quick-links`)
+
+- **Purpose**: Manage categorized collections of external links (e.g., "Important Resources", "Church Links").
+- **Structure**: Categories → Links (each category has a `title` and a `links[]` array).
+- **CRUD operations**:
+  - Super admins can create/edit/delete categories and links.
+  - Regular admins (executive type) can only view links.
+- **API calls**: CRUD on `/admin/dashboard-links`.
+- **Note**: Links are stored in a `dashboardLinks` Firestore doc as an array of category objects.
+
+### 2.4 Website Content Management (CMS)
+
+**Access**: Restricted to users with type `"website"` or `super_admin`.
+
+All CMS pages follow the same pattern:
+- Use the `usePageManager(pageEndpoint, sectionsMap, options)` composable.
+- `onMounted` → calls `loadSettings()` which does `GET /admin/{pageEndpoint}`.
+- Data is loaded into reactive `ref` objects.
+- Each section can be saved individually via `<SaveSectionButton>`.
+- A "Save All Changes" sticky footer button saves every section via a bulk `saveSettings()` call.
+
+#### Available CMS Pages
+
+| Page | Endpoint | Sections |
+|---|---|---|
+| **Homepage** | `homepage` | Hero Banner, Action Cards (dynamic array), Welcome Section, Great Champions, Sticky Editorial (dynamic array), Leadership Section |
+| **About** | `about` | Hero Banner, Vision & Mission (2-column content) |
+| **Contact** | `contact` | Hero Section, Form Section, Campus Information, Contact Methods & Social (email, phone, Instagram, Twitter, YouTube) |
+| **Leadership** | `leadership` | Hero Section, Team Overview, Chaplaincy List (dynamic array), Student Executives (dynamic array) |
+| **Ministries** | `ministries` | Hero Section, Ministries List (dynamic array) |
+| **Giving** | `giving` | Hero Banner, Section Content, Bank Transfer Details, Online Payment |
+| **Prayer** | `prayer` | Hero Banner, Form Details |
+| **Counseling** | `counselling` | Hero Banner, Form Details, Form Footer Note |
+| **Events Calendar** | `events-calendar` | Hero Banner, Upcoming Events (dynamic array with month, day, title, description, time, location) |
+
+### 2.5 Event Management
+
+**Access**: Restricted to users with type `"executive"` or `super_admin`.
+
+#### Events List (`/events`)
+
+- Table view of all events sorted by date descending.
+- **Form fields** (via `<EventForm>` component):
+  - `eventDate` (date picker, required)
+  - `service` (select: PRAYER MEETING, BIBLE STUDY, SUNDAY SERVICE, SUNDAY SCHOOL, SPECIAL PROGRAM)
+  - `specialProgram` (shown only when service is SPECIAL PROGRAM; options: WORKERS MEETING, WORKERS RETREAT, WORKERS VIGIL, EXCO VIGIL, SAYCO, EXCELLENCE CONFERENCE, OTHER)
+  - `programDay` (text, shown only for SPECIAL PROGRAM; e.g., "Day 1", "Grand Finale")
+  - `startTime` / `endTime` (time pickers, required)
+  - `eventDescription` (textarea)
+- **Actions per row**: View (navigates to event detail), Edit (opens drawer), Delete (with confirmation modal).
+- **API calls**: CRUD on `/admin/events`.
+
+#### Event Detail (`/events/[id]`)
+
+- Displays event overview (date, time, program day, description).
+- **Embedded components**:
+  - `<EventHeadCount>`: Shows male/female student/visitor breakdown with total. Click to add/edit via `<EventHeadCountForm>`.
+  - `<EventAttendanceTable>`: Navigate to the per-unit attendance page for the event.
+  - `<EventAltarCalls>`: Lists altar call categories for this event. Click a call to select it.
+  - `<EventFollowUps>`: Shows individual responders for the selected altar call, each with follow-up status.
+
+### 2.6 Unit Attendance (`/events/[id]/attendance` and `/event-attendance`)
+
+**Access**: executive or super_admin.
+
+- **Two-step selector**: Choose an event, then choose a chapel unit.
+- **12 available units**: Choir, Editorial, Ushering, Protocol, Media, Prayer, Drama, Bible Study, Evangelism, Technical, Welfare, Academic.
+- **Attendance table** (via `<EventAttendanceTable>` component):
+  - Lists all workers in the selected unit (sorted alphabetically by name).
+  - For each worker: **Officiating toggle**, **Attendance Status** (Present / Pardoned radio buttons, only when officiating), **System Result** badge (Present / Excused / Absent / `-` if not officiating).
+  - **Auto-calculation**: If a worker is marked officiating but not Present or Pardoned, the system automatically flags them as "Absent".
+  - **Additional Comments** textarea.
+  - **Save** button submits all data as a single record.
+- **API calls**:
+  - `GET /admin/members/unit/{unitName}` — fetch workers in the unit.
+  - `GET /admin/event-attendance/{eventId}/{unitName}` — fetch existing record.
+  - `POST /admin/event-attendance` — create or update attendance record.
+
+### 2.7 Headcounts (`/headcounts`)
+
+- Table of all headcount records with event details, demographic breakdown (Male/Female × Student/Visitor), and total.
+- **Add/Edit** via slide-over: select an event (SearchableSelect), then fill in `<EventHeadCountForm>`:
+  - `maleStudents`, `femaleStudents`, `maleVisitors`, `femaleVisitors` (number inputs, min 0).
+  - Live **Total** counter at the bottom.
+  - `additionalComments` textarea.
+- **API**: `GET /admin/headcounts`, `POST /admin/headcounts` (upsert by eventId).
+
+### 2.8 Altar Calls (`/altar-calls`)
+
+- Global view of all altar call records with event details, call type, and responder count.
+- **Add** via slide-over: select event, then fill in `<EventAltarCallForm>`:
+  - `callType` (select: SALVATION, REDEDICATION, HOLY GHOST BAPTISM, HEALING, SPECIAL MINISTRATION, OTHER)
+  - `totalResponders` (number, min 1)
+  - `additionalComments` (textarea)
+- After creating an altar call, individual responders can be recorded on the Event Detail page via the `<EventFollowUps>` component:
+  - **Form fields** (via `<EventAltarCallResponseForm>`): Full Name, Gender, Phone Number, Hostel, Room Number, Assigned To (follow-up assignee), Notes.
+  - Each responder gets a default `followUpStatus` of `"NOT DONE"`.
+- **API**: `GET /admin/altar-calls/global`, `POST /admin/altar-calls`, `GET /admin/altar-calls/event/{eventId}`, `GET /admin/altar-calls/responses/{altarCallId}`, `POST /admin/altar-calls/responses`.
+
+### 2.9 Follow-ups (`/follow-ups`)
+
+- Grid of `<ActionCard>` components, each displaying a follow-up record.
+- **Record fields**: Full Name, Category (First Timer, New Convert, Welfare Check, General), Phone Number, Linked Event, Status (Pending / Contacted / Completed), Notes Thread.
+- **Quick actions per card**: Call button (tel: link), WhatsApp button (wa.me link with automatic country code prepending), inline notes thread with add-note input (emits `@add-note` to parent for API call).
+- **Create new**: Form with Full Name, Category, Phone Number, Linked Event (SearchableSelect), Initial Note.
+- **Notes thread**: Array of `{ text, authorName, timestamp }` objects stored on the follow-up document. Appended via `FieldValue.arrayUnion()`.
+- **Status update**: PATCH endpoint updates only the `status` field.
+- **API**: `GET /admin/follow-ups`, `POST /admin/follow-ups`, `POST /admin/follow-ups/:id/notes`, `PATCH /admin/follow-ups/:id/status`.
+
+### 2.10 Members Directory (`/members`)
+
+- **Purpose**: View the complete workforce (workers + executives) grouped by chapel unit.
+- Data is fetched as a flat array and grouped dynamically by the `unit` (`chapelUnit`) field.
+- Each group displays the unit name, member count badge, and a grid of `<MemberCard>` components.
+- **Note**: There is currently no page for registering regular workers; worker registration happens through the public `/api/members/register-worker` endpoint (passkey-protected).
+
+### 2.11 Executive Management (`/executives`)
+
+**Access**: super_admin only.
+
+- Table of all executives with avatar initials, name, email, chapel unit badge, academic details (department, level, matric number), and edit button.
+- **Add/Edit** via slide-over with `<MemberExecutiveForm>`:
+  - Full Name, Gender (MALE/FEMALE), Date of Birth, Phone Number, WhatsApp Number, Email Address
+  - Matric Number, Level (100–500), School Department
+  - Chapel Unit (same 12 units), Relationship Status (SINGLE, IN A RELATIONSHIP, ENGAGED, MARRIED)
+- **Note**: The backend forces `memberType: "EXECUTIVE"` when creating via the admin endpoint.
+- **API**: `GET /admin/members/executives`, `POST /admin/members/executives`, `PUT /admin/members/executives/:id`.
+
+### 2.12 Unit Meeting Attendance (`/unit-meetings`)
+
+**Access**: executive or super_admin.
+
+- **Purpose**: Record attendance status for unit members at unit meetings (distinct from event attendance).
+- **Three-step flow**: Select Unit → Select/Enter Meeting Date → Mark members Present/Pardoned.
+- **Unique behavior**: This is the **only page that saves data to `localStorage`** rather than to the API. Storage key pattern: `unit-meeting-attendance:{unit}:{date}`.
+- Summary cards show Members Loaded, Present (green badge), Pardoned (amber badge), and Absent (red badge, auto-calculated).
+- Includes a comments textarea and "last saved" timestamp.
+
+### 2.13 User Management (`/users`)
+
+**Access**: super_admin only.
+
+- Table of all admin users with avatar initials, name, email, role badge, type badge, and actions dropdown.
+- **Actions per user**:
+  - **Edit User**: Opens drawer with name, email, role, and type fields.
+  - **Promote User**: Promotes an admin to super_admin (hidden for current super_admin users). Uses confirmation modal.
+  - **Delete User**: Destructive confirmation modal with red delete button.
+- **Register new user**: Opens drawer with Full Name, Email Address, Password (optional — backend generates random password if omitted), Admin Type (Website/Executive/All), Role (admin/super_admin).
+- **Dropdown positioning**: Uses `getBoundingClientRect()` with Teleport to body for proper overflow handling.
+- **API**: `GET /admin/auth/users`, `PUT /admin/auth/update/:uid`, `POST /admin/auth/register`, `POST /admin/auth/upgrade/:uid`, `DELETE /admin/auth/:uid`.
+
+### 2.14 Analytics (`/analytics/summaries` and `/analytics/visuals`)
+
+- Both pages are **currently empty stubs** with only page meta (`allowedUserTypes: ["executive"]`). No functionality has been implemented yet.
+
+### 2.15 Follow-up Worker Registration (Public)
+
+- The public endpoint `POST /api/members/register-worker` allows new church workers to self-register.
+- Requires a `passkey` and `chapelUnit`. The passkey is checked against the `unitPasskeys/{chapelUnit}` Firestore document (which has a `key` field).
+- If the passkey doesn't match, a 403 "Invalid passkey" error is returned.
+- All registered workers get `memberType: "WORKER"`.
+
+---
+
+## 3. State & Permissions
+
+### 3.1 Pinia Auth Store (`stores/auth.js`)
+
+```javascript
+state: {
+  user: null,      // initialized from cookie "admin_user"
+  token: null      // initialized from cookie "admin_token"
+}
+actions:
+  setAuth(userData, token)   // Sets state + cookies
+  logout()                   // Firebase signOut + clear state + redirect to /login
+```
+
+- The `token` cookie has a **60-minute** max-age (matching Firebase token lifetime).
+- The `user` cookie has an **8-hour** max-age.
+- The store is accessed throughout the app via `useAuthStore()`.
+
+### 3.2 Global Auth Guard (`middleware/auth.global.js`)
+
+Runs on **every route change** and enforces three levels of access:
+
+1. **Authentication**: If no `admin_token` cookie and not on `/auth/login`, redirect to login.
+2. **Super Admin Only**: If page sets `accessToSuperAdminOnly: true` and user role is not `"super_admin"`, redirect with a warning toast.
+3. **User Type Restriction**: If page sets `allowedUserTypes` (array or string), checks `user.type` against allowed values (or if `user.type === "all"`). Super admins bypass all checks.
+
+**Page meta examples**:
+```javascript
+definePageMeta({
+  accessToSuperAdminOnly: true     // /auth/register, /executives, /users
+});
+definePageMeta({
+  allowedUserTypes: ["executive"]  // /events, /members, /follow-ups, etc.
+});
+definePageMeta({
+  allowedUserTypes: ["website"]    // /website/homepage, /website/about, etc.
+});
+```
+
+### 3.3 UI State Composables
+
+| Composable | Purpose | Global State |
+|---|---|---|
+| `useAlertModal` | Opens a modal with title, message, and type (error/success/warning/info) | `useState`: isOpen, title, message, type |
+| `useAppToast` | Toast notification system | `useState("global-toasts")`: array of toasts with id, title, message, type, duration |
+| `useConfirm` | Promise-based confirmation dialog | Module-level: isOpen, title, message, confirmText, cancelText, isDestructive, resolvePromise |
+| `useErrorModal` | Error/forbidden modal | `useState`: isOpen, errorMessage, errorTitle |
+| `usePageManager` | Generic CMS page state management | Local: isFetching, isSaving |
+| `useAttendanceLogic` | Attendance toggle logic (officiating, present, pardoned, absent) | Local refs |
+
+### 3.4 Sidebar Navigation Visibility
+
+The main layout (`layouts/default.vue`) conditionally renders sidebar sections based on user role/type:
+
+| Sidebar Section | Visible To |
+|---|---|
+| Dashboard, Help & Support, Your Profile | All authenticated users |
+| Quick Links | executive or super_admin |
+| **Website Management** (all CMS pages) | website type or super_admin |
+| **Event Oversight** (Events, Unit Attendance, Head Count, Altar Calls) | executive or super_admin |
+| **Unit Management** (Members, Meeting Attendance) | executive or super_admin |
+| **Evangelism** (Follow-up Records) | executive or super_admin |
+| **Data Inference** (Analytics pages) | executive or super_admin |
+| **User Management** (Register User, Manage Users) | super_admin only |
+
+### 3.5 Permission Summary Table
+
+| What | Who Can Do It |
+|---|---|
+| Login | Any registered admin user |
+| View dashboard | All authenticated users |
+| View/edit own profile | All authenticated users |
+| View website CMS content (read) | website type, all type, super_admin |
+| Edit website CMS content | website type, all type, super_admin |
+| View events | executive type, all type, super_admin |
+| Create/edit/delete events | executive type, all type, super_admin |
+| View/record headcounts | executive type, all type, super_admin |
+| View/record altar calls | executive type, all type, super_admin |
+| View/record unit attendance | executive type, all type, super_admin |
+| View members directory | executive type, all type, super_admin |
+| Create/edit executives | **super_admin only** |
+| View follow-ups | executive type, all type, super_admin |
+| Create/edit follow-ups | executive type, all type, super_admin |
+| Manage dashboard links (CRUD) | **super_admin only** (view is all auth'd) |
+| View dashboard links | All authenticated users |
+| Register new admin users | **super_admin only** |
+| Edit/promote/delete admin users | **super_admin only** |
+| Access analytics pages | executive type, all type, super_admin (pages are stubs) |
+| Record unit meeting attendance | executive type, all type, super_admin (localStorage only) |
+
+---
+
+## 4. Common Workflows
+
+### 4.1 Full Event Lifecycle
+
+This is the core workflow for church executives:
+
+```
+Create Event → Record Headcount → Record Unit Attendance → Record Altar Calls → Record Individual Responders → Follow-ups
+```
+
+#### Step 1: Create an Event
+1. Navigate to **Events** (`/events`).
+2. Click **"Add Event"** to open the slide-over drawer.
+3. Fill in: Event Date, Service Type, Start/End Time, Description.
+4. If "SPECIAL PROGRAM" is selected, additional fields appear: Special Program Category and Program Day/Label.
+5. Click **"Create Event"**. A new event document is created in Firestore.
+
+#### Step 2: Record Headcount
+1. Navigate to **Head Counts** (`/headcounts`) or click into the Event Detail page (`/events/[id]`) and find the "Event Demographics" card.
+2. Click the edit/pencil icon or "Record Head Count" button.
+3. Enter: Male Students, Female Students, Male Visitors, Female Visitors. The total is auto-calculated.
+4. Optionally add comments and click **"Submit Head Count"**.
+
+#### Step 3: Record Unit Attendance
+1. Navigate to **Unit Attendance** (`/event-attendance`) or from the Event Detail page click "Manage Attendance".
+2. Select an **Event** and a **Unit**.
+3. The attendance table loads all workers in that unit.
+4. For each worker: toggle **Officiating** on/off. For officiating workers, mark **Present** or **Pardoned**.
+5. The system automatically computes **Absent** workers (officiating but not marked Present or Pardoned).
+6. Add **Additional Comments** and click **"Save Unit Attendance"**.
+
+#### Step 4: Record Altar Calls
+1. On the Event Detail page (`/events/[id]`), scroll to the **Altar Calls** card.
+2. Click **"Record"** to open the form.
+3. Select the Call Type (Salvation, Rededication, Holy Ghost Baptism, Healing, Special Ministration, Other).
+4. Enter the total number of responders and optional comments.
+5. Click **"Record Altar Call"**.
+
+#### Step 5: Record Individual Responders
+1. On the Event Detail page, click an altar call entry in the list to select it.
+2. In the **Follow-ups** panel on the right, click **"Add"**.
+3. Fill in: Full Name (required), Gender, Phone Number, Hostel & Room Number, Assignee (optional), Notes.
+4. Click **"Record Response"**. Each responder is stored with a default follow-up status of "NOT DONE".
+
+#### Step 6: Follow-ups & Notes
+1. Navigate to **Follow-up Records** (`/follow-ups`).
+2. View the grid of all follow-up records, each showing the person's name, category, status badge, and notes thread.
+3. For each record:
+   - **Call** or **WhatsApp** the person using quick-action buttons.
+   - **Add notes** by typing in the input and pressing Enter or clicking the send icon.
+   - Notes include the author name and timestamp automatically.
+4. To update the **status** (Pending → Contacted → Completed), the ActionCard component emits events that the parent page handles via PATCH API calls.
+
+### 4.2 Website Content Update Workflow
+
+1. Navigate to the appropriate CMS page under **Website Management** in the sidebar (e.g., **Homepage**).
+2. The page loads all sections from the backend via `usePageManager().loadSettings()`.
+3. Edit one or more sections:
+   - For **text fields**, simply type into the input or textarea.
+   - For **dynamic arrays** (e.g., Action Cards, Editorial Slides, Chaplaincy List), use **Add** and **Remove** buttons. Removal may prompt confirmation.
+4. Either:
+   - Click **"Save Changes"** on an individual section (via `<SaveSectionButton>`), or
+   - Scroll to the bottom and click the sticky **"Save All Changes"** button to save all sections at once.
+5. A success toast confirms the save.
+6. Changes are immediately reflected on the public website (it reads from Firestore directly).
+
+### 4.3 Admin User Account Management (Super Admin)
+
+1. Navigate to **Register New User** (`/auth/register`) or **Manage Users** (`/users`).
+2. **To register**:
+   - Fill in Full Name, Email, Password, Admin Type (Website/Executive/All), and Role (admin/super_admin).
+   - Click **"Register"**.
+   - The new user receives a Firebase Auth account and a Firestore `users/{uid}` document.
+3. **To edit an existing user**, find them in the user management table, click the actions dropdown, and select **Edit User**.
+4. **To promote a user to super_admin**, use the "Promote User" action. This updates the user's custom claims and Firestore document.
+5. **To delete a user**, select "Delete User" and confirm in the destructive confirmation dialog.
+
+### 4.4 Worker Registration (Public)
+
+**This is a public self-service flow (not admin-facing):**
+
+1. A prospective worker visits the public website.
+2. They fill out a registration form with their details plus a **passkey** (provided by the church) and their chosen **chapel unit**.
+3. The frontend sends a `POST /api/members/register-worker` request with the passkey and unit.
+4. The backend validates the passkey against the `unitPasskeys/{chapelUnit}` document.
+5. If valid, a new Firestore document is created in the `members` collection with `memberType: "WORKER"`.
+6. The worker now appears in the admins' Members Directory and can be tracked in Unit Attendance.
+
+### 4.5 Daily Unit Meeting Attendance (LocalStorage)
+
+1. Navigate to **Meeting Attendance** (`/unit-meetings`).
+2. Select a **Unit** from the dropdown.
+3. Select or enter a **Meeting Date** (defaults to today).
+4. The page loads all members of that unit.
+5. Mark each member as **Present** or **Pardoned** (radio buttons).
+6. The system auto-computes **Absent** members.
+7. Optionally add **Additional Comments**.
+8. Click **"Save Attendance"** — data is stored in `localStorage` (key: `unit-meeting-attendance:{unit}:{date}`).
+9. A "Last Saved" timestamp is shown for reference.
+
+---
+
+## 5. Troubleshooting & Edge Cases
+
+### 5.1 Hardcoded Enums & Constraints
+
+These are values hardcoded in the frontend that cannot be changed without a code deployment:
+
+#### Service Types (Event Creation)
+```
+SUNDAY SERVICE, BIBLE STUDY, PRAYER MEETING, SUNDAY SCHOOL, SPECIAL PROGRAM
+```
+
+#### Special Program Categories (shown only for SPECIAL PROGRAM)
+```
+WORKERS MEETING, WORKERS RETREAT, WORKERS VIGIL, EXCO VIGIL, SAYCO, EXCELLENCE CONFERENCE, OTHER
+```
+
+#### Altar Call Categories
+```
+SALVATION, REDEDICATION, HOLY GHOST BAPTISM, HEALING, SPECIAL MINISTRATION, OTHER
+```
+
+#### Follow-up Categories
+```
+First Timer, New Convert, Welfare Check, General
+```
+
+#### Follow-up Statuses
+```
+Pending, Contacted, Completed
+```
+
+#### Chapel Units (12 units)
+```
+Choir, Editorial, Ushering, Protocol, Media, Prayer, Drama, Bible Study, Evangelism, Technical, Welfare, Academic
+```
+
+#### Educational Levels
+```
+100, 200, 300, 400, 500
+```
+
+#### Relationship Statuses
+```
+SINGLE, IN A RELATIONSHIP, ENGAGED, MARRIED
+```
+
+#### Genders
+```
+MALE, FEMALE
+```
+
+#### User Roles
+```
+admin, super_admin
+```
+
+#### User Types
+```
+website, executive, all
+```
+
+### 5.2 Known Limitations & Edge Cases
+
+#### Database
+- **No cascading deletes**: Deleting an event does not automatically delete its related records (headcounts, altar calls, attendance records, follow-ups). Those records remain orphaned in the database.
+- **No soft deletes**: Deletion of events and users is permanent. There is no "trash" or "recovery" mechanism.
+- **No pagination on most collections**: Endpoints like `GET /admin/events`, `GET /admin/members`, and `GET /admin/headcounts` return the entire collection. As data grows, this could become slow.
+- **Public content endpoints never 404**: If a section document doesn't exist, the API returns `{}` rather than a 404. The admin CMS handles missing sections similarly.
+
+#### Attendance
+- **Absent auto-calculation**: The `useAttendanceLogic` composable automatically treats any officiating worker who is not marked Present or Pardoned as Absent. This is computed on the frontend and sent to the backend. The backend also independently computes absentIds as those in officiatingIds but not in presentIds or pardonedIds.
+- **Unit Attendance is per-event, per-unit**: Each event + unit combination has exactly one attendance record. Saving overwrites the previous record entirely.
+
+#### Unit Meeting Attendance
+- **LocalStorage only**: This data is not synced to the backend. Clearing browser storage or using a different device will lose the data. There is no backup or export mechanism.
+
+#### Follow-ups
+- **Notes thread uses arrayUnion**: The `POST /:id/notes` endpoint uses Firestore's `FieldValue.arrayUnion()` to append notes. This prevents duplicate notes, but the entire thread grows unbounded over time.
+
+#### Analytics
+- **Completely unimplemented**: The analytics/summaries and analytics/visuals pages are empty stubs. No data fetching, charts, or reporting is available.
+
+#### Dashboard Stats
+- **Mock data only**: The dashboard stat cards display hardcoded placeholder values. They are not currently connected to any real data aggregation.
+
+#### Authentication
+- **Token refresh**: The Firebase `onIdTokenChanged` listener runs client-side. If the backend receives an expired token before the client refreshes it, the interceptor will handle the 401 and show a "Session Expired" toast, but does not automatically attempt a retry.
+- **Cookie-only auth**: The admin app does not use localStorage or sessionStorage for auth tokens. If cookies are blocked or cleared, the user will be logged out.
+- **Token cookie max-age: 60 minutes**: After 60 minutes of inactivity, the cookie expires and the user is redirected to login.
+
+#### Cross-Origin / CORS
+- The backend's CORS configuration explicitly allows origins from `FRONTEND_URL`, `ADMIN_FRONTEND_URL`, `http://localhost:3000`, and `http://localhost:3001`. If deploying to different URLs, the CORS config must be updated.
+
+#### Phone Number Handling
+- The `cleanPhone()` utility strips all non-digit characters and prepends "234" (Nigeria country code) if the number starts with "0". This is hardcoded and may not work for non-Nigerian numbers.
+
+#### User Type `"all"`
+- Users with type `"all"` have access to both website and executive features (like super_admin), but are NOT super_admin. They cannot access super_admin-only pages (user management, executive management).
+
+#### Registration Passkey System
+- The public worker registration uses a passkey system stored in `unitPasskeys/{chapelUnit}` documents. These passkeys must be manually created/edited in the Firebase Console — there is no admin UI for managing them.
+
+### 5.3 Common Error Messages & What They Mean
+
+| Error Message | Likely Cause | Resolution |
+|---|---|---|
+| "Invalid email or password" | Firebase login failure | Verify email and password; check Firebase Authentication is enabled |
+| "Session Expired:" (toast) | Firebase ID token expired | User must re-login |
+| "Access Denied:" (toast) | User role/type doesn't match required permissions | Check user's assigned type in User Management |
+| "Invalid passkey" (worker registration) | Passkey doesn't match `unitPasskeys` record | Verify the passkey with the church admin; check unit spelling |
+| 404 on event operations | Event ID doesn't exist in Firestore | Verify the ID; events may have been deleted |
+| 403 on admin operations | Missing super_admin role | Only super_admins can manage users, executives, and dashboard links |
+
+### 5.4 Important Gotchas
+
+- **Website page spelling**: The counseling page endpoint is spelled `counselling` (UK/Canadian spelling) consistently across backend (`/admin/counselling`) and frontend page (`/website/counseling.vue`). The page route uses US spelling but the API endpoint uses UK spelling.
+- **Member collection duality**: The `members` Firestore collection stores both regular workers (`memberType: "WORKER"`) and executives (`memberType: "EXECUTIVE"`). The `GET /admin/members` endpoint returns all members, while `GET /admin/members/executives` filters by `memberType == "EXECUTIVE"`.
+- **No put/delete for altar calls or responses**: The altar call and response endpoints only support create and read. There is no update or delete functionality for individual altar calls or responder records.
+- **Executive form lacks delete**: The executives page has no delete functionality, only create and edit.
+- **Empty states are handled**: Every page has proper empty-state and loading-state UI. If no data exists, a helpful message with an action button is shown (e.g., "No Altar Calls" → "Record Call").
+- **The help page is a stub**: The current `/dashboard/help.vue` has an empty template and no content.

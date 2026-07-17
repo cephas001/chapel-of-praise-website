@@ -28,9 +28,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -67,6 +67,12 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
+          </div>
         </div>
       </div>
 
@@ -83,9 +89,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -134,6 +140,12 @@
                 placeholder="Enter the second column of text..."
               ></textarea>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.visionSection"
+              @click="handleSaveSection('visionSection', visionSection)"
+            />
           </div>
         </div>
       </div>
@@ -184,12 +196,25 @@ const sectionsMap = {
   visionSection,
 };
 
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  visionSection: false,
+});
+
 // Initialize the composable
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "about",
-  sectionsMap,
-  { reloadOnSave: true },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("about", sectionsMap, { reloadOnSave: true });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();

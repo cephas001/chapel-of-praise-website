@@ -28,9 +28,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -67,6 +67,12 @@
               />
             </div>
           </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.heroSection"
+              @click="handleSaveSection('heroSection', heroSection)"
+            />
+          </div>
         </div>
       </div>
 
@@ -83,9 +89,9 @@
           </p>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
@@ -108,6 +114,12 @@
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
               ></textarea>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.teamSection"
+              @click="handleSaveSection('teamSection', teamSection)"
+            />
           </div>
         </div>
       </div>
@@ -132,78 +144,86 @@
           </button>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div
-            v-if="chaplaincySection.chaplaincyList.length === 0"
-            class="text-xs text-gray-500 text-center py-4"
-          >
-            No chaplains added yet.
-          </div>
-          <div
-            v-for="(chaplain, index) in chaplaincySection.chaplaincyList"
-            :key="'chaplain' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
-          >
-            <span
-              class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
-              >Chaplain {{ index + 1 }}</span
+          <div class="p-6 space-y-6">
+            <div
+              v-if="chaplaincySection.chaplaincyList.length === 0"
+              class="text-xs text-gray-500 text-center py-4"
             >
-            <button
-              type="button"
-              @click="removeChaplain(index)"
-              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
-              title="Remove Chaplain"
+              No chaplains added yet.
+            </div>
+            <div
+              v-for="(chaplain, index) in chaplaincySection.chaplaincyList"
+              :key="'chaplain' + index"
+              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
             >
-              <Icon name="heroicons:minus-circle" class="h-4 w-4" />
-            </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Name</label
-                >
-                <input
-                  v-model="chaplain.name"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Title</label
-                >
-                <input
-                  v-model="chaplain.title"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Image URL</label
-                >
-                <input
-                  v-model="chaplain.imageUrl"
-                  type="url"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                  placeholder="https://..."
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Bio</label
-                >
-                <textarea
-                  v-model="chaplain.bio"
-                  rows="3"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-                ></textarea>
+              <span
+                class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
+                >Chaplain {{ index + 1 }}</span
+              >
+              <button
+                type="button"
+                @click="removeChaplain(index)"
+                class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
+                title="Remove Chaplain"
+              >
+                <Icon name="heroicons:minus-circle" class="h-4 w-4" />
+              </button>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Name</label
+                  >
+                  <input
+                    v-model="chaplain.name"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Title</label
+                  >
+                  <input
+                    v-model="chaplain.title"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Image URL</label
+                  >
+                  <input
+                    v-model="chaplain.imageUrl"
+                    type="url"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Bio</label
+                  >
+                  <textarea
+                    v-model="chaplain.bio"
+                    rows="3"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                  ></textarea>
+                </div>
               </div>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.chaplaincySection"
+              @click="handleSaveSection('chaplaincySection', chaplaincySection)"
+            />
           </div>
         </div>
       </div>
@@ -228,80 +248,93 @@
           </button>
         </div>
         <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
         >
-          <div
-            v-if="studentExecutivesSection.studentExecutivesList.length === 0"
-            class="text-xs text-gray-500 text-center py-4"
-          >
-            No student executives added yet.
-          </div>
-          <div
-            v-for="(
-              exec, index
-            ) in studentExecutivesSection.studentExecutivesList"
-            :key="'exec' + index"
-            class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
-          >
-            <span
-              class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
-              >Executive {{ index + 1 }}</span
+          <div class="p-6 space-y-6">
+            <div
+              v-if="studentExecutivesSection.studentExecutivesList.length === 0"
+              class="text-xs text-gray-500 text-center py-4"
             >
-            <button
-              type="button"
-              @click="removeExecutive(index)"
-              class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1"
-              title="Remove Executive"
+              No student executives added yet.
+            </div>
+            <div
+              v-for="(
+                exec, index
+              ) in studentExecutivesSection.studentExecutivesList"
+              :key="'exec' + index"
+              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
             >
-              <Icon name="heroicons:trash" class="h-4 w-4" />
-            </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Name</label
-                >
-                <input
-                  v-model="exec.name"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div>
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Title</label
-                >
-                <input
-                  v-model="exec.title"
-                  type="text"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Image URL</label
-                >
-                <input
-                  v-model="exec.imageUrl"
-                  type="url"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-                  placeholder="https://..."
-                />
-              </div>
-              <div class="md:col-span-2">
-                <label
-                  class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-                  >Bio</label
-                >
-                <textarea
-                  v-model="exec.bio"
-                  rows="3"
-                  class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-                ></textarea>
+              <span
+                class="absolute top-5 left-5 text-[11px] font-bold text-gray-400 uppercase font-jetbrains"
+                >Executive {{ index + 1 }}</span
+              >
+              <button
+                type="button"
+                @click="removeExecutive(index)"
+                class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1"
+                title="Remove Executive"
+              >
+                <Icon name="heroicons:trash" class="h-4 w-4" />
+              </button>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Name</label
+                  >
+                  <input
+                    v-model="exec.name"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Title</label
+                  >
+                  <input
+                    v-model="exec.title"
+                    type="text"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Image URL</label
+                  >
+                  <input
+                    v-model="exec.imageUrl"
+                    type="url"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    >Bio</label
+                  >
+                  <textarea
+                    v-model="exec.bio"
+                    rows="3"
+                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                  ></textarea>
+                </div>
               </div>
             </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.studentExecutivesSection"
+              @click="
+                handleSaveSection(
+                  'studentExecutivesSection',
+                  studentExecutivesSection,
+                )
+              "
+            />
           </div>
         </div>
       </div>
@@ -356,6 +389,7 @@ const teamSection = reactive({
 const chaplaincySection = reactive({
   chaplaincyList: [],
 });
+
 const studentExecutivesSection = reactive({
   studentExecutivesList: [],
 });
@@ -366,6 +400,14 @@ const sectionsMap = {
   chaplaincySection,
   studentExecutivesSection,
 };
+
+// State for individual section saves
+const sectionSavingState = reactive({
+  heroSection: false,
+  teamSection: false,
+  chaplaincySection: false,
+  studentExecutivesSection: false,
+});
 
 const defaultChaplain = () => ({ name: "", title: "", bio: "", imageUrl: "" });
 const defaultExecutive = () => ({ name: "", title: "", bio: "", imageUrl: "" });
@@ -400,11 +442,20 @@ const leadershipPageParser = (response, map) => {
 };
 
 // Initialize the composable
-const { isFetching, isSaving, loadSettings, saveSettings } = usePageManager(
-  "leadership",
-  sectionsMap,
-  { customParser: leadershipPageParser },
-);
+const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
+  usePageManager("leadership", sectionsMap, {
+    customParser: leadershipPageParser,
+  });
+
+// Section-specific save handler
+const handleSaveSection = async (sectionKey, sectionData) => {
+  sectionSavingState[sectionKey] = true;
+  try {
+    await saveSection(sectionKey, sectionData);
+  } finally {
+    sectionSavingState[sectionKey] = false;
+  }
+};
 
 onMounted(() => {
   loadSettings();
