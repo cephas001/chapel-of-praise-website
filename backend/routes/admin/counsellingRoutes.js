@@ -26,27 +26,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a specific counselling section
-router.get("/:sectionId", async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const docRef = db.collection("counselling").doc(sectionId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(200).json({});
-    }
-
-    res.status(200).json(doc.data());
-  } catch (error) {
-    console.error(
-      `Error getting counselling section ${req.params.sectionId}:`,
-      error,
-    );
-    res.status(500).json({ message: "Failed to fetch counselling section" });
-  }
-});
-
 // Reusable function to create or update a specific counselling section
 const savecounsellingSettings = async (req, res) => {
   try {
@@ -82,8 +61,6 @@ const savecounsellingSettings = async (req, res) => {
   }
 };
 
-// Allow both PUT and POST to update specific sections
 router.put("/:sectionId", savecounsellingSettings);
-router.post("/:sectionId", savecounsellingSettings);
 
 module.exports = router;

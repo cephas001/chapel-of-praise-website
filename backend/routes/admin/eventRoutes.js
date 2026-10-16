@@ -5,6 +5,19 @@ const {
   verifyToken,
   requireStaticTypeAccess,
 } = require("../../middleware/auth");
+const { pickWritableFields } = require("../../utils/payload");
+
+// Client-writable fields only; server-managed fields (creatorId, timestamps)
+// can never be set or overwritten by the request body.
+const EVENT_WRITABLE_FIELDS = [
+  "eventDate",
+  "service",
+  "specialProgram",
+  "programDay",
+  "startTime",
+  "endTime",
+  "eventDescription",
+];
 
 // Apply verifyToken middleware to all event routes
 router.use(verifyToken);
@@ -14,7 +27,11 @@ router.use(requireStaticTypeAccess(["executive"]));
 // Create Event
 router.post("/", async (req, res) => {
   try {
-    const eventData = req.body;
+    const eventData = pickWritableFields(req.body, EVENT_WRITABLE_FIELDS);
+
+    if (!eventData.eventDate) {
+      return res.status(400).json({ error: "Event date is required." });
+    }
 
     const newEvent = {
       ...eventData,
@@ -59,7 +76,7 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = pickWritableFields(req.body, EVENT_WRITABLE_FIELDS);
 
     updateData.updatedAt = new Date().toISOString();
 

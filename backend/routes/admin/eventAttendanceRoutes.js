@@ -71,29 +71,45 @@ router.post("/", async (req, res) => {
       updatedAt: new Date().toISOString(),
     };
 
-    const snapshot = await db
+    const query = db
       .collection("eventUnitAttendance")
       .where("eventId", "==", eventId)
-      .where("unitName", "==", unitName)
-      .get();
+      .where("unitName", "==", unitName);
 
-    if (snapshot.empty) {
-      payload.createdAt = new Date().toISOString();
-      const docRef = await db.collection("eventUnitAttendance").add(payload);
+    const result = await db.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(query);
+
+      if (snapshot.empty) {
+        // Deterministic ID prevents duplicate docs from concurrent creates
+        const docRef = db
+          .collection("eventUnitAttendance")
+          .doc(`${eventId}__${unitName}`);
+        transaction.set(docRef, {
+          ...payload,
+          createdAt: new Date().toISOString(),
+        });
+        return { id: docRef.id, created: true };
+      }
+
+      // Update the existing doc (may be a legacy random-ID doc)
+      const docRef = snapshot.docs[0].ref;
+      transaction.update(docRef, payload);
+      return { id: docRef.id, created: false };
+    });
+
+    if (result.created) {
       return res.status(201).json({
         message: "Attendance recorded successfully.",
-        id: docRef.id,
-        data: payload,
-      });
-    } else {
-      const docId = snapshot.docs[0].id;
-      await db.collection("eventUnitAttendance").doc(docId).update(payload);
-      return res.status(200).json({
-        message: "Attendance updated successfully.",
-        id: docId,
+        id: result.id,
         data: payload,
       });
     }
+
+    return res.status(200).json({
+      message: "Attendance updated successfully.",
+      id: result.id,
+      data: payload,
+    });
   } catch (error) {
     console.error("Error saving attendance:", error);
     res.status(500).json({ error: "Failed to save attendance records." });

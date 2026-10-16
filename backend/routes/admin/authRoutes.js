@@ -1,28 +1,53 @@
 // backend/routes/admin/auth.js
+const crypto = require("crypto");
 const express = require("express");
-const { db, auth } = require("../../config/firebase");
+const { db, auth, admin } = require("../../config/firebase");
 const { verifyToken, requireSuperAdmin } = require("../../middleware/auth");
+const { loginLimiter } = require("../../middleware/rateLimiters");
 
 const router = express.Router();
+
+const VALID_USER_TYPES = ["website", "executive", "all"];
+
+const generateTemporaryPassword = () =>
+  crypto.randomBytes(9).toString("base64url");
 
 // --- REGISTER ROUTE (PROTECTED: ONLY SUPER ADMINS CAN ACCESS) ---
 router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
   try {
     const { name, email, password, role = "admin", type } = req.body;
 
-    if (!name || !email || !password || !type) {
-      return res.status(400).json({ error: "All fields are required." });
+    if (!name || !email || !type) {
+      return res
+        .status(400)
+        .json({ error: "Name, email and type are required." });
     }
+
+    if (!VALID_USER_TYPES.includes(type)) {
+      return res
+        .status(400)
+        .json({ error: `Type must be one of: ${VALID_USER_TYPES.join(", ")}.` });
+    }
+
+    const resolvedRole = role === "super_admin" ? "super_admin" : "admin";
+
+    // The register page lets super admins choose a password. The users page
+    // omits it, so generate a secure temporary password and return it once
+    // for the admin to hand over; users can change it via "Forgot password".
+    const temporaryPassword = password || generateTemporaryPassword();
 
     // 1. Create the user in Firebase Authentication
     // Firebase automatically checks for duplicate emails and hashes the password safely!
     const userRecord = await auth.createUser({
       email,
-      password,
+      password: temporaryPassword,
       displayName: name,
     });
 
-    await auth.setCustomUserClaims(userRecord.uid, { role: role, type: type });
+    await auth.setCustomUserClaims(userRecord.uid, {
+      role: resolvedRole,
+      type,
+    });
 
     // 2. Save the extra metadata in Firestore ('users' collection)
     // We use the Firebase Auth UID (userRecord.uid) as the document ID.
@@ -30,7 +55,7 @@ router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
     const userData = {
       name,
       email,
-      role,
+      role: resolvedRole,
       type,
       createdAt: new Date().toISOString(),
     };
@@ -40,6 +65,7 @@ router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
     res.status(201).json({
       message: "User registered successfully",
       user: { id: userRecord.uid, ...userData },
+      ...(password ? {} : { temporaryPassword }),
     });
   } catch (error) {
     console.error("Registration error:", error);
@@ -59,7 +85,7 @@ router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
 // --- LOGIN ROUTE ---
 // Note: The frontend logs the user in directly via Firebase.
 // This route is now just for the frontend to send its token and fetch its role/type.
-router.post("/login", verifyToken, async (req, res) => {
+router.post("/login", loginLimiter, verifyToken, async (req, res) => {
   try {
     // Thanks to your verifyToken middleware, req.user already contains the decoded Firebase token!
     const uid = req.user.uid;
@@ -93,49 +119,57 @@ router.post("/login", verifyToken, async (req, res) => {
 });
 
 // --- LIST USERS (PROTECTED: ONLY SUPER ADMINS CAN ACCESS) ---
-// Returns a curated list of users with only the fields the frontend needs.
+// Paginated straight from the Firestore `users` collection (the source of
+// truth for role/type), replacing the old listUsers + per-user read fan-out.
+const USERS_DEFAULT_PAGE_SIZE = 50;
+const USERS_MAX_PAGE_SIZE = 200;
+
 router.get("/users", verifyToken, requireSuperAdmin, async (req, res) => {
   try {
-    const users = [];
-    // Firebase Admin SDK supports pagination via listUsers; we'll fetch up to 1000 at a time.
-    let result = await auth.listUsers(1000);
-    let allUsers = result.users || [];
+    const requestedLimit = parseInt(req.query.limit, 10);
+    const pageSize = Math.min(
+      Math.max(
+        Number.isFinite(requestedLimit)
+          ? requestedLimit
+          : USERS_DEFAULT_PAGE_SIZE,
+        1,
+      ),
+      USERS_MAX_PAGE_SIZE,
+    );
 
-    // If there are more pages, iterate through them
-    while (result.pageToken) {
-      result = await auth.listUsers(1000, result.pageToken);
-      allUsers = allUsers.concat(result.users || []);
+    const { cursor } = req.query;
+
+    // Ordered by document ID (always present) so cursors stay stable even
+    // for legacy docs that predate any given data field.
+    let query = db
+      .collection("users")
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize + 1);
+
+    if (cursor) {
+      query = query.startAfter(cursor);
     }
 
-    // Map and enrich with Firestore metadata (role/type) if available
-    const promises = allUsers.map(async (u) => {
-      const uid = u.uid;
-      const userDoc = await db.collection("users").doc(uid).get();
-      const docData = userDoc.exists ? userDoc.data() : {};
+    const snapshot = await query.get();
+    const hasMore = snapshot.size > pageSize;
+    const pageDocs = snapshot.docs.slice(0, pageSize);
 
-      // Prefer Firestore stored role/type, fallback to custom claims, then defaults
-      const role =
-        docData.role ||
-        (u.customClaims && u.customClaims.role) ||
-        (u.role ? u.role : "admin");
-      const type =
-        docData.type ||
-        (u.customClaims && u.customClaims.type) ||
-        (u.type ? u.type : "website");
-
+    const users = pageDocs.map((doc) => {
+      const data = doc.data();
       return {
-        uid,
-        name: docData.name || u.displayName || u.name || "",
-        email: u.email || docData.email || "",
-        role,
-        type,
+        uid: doc.id,
+        name: data.name || "",
+        email: data.email || "",
+        role: data.role || "admin",
+        type: data.type || "website",
       };
     });
 
-    const resolved = await Promise.all(promises);
-    users.push(...resolved);
-
-    res.status(200).json(users);
+    res.status(200).json({
+      users,
+      nextCursor: hasMore ? pageDocs[pageDocs.length - 1].id : null,
+      hasMore,
+    });
   } catch (error) {
     console.error("List users error:", error);
     res.status(500).json({ error: "Server error while listing users." });
@@ -198,6 +232,53 @@ router.get("/:uid", verifyToken, async (req, res) => {
   }
 });
 
+// --- UPDATE OWN PROFILE (ANY AUTHENTICATED USER) ---
+// Self-service route: users may only update their own display name.
+// Email, role, and type changes stay exclusive to super admins via /update/:uid.
+router.put("/profile", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+    const { name } = req.body;
+
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({ error: "A valid name is required." });
+    }
+
+    const trimmedName = name.trim();
+
+    // 1. Update Firebase Auth displayName
+    await auth.updateUser(uid, { displayName: trimmedName });
+
+    // 2. Update or create the Firestore profile
+    const userDocRef = db.collection("users").doc(uid);
+    const userDoc = await userDocRef.get();
+
+    if (userDoc.exists) {
+      await userDocRef.update({
+        name: trimmedName,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      await userDocRef.set({
+        name: trimmedName,
+        email: req.user.email || "",
+        role: req.user.role || "admin",
+        type: req.user.type || "website",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: { id: uid, name: trimmedName },
+    });
+  } catch (error) {
+    console.error("Profile update error:", error);
+    res.status(500).json({ error: "Server error during profile update." });
+  }
+});
+
 // --- UPDATE USER (PROTECTED: ONLY SUPER ADMINS CAN ACCESS) ---
 // Updates displayName/email in Firebase Auth, custom claims, and Firestore metadata.
 router.put("/update/:uid", verifyToken, requireSuperAdmin, async (req, res) => {
@@ -224,7 +305,14 @@ router.put("/update/:uid", verifyToken, requireSuperAdmin, async (req, res) => {
     if (typeof type === "string") claimsToSet.type = type;
 
     if (Object.keys(claimsToSet).length > 0) {
-      await auth.setCustomUserClaims(uid, claimsToSet);
+      // Merge with existing claims so partial updates (e.g. only type)
+      // don't wipe the user's other custom claims.
+      const userRecord = await auth.getUser(uid);
+      const mergedClaims = {
+        ...(userRecord.customClaims || {}),
+        ...claimsToSet,
+      };
+      await auth.setCustomUserClaims(uid, mergedClaims);
     }
 
     // 3. Update or create Firestore user doc
@@ -298,10 +386,7 @@ router.post(
         return res.status(400).json({ error: "User ID is required." });
       }
 
-      // 1. Update Firebase custom claims
-      await auth.setCustomUserClaims(uid, { role: "super_admin" });
-
-      // 2. Update Firestore record
+      // 1. Verify the Firestore record exists before mutating anything
       const userDocRef = db.collection("users").doc(uid);
       const userDoc = await userDocRef.get();
 
@@ -309,6 +394,15 @@ router.post(
         return res.status(404).json({ error: "User not found in database." });
       }
 
+      // 2. Merge with existing claims so upgrading doesn't drop custom fields (e.g. type)
+      const userRecord = await auth.getUser(uid);
+      const existingClaims = userRecord.customClaims || {};
+      await auth.setCustomUserClaims(uid, {
+        ...existingClaims,
+        role: "super_admin",
+      });
+
+      // 3. Update Firestore record (role only; type is preserved)
       await userDocRef.update({
         role: "super_admin",
         upgradedAt: new Date().toISOString(),

@@ -26,27 +26,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a specific prayer section
-router.get("/:sectionId", async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const docRef = db.collection("prayer").doc(sectionId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(200).json({});
-    }
-
-    res.status(200).json(doc.data());
-  } catch (error) {
-    console.error(
-      `Error getting prayer section ${req.params.sectionId}:`,
-      error,
-    );
-    res.status(500).json({ message: "Failed to fetch prayer section" });
-  }
-});
-
 // Reusable function to create or update a specific prayer section
 const savePrayerSettings = async (req, res) => {
   try {
@@ -82,8 +61,6 @@ const savePrayerSettings = async (req, res) => {
   }
 };
 
-// Allow both PUT and POST to update specific sections
 router.put("/:sectionId", savePrayerSettings);
-router.post("/:sectionId", savePrayerSettings);
 
 module.exports = router;

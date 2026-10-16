@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch-path=./routes --watch-path=./index.js index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "seed:units": "node scripts/seedChapelUnits.js"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +14,9 @@
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
-    "csv-parser": "^3.2.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
     "firebase-admin": "^13.7.0"
   }
 }

@@ -5,6 +5,26 @@ const {
   verifyToken,
   requireStaticTypeAccess,
 } = require("../../middleware/auth");
+const {
+  pickWritableFields,
+  toNonNegativeInt,
+} = require("../../utils/payload");
+
+// Client-writable fields only; server-managed fields (creatorId, timestamps,
+// followUpStatus) can never be set or overwritten by the request body.
+const ALTAR_CALL_WRITABLE_FIELDS = ["eventId", "callType", "additionalComments"];
+
+const ALTAR_CALL_RESPONSE_WRITABLE_FIELDS = [
+  "eventId",
+  "altarCallId",
+  "fullName",
+  "gender",
+  "phoneNumber",
+  "hostel",
+  "roomNumber",
+  "assignedTo",
+  "notes",
+];
 
 router.use(verifyToken);
 router.use(requireStaticTypeAccess(["executive"]));
@@ -28,8 +48,18 @@ router.get("/event/:eventId", async (req, res) => {
 });
 router.post("/", async (req, res) => {
   try {
+    const altarCallData = pickWritableFields(
+      req.body,
+      ALTAR_CALL_WRITABLE_FIELDS,
+    );
+
+    if (!altarCallData.eventId) {
+      return res.status(400).json({ error: "Event ID is required." });
+    }
+
     const payload = {
-      ...req.body,
+      ...altarCallData,
+      totalResponders: toNonNegativeInt(req.body.totalResponders),
       creatorId: req.user.uid,
       createdAt: new Date().toISOString(),
     };
@@ -63,8 +93,17 @@ router.get("/responses/:altarCallId", async (req, res) => {
 });
 router.post("/responses", async (req, res) => {
   try {
+    const responseData = pickWritableFields(
+      req.body,
+      ALTAR_CALL_RESPONSE_WRITABLE_FIELDS,
+    );
+
+    if (!responseData.altarCallId) {
+      return res.status(400).json({ error: "Altar call ID is required." });
+    }
+
     const payload = {
-      ...req.body,
+      ...responseData,
       followUpStatus: "NOT DONE",
       creatorId: req.user.uid,
       createdAt: new Date().toISOString(),
@@ -77,6 +116,42 @@ router.post("/responses", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to record response" });
+  }
+});
+
+// Update an individual response's follow-up status (NOT DONE <-> DONE)
+const VALID_FOLLOW_UP_STATUSES = ["NOT DONE", "DONE"];
+
+router.patch("/responses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { followUpStatus } = req.body;
+
+    if (!VALID_FOLLOW_UP_STATUSES.includes(followUpStatus)) {
+      return res
+        .status(400)
+        .json({ error: "Status must be 'NOT DONE' or 'DONE'." });
+    }
+
+    const docRef = db.collection("altarCallResponses").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Altar call response not found." });
+    }
+
+    await docRef.update({
+      followUpStatus,
+      updatedAt: new Date().toISOString(),
+    });
+
+    res.status(200).json({
+      message: "Follow-up status updated successfully.",
+      data: { id, ...doc.data(), followUpStatus },
+    });
+  } catch (error) {
+    console.error("Error updating response status:", error);
+    res.status(500).json({ error: "Failed to update follow-up status." });
   }
 });
 

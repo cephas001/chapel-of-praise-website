@@ -26,27 +26,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a specific leadership section
-router.get("/:sectionId", async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const docRef = db.collection("leadership").doc(sectionId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(200).json({});
-    }
-
-    res.status(200).json(doc.data());
-  } catch (error) {
-    console.error(
-      `Error getting leadership section ${req.params.sectionId}:`,
-      error,
-    );
-    res.status(500).json({ message: "Failed to fetch leadership section" });
-  }
-});
-
 // Reusable function to create or update a specific leadership section
 const saveLeadershipSettings = async (req, res) => {
   try {
@@ -82,8 +61,6 @@ const saveLeadershipSettings = async (req, res) => {
   }
 };
 
-// Allow both PUT and POST to update specific sections
 router.put("/:sectionId", saveLeadershipSettings);
-router.post("/:sectionId", saveLeadershipSettings);
 
 module.exports = router;

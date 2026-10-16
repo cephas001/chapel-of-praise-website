@@ -26,27 +26,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a specific ministries section
-router.get("/:sectionId", async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const docRef = db.collection("ministries").doc(sectionId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(200).json({});
-    }
-
-    res.status(200).json(doc.data());
-  } catch (error) {
-    console.error(
-      `Error getting ministries section ${req.params.sectionId}:`,
-      error,
-    );
-    res.status(500).json({ message: "Failed to fetch ministries section" });
-  }
-});
-
 // Reusable function to create or update a specific ministries section
 const saveMinistriesSettings = async (req, res) => {
   try {
@@ -82,8 +61,6 @@ const saveMinistriesSettings = async (req, res) => {
   }
 };
 
-// Allow both PUT and POST to update specific sections
 router.put("/:sectionId", saveMinistriesSettings);
-router.post("/:sectionId", saveMinistriesSettings);
 
 module.exports = router;

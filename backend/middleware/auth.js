@@ -1,5 +1,5 @@
 // backend/middleware/auth.js
-const { admin } = require("../config/firebase");
+const { admin, db } = require("../config/firebase");
 
 // 1. Basic Token Verification (Are they logged in?)
 const verifyToken = async (req, res, next) => {
@@ -16,8 +16,23 @@ const verifyToken = async (req, res, next) => {
     // 2. Verify the token with Firebase
     const decodedToken = await admin.auth().verifyIdToken(idToken);
 
-    // 3. Attach the user payload to the request
-    req.user = decodedToken;
+    // 3. Custom claims only refresh when the ID token rotates (~1h), so a
+    // demoted admin would keep their old role/type until then. The Firestore
+    // profile is the source of truth: prefer it so role/type changes take
+    // effect on the very next request.
+    const userDoc = await db.collection("users").doc(decodedToken.uid).get();
+
+    if (userDoc.exists) {
+      const { role, type, name } = userDoc.data();
+      req.user = {
+        ...decodedToken,
+        role: role || decodedToken.role,
+        type: type || decodedToken.type,
+        name: name || decodedToken.name,
+      };
+    } else {
+      req.user = decodedToken;
+    }
 
     next();
   } catch (error) {
@@ -37,28 +52,7 @@ const requireSuperAdmin = (req, res, next) => {
     .json({ error: "Only Super Admins can perform this action." });
 };
 
-// 3. Dynamic Type Check (Matches route params like /api/applications/:type)
-const requireDynamicTypeAccess = (req, res, next) => {
-  const requiredType = req.params.type;
-  const user = req.user;
-
-  // Super Admins bypass the type check
-  if (user.role === "super_admin") return next();
-
-  // Regular Admins must have a type that matches the route
-  if (
-    user.role === "admin" &&
-    (user.type === requiredType || user.type === "all")
-  ) {
-    return next();
-  }
-
-  return res.status(403).json({
-    error: `You do not have permission to manage ${requiredType} operations.`,
-  });
-};
-
-// 4. Static Type Check (Pass the type directly into the middleware)
+// 3. Static Type Check (Pass the type directly into the middleware)
 const requireStaticTypeAccess = (requiredTypes) => {
   // Normalize to array of strings
   const allowed = Array.isArray(requiredTypes)
@@ -90,6 +84,5 @@ const requireStaticTypeAccess = (requiredTypes) => {
 module.exports = {
   verifyToken,
   requireSuperAdmin,
-  requireDynamicTypeAccess,
   requireStaticTypeAccess,
 };

@@ -92,4 +92,65 @@ router.get("/executives", async (req, res) => {
   }
 });
 
+router.put("/executives/:id", requireSuperAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const docRef = db.collection("members").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists || doc.data().memberType !== "EXECUTIVE") {
+      return res.status(404).json({ error: "Executive not found." });
+    }
+
+    const allowedFields = [
+      "name",
+      "gender",
+      "dateOfBirth",
+      "phoneNumber",
+      "whatsappPhoneNumber",
+      "emailAddress",
+      "matricNumber",
+      "level",
+      "schoolDepartment",
+      "chapelUnit",
+      "relationshipStatus",
+    ];
+
+    const updates = {};
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    });
+    updates.updatedAt = new Date().toISOString();
+
+    await docRef.update(updates);
+
+    res.status(200).json({
+      message: "Executive successfully updated.",
+      data: { ...doc.data(), ...updates, id },
+    });
+  } catch (error) {
+    console.error("Error updating executive:", error);
+    res.status(500).json({ error: "Failed to update executive." });
+  }
+});
+
+router.delete("/executives/:id", requireSuperAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const docRef = db.collection("members").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists || doc.data().memberType !== "EXECUTIVE") {
+      return res.status(404).json({ error: "Executive not found." });
+    }
+
+    await docRef.delete();
+
+    res.status(200).json({ message: "Executive successfully deleted." });
+  } catch (error) {
+    console.error("Error deleting executive:", error);
+    res.status(500).json({ error: "Failed to delete executive." });
+  }
+});
+
 module.exports = router;

@@ -5,6 +5,24 @@ const {
   verifyToken,
   requireStaticTypeAccess,
 } = require("../../middleware/auth");
+const {
+  pickWritableFields,
+  toNonNegativeInt,
+} = require("../../utils/payload");
+
+// Client-writable fields only; server-managed fields (creatorId, timestamps)
+// can never be set or overwritten by the request body.
+const HEADCOUNT_NUMBER_FIELDS = [
+  "maleStudents",
+  "femaleStudents",
+  "maleVisitors",
+  "femaleVisitors",
+];
+
+const HEADCOUNT_WRITABLE_FIELDS = [
+  ...HEADCOUNT_NUMBER_FIELDS,
+  "additionalComments",
+];
 
 router.use(verifyToken);
 router.use(requireStaticTypeAccess(["executive"]));
@@ -68,10 +86,19 @@ router.get("/event/:eventId", async (req, res) => {
   }
 });
 
-// Create or update headcount
+// Create or update headcount (transactional upsert; deterministic doc ID = eventId)
 router.post("/", async (req, res) => {
   try {
-    const { eventId, ...headcountData } = req.body;
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res.status(400).json({ error: "Event ID is required." });
+    }
+
+    const headcountData = pickWritableFields(req.body, HEADCOUNT_WRITABLE_FIELDS);
+    HEADCOUNT_NUMBER_FIELDS.forEach((field) => {
+      headcountData[field] = toNonNegativeInt(headcountData[field]);
+    });
 
     const payload = {
       eventId,
@@ -80,26 +107,38 @@ router.post("/", async (req, res) => {
       updatedAt: new Date().toISOString(),
     };
 
-    const snapshot = await db
-      .collection("headcounts")
-      .where("eventId", "==", eventId)
-      .get();
+    const query = db.collection("headcounts").where("eventId", "==", eventId);
 
-    if (snapshot.empty) {
-      payload.createdAt = new Date().toISOString();
-      const docRef = await db.collection("headcounts").add(payload);
+    const result = await db.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(query);
+
+      if (snapshot.empty) {
+        // Deterministic ID prevents duplicate docs from concurrent creates
+        const docRef = db.collection("headcounts").doc(String(eventId));
+        transaction.set(docRef, {
+          ...payload,
+          createdAt: new Date().toISOString(),
+        });
+        return { id: docRef.id, created: true };
+      }
+
+      // Update the existing doc (may be a legacy random-ID doc)
+      const docRef = snapshot.docs[0].ref;
+      transaction.update(docRef, payload);
+      return { id: docRef.id, created: false };
+    });
+
+    if (result.created) {
       return res.status(201).json({
         message: "Headcount created",
-        data: { id: docRef.id, ...payload },
-      });
-    } else {
-      const docId = snapshot.docs[0].id;
-      await db.collection("headcounts").doc(docId).update(payload);
-      return res.status(200).json({
-        message: "Headcount updated",
-        data: { id: docId, ...payload },
+        data: { id: result.id, ...payload },
       });
     }
+
+    return res.status(200).json({
+      message: "Headcount updated",
+      data: { id: result.id, ...payload },
+    });
   } catch (error) {
     console.error("Error saving headcount:", error);
     res.status(500).json({ error: "Failed to save headcount" });

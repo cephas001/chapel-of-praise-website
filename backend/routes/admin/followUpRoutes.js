@@ -78,14 +78,14 @@ router.post("/", async (req, res) => {
 router.post("/:id/notes", async (req, res) => {
   try {
     const { id } = req.params;
-    const { text, authorName } = req.body;
+    const { text } = req.body;
 
     if (!text) return res.status(400).json({ error: "Note text is required." });
 
     const newNote = {
       text,
       authorId: req.user.uid,
-      authorName: authorName || "Executive",
+      authorName: req.user.name || "Executive",
       timestamp: new Date().toISOString(),
     };
 
@@ -105,12 +105,27 @@ router.post("/:id/notes", async (req, res) => {
 });
 
 // Update follow-up status
+const VALID_STATUSES = ["Pending", "Contacted", "Completed"];
+
 router.patch("/:id/status", async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
-    await db.collection("followUps").doc(id).update({
+    if (!VALID_STATUSES.includes(status)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid status. Use Pending, Contacted or Completed." });
+    }
+
+    const docRef = db.collection("followUps").doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Follow-up not found." });
+    }
+
+    await docRef.update({
       status,
       updatedAt: new Date().toISOString(),
     });

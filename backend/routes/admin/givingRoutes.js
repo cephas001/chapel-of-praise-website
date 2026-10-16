@@ -26,27 +26,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a specific giving section
-router.get("/:sectionId", async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const docRef = db.collection("giving").doc(sectionId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return res.status(200).json({});
-    }
-
-    res.status(200).json(doc.data());
-  } catch (error) {
-    console.error(
-      `Error getting giving section ${req.params.sectionId}:`,
-      error,
-    );
-    res.status(500).json({ message: "Failed to fetch giving section" });
-  }
-});
-
 // Reusable function to create or update a specific giving section
 const saveGivingSettings = async (req, res) => {
   try {
@@ -82,8 +61,6 @@ const saveGivingSettings = async (req, res) => {
   }
 };
 
-// Allow both PUT and POST to update specific sections
 router.put("/:sectionId", saveGivingSettings);
-router.post("/:sectionId", saveGivingSettings);
 
 module.exports = router;
