@@ -1,9 +1,9 @@
 // frontend/nuxt.config.ts
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== "production" },
 
-  modules: ["@nuxt/ui", "@pinia/nuxt"],
+  modules: ["@nuxt/ui", "@pinia/nuxt", "@vite-pwa/nuxt", "@nuxt/eslint"],
 
   css: ["~/assets/css/main.css"],
 
@@ -14,6 +14,52 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "system",
     fallback: "light",
+  },
+
+  pwa: {
+    registerType: "autoUpdate",
+    manifest: {
+      name: "Chapel of Praise Admin",
+      short_name: "COP Admin",
+      description: "Administrative system for Chapel of Praise",
+      theme_color: "#000000",
+      background_color: "#ffffff",
+      display: "standalone", // This hides the browser URL bar to make it look like a native app
+      orientation: "portrait",
+      icons: [
+        {
+          src: "/pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "/pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+        {
+          src: "/pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable", // Crucial for Android home screen icons
+        },
+      ],
+    },
+    workbox: {
+      // This tells the service worker to cache ALL your JS, CSS, and HTML for offline use
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      // Increase the file size limit to 3MB just in case your bundled assets get large
+      maximumFileSizeToCacheInBytes: 3000000,
+
+      // NEW: The magic rule that fixes the "You're offline" screen
+      navigateFallback: "/",
+      // NEW: Ensures query parameters (like ?event=123) don't break the offline cache
+      ignoreURLParametersMatching: [/.*/],
+    },
+    devOptions: {
+      enabled: process.env.NODE_ENV !== "production", // Lets you test the PWA locally
+      type: "module",
+    },
   },
 
   // Centralized API access linking to your Express backend

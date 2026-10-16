@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "chapel-of-praise-admin",
   "type": "module",
   "private": true,
   "scripts": {
@@ -7,18 +7,15 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "lint": "eslint .",
+    "test": "vitest run",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@fontsource-variable/montserrat": "^5.2.8",
-    "@fontsource-variable/roboto": "^5.2.10",
     "@fontsource/jetbrains-mono": "^5.2.8",
-    "@fontsource/literata": "^5.2.8",
-    "@fontsource/lora": "^5.2.8",
     "@fontsource/poppins": "^5.2.7",
     "@nuxt/icon": "^2.2.1",
-    "@nuxt/ui": "^4.5.1",
-    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@nuxt/ui": "~4.6.0",
     "@pinia/nuxt": "^0.11.3",
     "@vueuse/core": "^14.2.1",
     "axios": "^1.13.6",
@@ -31,6 +28,11 @@
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
-    "@iconify-json/heroicons": "^1.2.3"
+    "@iconify-json/heroicons": "^1.2.3",
+    "@nuxt/eslint": "^1.17.0",
+    "@vite-pwa/nuxt": "^1.1.1",
+    "eslint": "^10.12.0",
+    "eslint-plugin-vuejs-accessibility": "^2.6.2",
+    "vitest": "^4.1.11"
   }
 }

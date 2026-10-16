@@ -5,6 +5,9 @@
     </NuxtLayout>
   </div>
 
-  <ConfirmModal />
+  <LazyConfirmModal />
+  <LazyForbiddenModal />
+  <LazyAlertModal />
   <ToastContainer />
+  <PwaInstallPrompt />
 </template>
