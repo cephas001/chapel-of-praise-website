@@ -29,6 +29,38 @@
       </span>
     </div>
 
+    <!-- Status Update Control -->
+    <div class="mb-4 flex items-center gap-2">
+      <label
+        :for="`status-${record.id}`"
+        class="text-[10px] font-jetbrains font-bold uppercase tracking-wider text-gray-500 shrink-0"
+      >
+        Status
+      </label>
+      <div class="relative flex-1">
+        <select
+          :id="`status-${record.id}`"
+          :value="record.status"
+          :disabled="isUpdatingStatus"
+          class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg pl-3 pr-8 py-1.5 text-[11px] font-jetbrains font-bold uppercase tracking-wider text-gray-700 focus:bg-white focus:border-black outline-none transition-all cursor-pointer disabled:opacity-60"
+          @change="submitStatusChange"
+        >
+          <option value="Pending">Pending</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Completed">Completed</option>
+        </select>
+        <Icon
+          name="heroicons:chevron-down"
+          class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500"
+        />
+      </div>
+      <Icon
+        v-if="isUpdatingStatus"
+        name="heroicons:arrow-path"
+        class="h-3.5 w-3.5 text-gray-500 animate-spin shrink-0"
+      />
+    </div>
+
     <!-- Event Link (If applicable) -->
     <div
       v-if="record.eventDetails"
@@ -36,7 +68,7 @@
     >
       <Icon
         name="heroicons:calendar"
-        class="h-3.5 w-3.5 mr-1.5 text-gray-400"
+        class="h-3.5 w-3.5 mr-1.5 text-gray-500"
       />
       <span class="line-clamp-1">{{
         formatEventDisplay(record.eventDetails)
@@ -44,10 +76,10 @@
     </div>
 
     <!-- Quick Contact Actions -->
-    <div class="flex gap-2 mb-6" v-if="record.phoneNumber">
+    <div v-if="record.phoneNumber" class="flex gap-2 mb-6">
       <a
         :href="`tel:${record.phoneNumber}`"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs font-bold transition-colors"
+        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs transition-colors"
         title="Call"
       >
         <Icon name="heroicons:phone" class="h-4 w-4 mr-1.5" /> Call
@@ -55,7 +87,7 @@
       <a
         :href="`https://wa.me/${cleanPhone(record.phoneNumber)}`"
         target="_blank"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs font-bold transition-colors"
+        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs transition-colors"
         title="WhatsApp"
       >
         <Icon
@@ -67,13 +99,13 @@
     </div>
     <div
       v-else
-      class="mb-6 py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-400 text-center italic"
+      class="mb-6 py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-500 text-center italic"
     >
       No phone number provided
     </div>
 
     <!-- Divider -->
-    <div class="h-px bg-gray-100 w-full mb-4"></div>
+    <div class="h-px bg-gray-100 w-full mb-4"/>
 
     <!-- Threading Section -->
     <div class="flex-1 flex flex-col min-h-[150px]">
@@ -93,14 +125,14 @@
       >
         <div
           v-if="!record.notesThread || record.notesThread.length === 0"
-          class="text-xs text-gray-400 italic text-center py-4"
+          class="text-xs text-gray-500 italic text-center py-4"
         >
           No notes added yet.
         </div>
 
         <div
-          v-else
           v-for="(note, index) in record.notesThread"
+          v-else
           :key="index"
           class="bg-gray-50 p-3 rounded-xl border border-gray-200"
         >
@@ -108,7 +140,7 @@
             {{ note.text }}
           </div>
           <div
-            class="flex justify-between items-center text-[10px] text-gray-400 font-semibold font-jetbrains"
+            class="flex justify-between items-center text-[10px] text-gray-500 font-semibold font-jetbrains"
           >
             <span>{{ note.authorName }}</span>
             <span>{{ formatTime(note.timestamp) }}</span>
@@ -120,16 +152,18 @@
       <div class="mt-auto relative flex items-center">
         <input
           v-model="newNote"
-          @keyup.enter="submitNote"
           type="text"
+          aria-label="Add a comment"
           placeholder="Add a comment..."
           class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white outline-none rounded-xl py-2 pl-3 pr-10 text-xs font-medium transition-all"
           :disabled="isSubmitting"
-        />
+          @keyup.enter="submitNote"
+        >
         <button
-          @click="submitNote"
+          aria-label="Add note"
           :disabled="!newNote.trim() || isSubmitting"
           class="absolute right-1.5 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+          @click="submitNote"
         >
           <Icon
             v-if="isSubmitting"
@@ -149,9 +183,9 @@
 
 <script setup>
 import { ref } from "vue";
-import { formatEventDisplay } from "~/utils/formatters";
+import { formatEventDisplay, cleanPhone  } from "~/utils/formatters";
 
-import { cleanPhone } from "~/utils/formatters";
+
 
 const props = defineProps({
   record: { type: Object, required: true },
@@ -161,6 +195,7 @@ const emit = defineEmits(["add-note", "update-status"]);
 
 const newNote = ref("");
 const isSubmitting = ref(false);
+const isUpdatingStatus = ref(false);
 
 // Format the timestamp for the notes
 const formatTime = (isoString) => {
@@ -171,6 +206,27 @@ const formatTime = (isoString) => {
     " " +
     date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
   );
+};
+
+const submitStatusChange = (event) => {
+  const newStatus = event.target.value;
+
+  if (newStatus === props.record.status) return;
+
+  isUpdatingStatus.value = true;
+  // Emit to the parent page, which owns the API call
+  emit("update-status", {
+    id: props.record.id,
+    status: newStatus,
+    onSuccess: () => {
+      isUpdatingStatus.value = false;
+    },
+    onError: () => {
+      // Revert the select to the record's current status
+      event.target.value = props.record.status;
+      isUpdatingStatus.value = false;
+    },
+  });
 };
 
 const submitNote = async () => {

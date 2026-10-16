@@ -1,27 +1,31 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
+  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
     <div>
       <label
+        for="executive-name"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Full Name</label
       >
       <input
+        id="executive-name"
         v-model="formData.name"
         type="text"
         required
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
         placeholder="e.g. John Doe"
-      />
+      >
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label
+          for="executive-gender"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Gender</label
         >
         <div class="relative">
           <select
+            id="executive-gender"
             v-model="formData.gender"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -33,88 +37,100 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
           </div>
         </div>
       </div>
       <div>
         <label
+          for="executive-dob"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Date of Birth</label
         >
         <input
+          id="executive-dob"
           v-model="formData.dateOfBirth"
           type="date"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-        />
+        >
       </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label
+          for="executive-phone"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Phone Number</label
         >
         <input
+          id="executive-phone"
           v-model="formData.phoneNumber"
           type="tel"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
           placeholder="090..."
-        />
+        >
       </div>
       <div>
         <label
+          for="executive-whatsapp"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >WhatsApp Number</label
         >
         <input
+          id="executive-whatsapp"
           v-model="formData.whatsappPhoneNumber"
           type="tel"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
           placeholder="090..."
-        />
+        >
       </div>
     </div>
 
     <div>
       <label
+        for="executive-email"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Email Address</label
       >
       <input
+        id="executive-email"
         v-model="formData.emailAddress"
         type="email"
         required
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
         placeholder="executive@example.com"
-      />
+      >
     </div>
 
     <div class="grid grid-cols-2 gap-4 border-t border-gray-200 pt-5 mt-2">
       <div>
         <label
+          for="executive-matric"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Matric Number</label
         >
         <input
+          id="executive-matric"
           v-model="formData.matricNumber"
           type="text"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
           placeholder="e.g. 21010101"
-        />
+        >
       </div>
       <div>
         <label
+          for="executive-level"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Level</label
         >
         <div class="relative">
           <select
+            id="executive-level"
             v-model="formData.level"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -129,7 +145,7 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
           </div>
         </div>
       </div>
@@ -137,58 +153,55 @@
 
     <div>
       <label
+        for="executive-department"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >School Department</label
       >
       <input
+        id="executive-department"
         v-model="formData.schoolDepartment"
         type="text"
         required
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
         placeholder="e.g. Computer Science"
-      />
+      >
     </div>
 
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label
+          for="executive-chapel-unit"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Chapel Unit</label
         >
         <div class="relative">
           <select
+            id="executive-chapel-unit"
             v-model="formData.chapelUnit"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
           >
             <option value="" disabled>Select Unit</option>
-            <option value="Choir">Choir</option>
-            <option value="Editorial">Editorial</option>
-            <option value="Ushering">Ushering</option>
-            <option value="Protocol">Protocol</option>
-            <option value="Media">Media</option>
-            <option value="Prayer">Prayer</option>
-            <option value="Drama">Drama</option>
-            <option value="Bible Study">Bible Study</option>
-            <option value="Evangelism">Evangelism</option>
-            <option value="Technical">Technical</option>
-            <option value="Welfare">Welfare</option>
-            <option value="Academic">Academic</option>
+            <option v-for="unit in availableUnits" :key="unit" :value="unit">
+              {{ unit }}
+            </option>
           </select>
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
           </div>
         </div>
       </div>
       <div>
         <label
+          for="executive-relationship"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Relationship Status</label
         >
         <div class="relative">
           <select
+            id="executive-relationship"
             v-model="formData.relationshipStatus"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -202,7 +215,7 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
           </div>
         </div>
       </div>
@@ -212,7 +225,7 @@
       <button
         type="submit"
         :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"
@@ -226,7 +239,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 
 const props = defineProps({
   initialData: {
@@ -282,6 +295,10 @@ watch(
   },
   { immediate: true },
 );
+
+const { units: availableUnits, loadUnits } = useChapelUnits();
+
+onMounted(loadUnits);
 
 const handleSubmit = () => {
   emit("submit", { ...formData });

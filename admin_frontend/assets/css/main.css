@@ -1,16 +1,16 @@
+/* Legacy JS config: without this directive tailwind.config.js is inert under
+   Tailwind CSS v4 (which prefers CSS-first @theme tokens — see below). */
+@config "../../tailwind.config.js";
+
 @import "@fontsource/poppins";
-@import "@fontsource-variable/roboto";
-@import "@fontsource-variable/montserrat";
 @import "@fontsource/jetbrains-mono";
-@import "@fontsource/literata";
-@import "@fontsource/lora";
 @import "tailwindcss";
 @import "@nuxt/ui";
 
 html,
 body {
   background-color: #f8fafc;
-  font-family: "Poppins", sans-serif, system-ui, sans-serif !important;
+  font-family: "Poppins", sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -34,10 +34,28 @@ body {
 }
 
 @theme {
-  --font-montserrat: "Montserrat", sans-serif;
-  --font-roboto: "Roboto", sans-serif;
   --font-poppins: "Poppins", sans-serif;
   --font-jetbrains: "JetBrains Mono", monospace;
-  --font-literata: "Literata", sans-serif;
-  --font-lora: "Lora", serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility: global keyboard focus indicator.
+   Written unlayered so it wins over Tailwind's `outline-none` utility,
+   while remaining invisible for mouse/touch interaction (:focus-visible).
+--------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Accessibility: respect users who prefer reduced motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

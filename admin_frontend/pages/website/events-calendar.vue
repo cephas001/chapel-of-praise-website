@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
@@ -14,13 +14,13 @@
 
     <!-- Main Form -->
     <form
-      @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
+      @submit.prevent="saveSettings"
     >
       <!-- Section 1: Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Hero Banner
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -33,39 +33,42 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
+                for="events-calendar-hero-image"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Image URL</label
               >
-              <input
+              <MediaPickerInput
                 v-model="heroSection.heroImage"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://example.com/image.webp"
+                input-id="events-calendar-hero-image"
               />
             </div>
             <div>
               <label
+                for="events-calendar-hero-kicker"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Kicker</label
               >
               <input
+                id="events-calendar-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. What's happening"
-              />
+              >
             </div>
             <div>
               <label
+                for="events-calendar-hero-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Headline</label
               >
               <input
+                id="events-calendar-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Events Calendar"
-              />
+              >
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -83,7 +86,7 @@
       >
         <!-- Left Column: Header Info -->
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Upcoming Events
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -103,7 +106,7 @@
               class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
             >
               <span
-                class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center justify-center gap-2"
+                class="absolute top-4 right-4 text-[11px] font-bold text-gray-500 uppercase font-jetbrains flex items-center justify-center gap-2"
               >
                 Event {{ index + 1 }}
 
@@ -117,86 +120,98 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
                 <div>
                   <label
+                    :for="`event-month-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Month
                   </label>
                   <input
+                    :id="`event-month-${index}`"
                     v-model="event.month"
                     type="text"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                     placeholder="e.g. SEP"
-                  />
+                  >
                 </div>
 
                 <div>
                   <label
+                    :for="`event-day-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Day
                   </label>
                   <input
+                    :id="`event-day-${index}`"
                     v-model="event.day"
                     type="text"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                     placeholder="e.g. 15"
-                  />
+                  >
                 </div>
 
                 <div class="md:col-span-2">
                   <label
+                    :for="`event-title-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Event Title
                   </label>
                   <input
+                    :id="`event-title-${index}`"
                     v-model="event.title"
                     type="text"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                     placeholder="e.g. Midweek Communion Service"
-                  />
+                  >
                 </div>
 
                 <div class="md:col-span-2">
                   <label
+                    :for="`event-description-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Description
                   </label>
                   <textarea
+                    :id="`event-description-${index}`"
                     v-model="event.description"
                     rows="3"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                     placeholder="Details about the event..."
-                  ></textarea>
+                  />
                 </div>
 
                 <div>
                   <label
+                    :for="`event-time-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Time
                   </label>
                   <input
+                    :id="`event-time-${index}`"
                     v-model="event.time"
                     type="text"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                     placeholder="e.g. 6:00 PM"
-                  />
+                  >
                 </div>
 
                 <div>
                   <label
+                    :for="`event-location-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Location
                   </label>
                   <input
+                    :id="`event-location-${index}`"
                     v-model="event.location"
                     type="text"
                     class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                     placeholder="e.g. Main Auditorium"
-                  />
+                  >
                 </div>
               </div>
             </div>
@@ -205,7 +220,7 @@
           <!-- Add & Save Button Container -->
           <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addEvent"
             >
               Add Event
@@ -225,7 +240,7 @@
         <button
           type="submit"
           :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
         >
           <Icon
             v-if="isSaving"

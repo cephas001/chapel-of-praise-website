@@ -1,6 +1,6 @@
 // stores/auth.js
 import { defineStore } from "pinia";
-import { useCookie, useNuxtApp } from "#app";
+import { useCookie, useNuxtApp, useRuntimeConfig } from "#app";
 import { signOut } from "firebase/auth"; // ADD THIS
 
 export const useAuthStore = defineStore("auth", {
@@ -22,8 +22,48 @@ export const useAuthStore = defineStore("auth", {
       userCookie.value = userData;
     },
 
+    updateUserName(name) {
+      if (!this.user) return;
+
+      this.user = { ...this.user, name };
+
+      const userCookie = useCookie("admin_user", { maxAge: 60 * 60 * 8 });
+      userCookie.value = this.user;
+    },
+
+    clearAuth() {
+      this.user = null;
+      this.token = null;
+
+      useCookie("admin_token").value = null;
+      useCookie("admin_user").value = null;
+    },
+
+    // Rebuilds the session from a still-valid Firebase token when the
+    // admin_user cookie has expired. Returns true on success.
+    async syncUser(token) {
+      const config = useRuntimeConfig();
+
+      try {
+        const response = await $fetch(
+          `${config.public.apiBase}/admin/auth/login`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+
+        if (!response?.user) return false;
+
+        this.setAuth(response.user, token);
+        return true;
+      } catch (error) {
+        console.error("Failed to re-sync user session:", error);
+        return false;
+      }
+    },
+
     async logout() {
-      // Make this async
       try {
         const { $auth } = useNuxtApp();
         if ($auth) await signOut($auth); // Log out of Firebase
@@ -31,16 +71,9 @@ export const useAuthStore = defineStore("auth", {
         console.error("Firebase logout error", error);
       }
 
-      this.user = null;
-      this.token = null;
+      this.clearAuth();
 
-      const tokenCookie = useCookie("admin_token");
-      const userCookie = useCookie("admin_user");
-
-      tokenCookie.value = null;
-      userCookie.value = null;
-
-      navigateTo("/login"); // Note: You had "/login" here, but your middleware checks "/auth/login". Ensure this matches!
+      return navigateTo("/auth/login"); // Must match the public route in middleware/auth.global.js
     },
   },
 });

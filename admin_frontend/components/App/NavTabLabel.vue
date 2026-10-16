@@ -1,6 +1,8 @@
 <template>
-  <div
-    class="pr-4 py-2 mt-4 mb-1 flex items-center justify-between cursor-pointer group selection:bg-transparent"
+  <button
+    type="button"
+    class="w-full pr-4 py-2 mt-4 mb-1 flex items-center justify-between cursor-pointer group selection:bg-transparent text-left"
+    :aria-expanded="modelValue ? 'true' : 'false'"
     @click="toggle"
   >
     <span
@@ -11,12 +13,13 @@
 
     <Icon
       name="heroicons:chevron-right-solid"
+      aria-hidden="true"
       :class="[
-        'h-3.5 w-3.5 transition-transform duration-200 :text-black',
+        'h-3.5 w-3.5 transition-transform duration-200 text-gray-500 group-hover:text-black',
         modelValue ? 'rotate-90' : '',
       ]"
     />
-  </div>
+  </button>
 </template>
 
 <script setup>

@@ -11,19 +11,19 @@
           src="~/assets/images/Chapel Of Praise Logo.png"
           alt="Chapel of Praise"
           class="w-full h-full object-contain invert opacity-90 animate-pulse-slow"
-        />
+        >
       </div>
 
       <!-- Minimalist Loading Indicator -->
       <div class="flex flex-col items-center gap-4">
         <!-- Sleek progress track -->
         <div class="h-[2px] w-32 bg-gray-200 overflow-hidden rounded-full">
-          <div class="h-full bg-black rounded-full animate-progress"></div>
+          <div class="h-full bg-black rounded-full animate-progress"/>
         </div>
 
         <!-- Technical micro-copy -->
         <p
-          class="text-[10px] font-jetbrains font-bold text-gray-400 uppercase tracking-widest animate-pulse"
+          class="text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest animate-pulse"
         >
           Loading Environment...
         </p>

@@ -1,39 +1,48 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Welcome Header -->
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    <AppHeading
+      class="mb-8"
+      title="Admin Overview"
+      :subtitle="`Welcome back, ${authStore.user?.name?.split(' ')[0] || 'Admin'}. Here is what is happening today.`"
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Admin Overview
-        </h2>
-        <p class="text-gray-600 text-xs md:text-sm">
-          Welcome back, {{ authStore.user?.name?.split(" ")[0] || "Admin" }}.
-          Here is what is happening today.
-        </p>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <div
-          class="hidden sm:flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl"
-        >
-          <div
-            class="h-2 w-2 rounded-full bg-green-500 animate-pulse mr-2"
-          ></div>
-          <span
-            class="text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest"
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="hidden sm:flex items-center px-4 py-2 border rounded-xl transition-colors"
+            :class="
+              syncBadge.tone === 'error'
+                ? 'bg-red-50 border-red-100 hover:bg-red-100 cursor-pointer'
+                : 'bg-gray-50 border-gray-200 cursor-default'
+            "
+            :disabled="syncBadge.tone !== 'error'"
+            :title="
+              syncBadge.tone === 'idle' && lastSyncedAt
+                ? `Last synced at ${lastSyncedAt.toLocaleTimeString()}`
+                : ''
+            "
+            @click="retrySync"
           >
-            System Operational
-          </span>
+            <div class="h-2 w-2 rounded-full mr-2" :class="syncBadge.dot" />
+            <span
+              class="text-[11px] font-jetbrains font-bold uppercase tracking-widest"
+              :class="
+                syncBadge.tone === 'error' ? 'text-red-600' : 'text-gray-600'
+              "
+            >
+              {{ syncBadge.text }}
+            </span>
+          </button>
         </div>
-      </div>
-    </div>
+      </template>
+    </AppHeading>
 
     <!-- Top Stats Row -->
     <div
+      v-if="quickStats.length"
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
     >
       <div
@@ -41,30 +50,12 @@
         :key="index"
         class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 relative overflow-hidden group"
       >
-        <div class="flex justify-between items-start mb-4">
+        <div class="mb-4">
           <div
             class="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 group-hover:bg-black group-hover:text-white transition-colors"
           >
             <Icon :name="stat.icon" class="h-5 w-5" />
           </div>
-          <span
-            class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-jetbrains font-bold tracking-wider"
-            :class="
-              stat.trend > 0
-                ? 'bg-green-50 text-green-700'
-                : 'bg-gray-100 text-gray-600'
-            "
-          >
-            <Icon
-              :name="
-                stat.trend > 0
-                  ? 'heroicons:arrow-trending-up'
-                  : 'heroicons:minus'
-              "
-              class="h-3 w-3 mr-1"
-            />
-            {{ Math.abs(stat.trend) }}%
-          </span>
         </div>
         <p
           class="text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-1"
@@ -81,16 +72,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Left Column: Module Navigation -->
       <div class="lg:col-span-2 space-y-6">
-        <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-        >
-          <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
+        <AppCard body-class="p-2">
+          <template #header>
             <h3 class="text-sm font-jetbrains font-bold text-black">
               Core Modules
             </h3>
-          </div>
-          <div class="p-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          </template>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <NuxtLink
                 v-for="module in coreModules"
                 :key="module.id"
@@ -122,12 +110,12 @@
                   </p>
                 </div>
               </NuxtLink>
-            </div>
           </div>
-        </div>
+        </AppCard>
 
         <!-- Secondary/External Links Preview -->
         <div
+          v-if="canViewOperations"
           class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col sm:flex-row items-center justify-between p-6"
         >
           <div class="flex items-center gap-4 mb-4 sm:mb-0">
@@ -147,8 +135,8 @@
             </div>
           </div>
           <button
-            @click="navigateTo('/admin/quick-links')"
-            class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-5 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains shrink-0 w-full sm:w-auto"
+            class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-5 py-2.5 text-xs text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains shrink-0 w-full sm:w-auto"
+            @click="navigateTo('/dashboard/quick-links')"
           >
             Open Quick Links
           </button>
@@ -165,7 +153,7 @@
           <div
             class="bg-gray-50/50 border-b border-gray-100 px-6 py-5 flex items-center gap-2"
           >
-            <Icon name="heroicons:shield-check" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:shield-check" class="h-4 w-4 text-gray-500" />
             <h3 class="text-sm font-jetbrains font-bold text-black">
               Access & Permissions
             </h3>
@@ -263,43 +251,125 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const toast = useAppToast();
 const authStore = useAuthStore();
+const config = useRuntimeConfig();
 
 const isFetching = ref(true);
-
-const showDismissToast = () => {
-  toast.success("Tip dismissed");
-};
 
 const navigateTo = (path) => {
   router.push(path);
 };
 
-// --- Mock Data for Dashboard Layout ---
+// Operations data is only readable by executive-type accounts.
+const canViewOperations = computed(() => {
+  const role = authStore.user?.role;
+  const type = authStore.user?.type;
+  return role === "super_admin" || type === "all" || type === "executive";
+});
 
-const quickStats = ref([
-  { label: "Website Users", value: "-", trend: 0, icon: "heroicons:users" },
-  {
-    label: "Events This Month",
-    value: "-",
-    trend: 0,
-    icon: "heroicons:calendar-days",
-  },
-  {
-    label: "Recent Responders",
-    value: "-",
-    trend: 0,
-    icon: "heroicons:megaphone",
-  },
-]);
+const canAccessWebsite = computed(() => {
+  const role = authStore.user?.role;
+  const type = authStore.user?.type;
+  return role === "super_admin" || type === "all" || type === "website";
+});
 
-const coreModules = ref([
+const quickStats = ref([]);
+
+// Real sync state for the header badge: loading → online | error
+const statsState = ref("loading");
+const lastSyncedAt = ref(null);
+
+const syncBadge = computed(() => {
+  if (!canViewOperations.value) {
+    return { dot: "bg-green-500", text: "Connected", tone: "idle" };
+  }
+  if (statsState.value === "loading") {
+    return {
+      dot: "bg-amber-400 animate-pulse",
+      text: "Syncing...",
+      tone: "idle",
+    };
+  }
+  if (statsState.value === "error") {
+    return { dot: "bg-red-500", text: "Sync Failed — Retry", tone: "error" };
+  }
+  return { dot: "bg-green-500", text: "Data Synced", tone: "idle" };
+});
+
+const isInCurrentMonth = (dateString) => {
+  if (!dateString) return false;
+  const date = new Date(dateString);
+  const now = new Date();
+  return (
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear()
+  );
+};
+
+const loadStats = async () => {
+  statsState.value = "loading";
+  try {
+    const [events, headcounts, followUps] = await Promise.all([
+      $fetch(`${config.public.apiBase}/admin/events`),
+      $fetch(`${config.public.apiBase}/admin/headcounts`),
+      $fetch(`${config.public.apiBase}/admin/follow-ups`),
+    ]);
+
+    const eventsThisMonth = events.filter((event) =>
+      isInCurrentMonth(event.eventDate),
+    );
+
+    const attendanceThisMonth = headcounts
+      .filter(
+        (hc) => hc.eventDetails && isInCurrentMonth(hc.eventDetails.eventDate),
+      )
+      .reduce((sum, hc) => sum + headcountTotal(hc), 0);
+
+    const pendingFollowUps = followUps.filter(
+      (followUp) => followUp.status === "Pending",
+    );
+
+    quickStats.value = [
+      {
+        label: "Events This Month",
+        value: eventsThisMonth.length,
+        icon: "heroicons:calendar-days",
+      },
+      {
+        label: "Attendance This Month",
+        value: attendanceThisMonth,
+        icon: "heroicons:user-group",
+      },
+      {
+        label: "Pending Follow-ups",
+        value: pendingFollowUps.length,
+        icon: "heroicons:megaphone",
+      },
+    ];
+
+    lastSyncedAt.value = new Date();
+    statsState.value = "online";
+  } catch (error) {
+    console.error("Failed to load dashboard statistics:", error);
+    toast.error("Could not load dashboard statistics.");
+    statsState.value = "error";
+  }
+};
+
+const retrySync = () => {
+  if (statsState.value !== "error") return;
+  loadStats();
+};
+
+const allModules = [
   {
     id: "events",
+    access: "operations",
     title: "Event Operations",
     description:
       "Manage upcoming services, special programs, and view historical event data.",
@@ -308,6 +378,7 @@ const coreModules = ref([
   },
   {
     id: "altar-calls",
+    access: "operations",
     title: "Altar Call Records",
     description:
       "Track responses, assign follow-ups, and manage salvation and rededication records.",
@@ -316,36 +387,40 @@ const coreModules = ref([
   },
   {
     id: "website",
+    access: "website",
     title: "Website Content",
     description:
       "Edit the chapel website's pages, update content, and manage media.",
     icon: "heroicons:globe-alt",
-    route: "/homepage",
+    route: "/website/homepage",
   },
 
   {
     id: "profile",
+    access: "always",
     title: "My Profile",
     description:
       "Update your personal details, secure your account, and revoke active sessions.",
     icon: "heroicons:finger-print",
     route: "/dashboard/profile",
   },
-]);
+];
 
-// --- Helpers ---
-const extractMonth = (dateString) => {
-  return new Date(dateString).toLocaleString("en-US", { month: "short" });
-};
+const coreModules = computed(() =>
+  allModules.filter((module) => {
+    if (module.access === "operations") return canViewOperations.value;
+    if (module.access === "website") return canAccessWebsite.value;
+    return true;
+  }),
+);
 
-const extractDay = (dateString) => {
-  return new Date(dateString).toLocaleString("en-US", { day: "2-digit" });
-};
-
-onMounted(() => {
-  // Simulate initial data load
-  setTimeout(() => {
-    isFetching.value = false;
-  }, 600);
+onMounted(async () => {
+  if (canViewOperations.value) {
+    await loadStats();
+  } else {
+    // Website-only accounts have no stats to sync
+    statsState.value = "online";
+  }
+  isFetching.value = false;
 });
 </script>

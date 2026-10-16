@@ -6,7 +6,7 @@
       class="px-6 py-5 border-b border-gray-200 flex items-start justify-between"
     >
       <div>
-        <h3 class="text-md font-bold font-jetbrains text-black">
+        <h3 class="text-base font-bold font-jetbrains text-black">
           Event Demographics
         </h3>
 
@@ -17,8 +17,8 @@
 
       <button
         v-if="headcount && !isFetching"
+        class="inline-flex items-center text-xs font-jetbrains text-gray-500 hover:text-black transition-colors"
         @click="openDrawer"
-        class="inline-flex items-center text-xs font-bold font-jetbrains text-gray-500 hover:text-black transition-colors"
       >
         <Icon name="heroicons:pencil-square" class="mr-1.5 h-4 w-4" />
       </button>
@@ -30,7 +30,7 @@
     >
       <Icon
         name="heroicons:arrow-path"
-        class="h-8 w-8 text-gray-400 animate-spin mb-4"
+        class="h-8 w-8 text-gray-500 animate-spin mb-4"
       />
 
       <p class="text-xs font-bold font-jetbrains text-gray-500 animate-pulse">
@@ -53,8 +53,8 @@
       </p>
 
       <button
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-jetbrains text-white hover:bg-gray-800 transition-colors"
         @click="openDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold font-jetbrains text-white hover:bg-gray-800 transition-colors"
       >
         <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
 
@@ -105,7 +105,7 @@
           class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-700"
           >Total Attendance</span
         >
-        <span class="text-md font-black text-black">{{ totalCount }}</span>
+        <span class="text-base font-black text-black">{{ totalCount }}</span>
       </div>
     </div>
 

@@ -4,7 +4,7 @@
   >
     <div
       class="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-gray-200 to-transparent"
-    ></div>
+    />
     <div class="flex items-center gap-4 mb-4">
       <div :class="iconBoxClass">
         <Icon :name="iconName" class="w-6 h-6" />
@@ -20,19 +20,19 @@
     </p>
 
     <div
-      class="flex flex-col sm:flex-row gap-3 mt-auto"
       v-if="links.length > 0"
+      class="flex flex-col sm:flex-row gap-3 mt-auto"
     >
       <NuxtLink
+        v-for="(link, index) in links"
+        :key="index"
         :to="link.url"
-        class="flex-1 text-center py-2.5 px-4 rounded-xl text-xs md:text-sm font-bold border transition-all duration-200 font-jetbrains"
+        class="flex-1 text-center py-2.5 px-4 rounded-xl text-xs md:text-sm border transition-all duration-200 font-jetbrains"
         :class="
           link.type === 'primary'
             ? 'bg-black text-white border-black hover:bg-gray-800'
             : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-black'
         "
-        v-for="(link, index) in links"
-        :key="index"
       >
         {{ link.text }}
       </NuxtLink>
@@ -60,16 +60,10 @@ const props = defineProps({
     type: String,
     default: "orange",
   },
-  links: [
-    {
-      text: String,
-      url: String,
-      type: {
-        type: String,
-        default: "primary", // or 'secondary'
-      },
-    },
-  ],
+  links: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const iconPalette = {

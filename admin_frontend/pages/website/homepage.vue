@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
@@ -14,13 +14,13 @@
 
     <!-- Main Form -->
     <form
-      @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
+      @submit.prevent="saveSettings"
     >
       <!-- Section 1: Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Hero Banner
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -33,97 +33,93 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="homepage-hero-kicker"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Hero Kicker
               </label>
               <input
+                id="homepage-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Shining the Gospel light"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-hero-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Hero Headline
               </label>
               <input
+                id="homepage-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Our Church"
-              />
-            </div>
-            <div class="md:col-span-2">
-              <label
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
-                Background Video URL
-              </label>
-              <input
-                v-model="heroSection.heroVideoUrl"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://example.com/video.mp4"
-              />
-              <p class="text-xs text-gray-500 mt-1.5 font-lora">
-                Recommended: .mp4, Max size: 20MB
-              </p>
             </div>
             <div>
               <label
+                for="homepage-hero-cta1-label"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Primary CTA Label
               </label>
               <input
+                id="homepage-hero-cta1-label"
                 v-model="heroSection.heroCta1Label"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Join Us"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-hero-cta1-link"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Primary CTA Link
               </label>
               <input
+                id="homepage-hero-cta1-link"
                 v-model="heroSection.heroCta1Link"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="/about"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-hero-cta2-label"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Secondary CTA Label
               </label>
               <input
+                id="homepage-hero-cta2-label"
                 v-model="heroSection.heroCta2Label"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="Watch Live"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-hero-cta2-link"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Secondary CTA Link
               </label>
               <input
+                id="homepage-hero-cta2-link"
                 v-model="heroSection.heroCta2Link"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="/live"
-              />
+              >
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -135,12 +131,80 @@
         </div>
       </div>
 
-      <!-- Section 2: Action Cards -->
+      <!-- Section 2: Welcome Section -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+      >
+        <div class="md:col-span-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+            Welcome Section
+          </h3>
+          <p class="text-xs md:text-sm text-gray-500">
+            The introductory text block for your church.
+          </p>
+        </div>
+        <div
+          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        >
+          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="homepage-welcome-badge"
+                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              >
+                Welcome Badge
+              </label>
+              <input
+                id="homepage-welcome-badge"
+                v-model="welcomeSection.welcomeBadge"
+                type="text"
+                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+              >
+            </div>
+            <div>
+              <label
+                for="homepage-welcome-headline"
+                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              >
+                Welcome Headline
+              </label>
+              <input
+                id="homepage-welcome-headline"
+                v-model="welcomeSection.welcomeHeadline"
+                type="text"
+                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+              >
+            </div>
+            <div class="md:col-span-2">
+              <label
+                for="homepage-welcome-description"
+                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              >
+                Welcome Description
+              </label>
+              <textarea
+                id="homepage-welcome-description"
+                v-model="welcomeSection.welcomeDescription"
+                rows="4"
+                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+              />
+            </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.welcomeSection"
+              @click="handleSaveSection('welcomeSection', welcomeSection)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Action Cards -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-gray-200"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Action Cards
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -157,7 +221,7 @@
               class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
             >
               <span
-                class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center justify-center gap-2"
+                class="absolute top-4 right-4 text-[11px] font-bold text-gray-500 uppercase font-jetbrains flex items-center justify-center gap-2"
               >
                 Card {{ index + 1 }}
                 <Icon
@@ -170,71 +234,78 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
                 <div class="md:col-span-2">
                   <label
+                    :for="`homepage-card-image-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Image URL
                   </label>
-                  <input
+                  <MediaPickerInput
                     v-model="card.image"
-                    type="url"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                    placeholder="https://..."
+                    :input-id="`homepage-card-image-${index}`"
                   />
                 </div>
                 <div>
                   <label
+                    :for="`homepage-card-kicker-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Kicker
                   </label>
                   <input
+                    :id="`homepage-card-kicker-${index}`"
                     v-model="card.kicker"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
                 <div>
                   <label
+                    :for="`homepage-card-title-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Title
                   </label>
                   <input
+                    :id="`homepage-card-title-${index}`"
                     v-model="card.title"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
                 <div>
                   <label
+                    :for="`homepage-card-cta-label-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     CTA Label
                   </label>
                   <input
+                    :id="`homepage-card-cta-label-${index}`"
                     v-model="card.ctaLabel"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
                 <div>
                   <label
+                    :for="`homepage-card-cta-link-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     CTA Link
                   </label>
                   <input
+                    :id="`homepage-card-cta-link-${index}`"
                     v-model="card.ctaLink"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
               </div>
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addActionCard"
             >
               Add Card
@@ -249,74 +320,12 @@
         </div>
       </div>
 
-      <!-- Section 3: Welcome Section -->
-      <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
-      >
-        <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
-            Welcome Section
-          </h3>
-          <p class="text-xs md:text-sm text-gray-500">
-            The introductory text block for your church.
-          </p>
-        </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
-        >
-          <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-              >
-                Welcome Badge
-              </label>
-              <input
-                v-model="welcomeSection.welcomeBadge"
-                type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
-            </div>
-            <div>
-              <label
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-              >
-                Welcome Headline
-              </label>
-              <input
-                v-model="welcomeSection.welcomeHeadline"
-                type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
-            </div>
-            <div class="md:col-span-2">
-              <label
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-              >
-                Welcome Description
-              </label>
-              <textarea
-                v-model="welcomeSection.welcomeDescription"
-                rows="4"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
-            </div>
-          </div>
-          <div class="px-6 pb-6 pt-2 flex justify-end">
-            <SaveSectionButton
-              :is-loading="sectionSavingState.welcomeSection"
-              @click="handleSaveSection('welcomeSection', welcomeSection)"
-            />
-          </div>
-        </div>
-      </div>
-
       <!-- Section 4: Great Champions Section -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Great Champions
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -329,65 +338,72 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
+                for="homepage-champion-image"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Background Image URL
               </label>
-              <input
+              <MediaPickerInput
                 v-model="championsSection.championImage"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://..."
+                input-id="homepage-champion-image"
               />
             </div>
             <div class="md:col-span-2">
               <label
+                for="homepage-champion-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Champion Headline
               </label>
               <input
+                id="homepage-champion-headline"
                 v-model="championsSection.championHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="homepage-champion-description"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Champion Description
               </label>
               <textarea
+                id="homepage-champion-description"
                 v-model="championsSection.championDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
+              />
             </div>
             <div>
               <label
+                for="homepage-champion-cta-label"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 CTA Label
               </label>
               <input
+                id="homepage-champion-cta-label"
                 v-model="championsSection.championCtaLabel"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Learn More"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-champion-cta-link"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 CTA Link
               </label>
               <input
+                id="homepage-champion-cta-link"
                 v-model="championsSection.championCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -404,7 +420,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Sticky Editorial
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -421,7 +437,7 @@
               class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
             >
               <span
-                class="absolute top-4 right-4 text-[11px] font-bold text-gray-400 uppercase font-jetbrains flex items-center gap-2"
+                class="absolute top-4 right-4 text-[11px] font-bold text-gray-500 uppercase font-jetbrains flex items-center gap-2"
               >
                 Slide {{ index + 1 }}
                 <Icon
@@ -434,42 +450,49 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
                 <div>
                   <label
+                    :for="`homepage-slide-kicker-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Kicker
                   </label>
                   <input
+                    :id="`homepage-slide-kicker-${index}`"
                     v-model="slide.kicker"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
                 <div>
                   <label
+                    :for="`homepage-slide-title-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Title
                   </label>
                   <input
+                    :id="`homepage-slide-title-${index}`"
                     v-model="slide.title"
                     type="text"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
-                  />
+                  >
                 </div>
                 <div class="md:col-span-2">
                   <label
+                    :for="`homepage-slide-description-${index}`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                   >
                     Description
                   </label>
                   <textarea
+                    :id="`homepage-slide-description-${index}`"
                     v-model="slide.description"
                     rows="2"
                     class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none shadow-sm"
-                  ></textarea>
+                  />
                 </div>
                 <div class="md:col-span-2 border-t border-gray-200 pt-5 mt-2">
                   <label
+                    :for="`homepage-slide-image-${index}-1`"
                     class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-3"
                   >
                     Slide Images (4 URLs Required)
@@ -479,11 +502,10 @@
                       v-for="imgIndex in 4"
                       :key="`img-${index}-${imgIndex}`"
                     >
-                      <input
+                      <MediaPickerInput
                         v-model="slide.images[imgIndex - 1]"
-                        type="url"
-                        :placeholder="`Image ${imgIndex} URL`"
-                        class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                        :placeholder="`Image ${imgIndex}`"
+                        :input-id="`homepage-slide-image-${index}-${imgIndex}`"
                       />
                     </div>
                   </div>
@@ -493,7 +515,7 @@
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
             <button
-              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
+              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
               @click.prevent="addEditorialCard"
             >
               Add Slide
@@ -511,7 +533,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Leadership Section
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -524,77 +546,86 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="homepage-leadership-badge"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Leadership Badge
               </label>
               <input
+                id="homepage-leadership-badge"
                 v-model="leadershipSection.leadershipBadge"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-leadership-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Leadership Headline
               </label>
               <input
+                id="homepage-leadership-headline"
                 v-model="leadershipSection.leadershipHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="homepage-leadership-image"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Leadership Image URL
               </label>
-              <input
+              <MediaPickerInput
                 v-model="leadershipSection.leadershipImage"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://..."
+                input-id="homepage-leadership-image"
               />
             </div>
             <div class="md:col-span-2">
               <label
+                for="homepage-leadership-bio"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 Leadership Bio
               </label>
               <textarea
+                id="homepage-leadership-bio"
                 v-model="leadershipSection.leadershipBio"
                 rows="4"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
+              />
             </div>
             <div>
               <label
+                for="homepage-leadership-cta-label"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 CTA Label
               </label>
               <input
+                id="homepage-leadership-cta-label"
                 v-model="leadershipSection.leadershipCtaLabel"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Read More"
-              />
+              >
             </div>
             <div>
               <label
+                for="homepage-leadership-cta-link"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
               >
                 CTA Link
               </label>
               <input
+                id="homepage-leadership-cta-link"
                 v-model="leadershipSection.leadershipCtaLink"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -620,7 +651,7 @@
             name="heroicons:arrow-path"
             class="mr-2 h-4 w-4 animate-spin"
           />
-          {{ isSaving ? "Saving Everything..." : "Save All Changes" }}
+          {{ isSaving ? "Saving..." : "Save Changes" }}
         </button>
       </div>
     </form>
@@ -641,7 +672,6 @@ const confirm = useConfirm();
 const heroSection = reactive({
   heroKicker: "",
   heroHeadline: "",
-  heroVideoUrl: "",
   heroCta1Label: "",
   heroCta1Link: "",
   heroCta2Label: "",

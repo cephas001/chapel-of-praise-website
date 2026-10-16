@@ -29,10 +29,10 @@
     </div>
 
     <!-- Quick Contact Actions -->
-    <div class="mt-auto flex gap-2" v-if="member.phone">
+    <div v-if="member.phone" class="mt-auto flex gap-2">
       <a
         :href="`tel:${member.phone}`"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs font-bold transition-colors"
+        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs transition-colors"
         title="Call"
       >
         <Icon name="heroicons:phone" class="h-4 w-4 mr-1.5" /> Call
@@ -40,7 +40,7 @@
       <a
         :href="`https://wa.me/${cleanPhone(member.phone)}`"
         target="_blank"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs font-bold transition-colors"
+        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs transition-colors"
         title="WhatsApp"
       >
         <Icon
@@ -52,7 +52,7 @@
     </div>
     <div
       v-else
-      class="mt-auto py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-400 text-center italic"
+      class="mt-auto py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-500 text-center italic"
     >
       No phone number
     </div>

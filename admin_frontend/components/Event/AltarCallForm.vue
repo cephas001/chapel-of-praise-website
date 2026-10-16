@@ -1,12 +1,14 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
+  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
     <div>
       <label
+        for="altar-call-type"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Altar Call Category</label
       >
       <div class="relative">
         <select
+          id="altar-call-type"
           v-model="formData.callType"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -22,44 +24,48 @@
         <div
           class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
         >
-          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
         </div>
       </div>
     </div>
 
     <div>
       <label
+        for="altar-call-responders"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Number of Responders</label
       >
       <input
+        id="altar-call-responders"
         v-model.number="formData.totalResponders"
         type="number"
         min="1"
         required
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
         placeholder="e.g. 25"
-      />
+      >
     </div>
 
     <div>
       <label
+        for="altar-call-comments"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Additional Comments</label
       >
       <textarea
+        id="altar-call-comments"
         v-model="formData.additionalComments"
         rows="3"
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
         placeholder="Any notes regarding this altar call..."
-      ></textarea>
+      />
     </div>
 
     <div class="pt-6 border-t border-gray-200">
       <button
         type="submit"
         :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"
@@ -75,7 +81,7 @@
 <script setup>
 import { reactive } from "vue";
 
-const props = defineProps({
+defineProps({
   loading: {
     type: Boolean,
     default: false,
@@ -92,9 +98,18 @@ const formData = reactive({
 
 const handleSubmit = () => {
   emit("submit", { ...formData });
-  // Reset form after submit intent
+};
+
+const resetForm = () => {
   formData.callType = "";
   formData.totalResponders = "";
   formData.additionalComments = "";
 };
+
+const isDirty = () =>
+  Boolean(
+    formData.callType || formData.totalResponders || formData.additionalComments,
+  );
+
+defineExpose({ resetForm, isDirty });
 </script>

@@ -1,7 +1,7 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
-  <div class="pt-5 font-montserrat">
+  <div class="pt-5 pb-10 font-poppins">
     <div class="mb-8">
       <NuxtLink
         to="/events"
@@ -31,13 +31,6 @@
             this event.
           </p>
         </div>
-
-        <button
-          class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        >
-          <Icon name="heroicons:document-arrow-down" class="mr-2 h-4 w-4" />
-          Export Report
-        </button>
       </div>
     </div>
 
@@ -47,7 +40,7 @@
           class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
         >
           <h3
-            class="text-md font-bold text-black mb-4 border-b border-slate-200 font-jetbrains pb-3"
+            class="text-base font-bold text-black mb-4 border-b border-slate-200 font-jetbrains pb-3"
           >
             Overview
           </h3>
@@ -122,7 +115,7 @@
 
       <div class="lg:col-span-2 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <EventHeadCount :eventId="eventId" />
+          <EventHeadCount :event-id="eventId" />
 
           <div
             class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between gap-5 hover:shadow-md transition-shadow"
@@ -143,10 +136,10 @@
                 >
                   Attendance
                 </p>
-                <h3 class="text-md font-bold text-black font-jetbrains">
+                <h3 class="text-base font-bold text-black font-jetbrains">
                   Unit Attendance
                 </h3>
-                <p class="text-sm text-gray-500 leading-relaxed">
+                <p class="text-xs md:text-sm text-gray-500 leading-relaxed">
                   Record and review attendance by chapel unit.
                 </p>
               </div>
@@ -154,22 +147,22 @@
 
             <NuxtLink
               :to="`/events/${eventId}/attendance`"
-              class="inline-flex items-center justify-center rounded-xl bg-black px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains w-fit"
+              class="inline-flex items-center justify-center rounded-xl bg-black px-4 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains w-fit"
             >
               Manage Attendance &rarr;
             </NuxtLink>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
             <EventAltarCalls
-              :eventId="eventId"
-              @select-call="(call) => (selectedAltarCall = call)"
+              :event-id="eventId"
               :selected-call="selectedAltarCall"
+              @select-call="(call) => (selectedAltarCall = call)"
             />
           </div>
 
           <EventFollowUps
-            :eventId="eventId"
+            :event-id="eventId"
             :selected-call="selectedAltarCall"
           />
         </div>

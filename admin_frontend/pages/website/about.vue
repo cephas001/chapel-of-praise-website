@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
@@ -14,13 +14,13 @@
 
     <!-- Main Form -->
     <form
-      @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
+      @submit.prevent="saveSettings"
     >
       <!-- Section 1: Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Hero Banner
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -33,37 +33,40 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="about-hero-kicker"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Kicker</label
               >
               <input
+                id="about-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. The family at COP"
-              />
+              >
             </div>
             <div>
               <label
+                for="about-hero-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Headline</label
               >
               <input
+                id="about-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="about-hero-image"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Background Image URL</label
               >
-              <input
+              <MediaPickerInput
                 v-model="heroSection.heroImage"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://..."
+                input-id="about-hero-image"
               />
             </div>
           </div>
@@ -81,7 +84,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Vision & Mission Section
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -94,51 +97,59 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="about-vision-headline-black"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Section Headline (Black Text)</label
               >
               <input
+                id="about-vision-headline-black"
                 v-model="visionSection.visionHeadlineBlack"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. We serve God"
-              />
+              >
             </div>
             <div>
               <label
+                for="about-vision-headline-colored"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Section Headline (Colored Text)</label
               >
               <input
+                id="about-vision-headline-colored"
                 v-model="visionSection.visionHeadlineColored"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-100 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. By His Spirit"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="about-vision-content-1"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Content Column 1</label
               >
               <textarea
+                id="about-vision-content-1"
                 v-model="visionSection.visionContentCol1"
                 rows="6"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter the first column of text..."
-              ></textarea>
+              />
             </div>
             <div class="md:col-span-2">
               <label
+                for="about-vision-content-2"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Content Column 2</label
               >
               <textarea
+                id="about-vision-content-2"
                 v-model="visionSection.visionContentCol2"
                 rows="6"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
                 placeholder="Enter the second column of text..."
-              ></textarea>
+              />
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -157,7 +168,7 @@
         <button
           type="submit"
           :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
         >
           <Icon
             v-if="isSaving"

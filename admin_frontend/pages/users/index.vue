@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
@@ -16,8 +16,8 @@
       </div>
 
       <button
-        @click="navigateTo('/auth/register')"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+        @click="openCreateDrawer"
       >
         <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
         New User
@@ -29,6 +29,7 @@
     >
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
+          <caption class="sr-only">Admin user accounts</caption>
           <thead class="bg-gray-50/50">
             <tr>
               <th
@@ -116,9 +117,10 @@
               >
                 <div class="relative inline-flex items-center">
                   <button
-                    @click.stop="toggleDropdown($event, user)"
                     class="p-1 rounded hover:bg-gray-200 transition-colors text-gray-500"
                     title="Actions"
+                    aria-label="User actions"
+                    @click.stop="toggleDropdown($event, user)"
                   >
                     <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
                   </button>
@@ -132,24 +134,24 @@
                     >
                       <button
                         v-if="user.role !== 'super_admin'"
-                        @click="confirmUpgrade(user)"
                         class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                        @click="confirmUpgrade(user)"
                       >
                         Promote User
                       </button>
 
                       <button
-                        @click="openEditDrawer(user)"
                         class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                        @click="openEditDrawer(user)"
                       >
                         Edit User
                       </button>
 
-                      <div class="my-1 border-t border-gray-100"></div>
+                      <div class="my-1 border-t border-gray-100"/>
 
                       <button
-                        @click="confirmDelete(user)"
                         class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
+                        @click="confirmDelete(user)"
                       >
                         Delete User
                       </button>
@@ -160,6 +162,24 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div
+        v-if="hasMore"
+        class="border-t border-gray-100 p-4 flex justify-center"
+      >
+        <button
+          :disabled="isLoadingMore"
+          class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          @click="loadMoreUsers"
+        >
+          <Icon
+            v-if="isLoadingMore"
+            name="heroicons:arrow-path"
+            class="mr-2 h-4 w-4 animate-spin"
+          />
+          {{ isLoadingMore ? "Loading..." : "Load More" }}
+        </button>
       </div>
 
       <div
@@ -183,47 +203,54 @@
     <SlideOver
       :is-open="isDrawerOpen"
       :title="selectedUser ? 'Edit User' : 'Register New User'"
+      :before-close="confirmDiscardUserForm"
       @close="closeDrawer"
     >
-      <form @submit.prevent="submitUserForm" class="p-1 font-poppins space-y-6">
+      <form class="p-1 font-poppins space-y-6" @submit.prevent="submitUserForm">
         <div>
           <label
+            for="user-name"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Full Name
           </label>
           <input
+            id="user-name"
             v-model="formData.name"
             type="text"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="e.g. Jane Doe"
-          />
+          >
         </div>
 
         <div>
           <label
+            for="user-email"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Email
           </label>
           <input
+            id="user-email"
             v-model="formData.email"
             type="email"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="user@example.com"
-          />
+          >
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
+              for="user-role"
               class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >
               Role
             </label>
             <select
+              id="user-role"
               v-model="formData.role"
               required
               class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
@@ -235,11 +262,13 @@
 
           <div>
             <label
+              for="user-type"
               class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >
               Type
             </label>
             <select
+              id="user-type"
               v-model="formData.type"
               required
               class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
@@ -255,7 +284,7 @@
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
           >
             <Icon
               v-if="isSubmitting"
@@ -275,6 +304,73 @@
         </div>
       </form>
     </SlideOver>
+
+    <!-- Temporary credentials (shown once after creating a user) -->
+    <div
+      v-if="createdCredentials"
+      class="fixed inset-0 z-[9998] flex items-center justify-center p-4 font-poppins"
+    >
+      <div
+        class="absolute inset-0 bg-black/40"
+        aria-hidden="true"
+        @click="createdCredentials = null"
+      />
+      <div
+        class="relative w-full max-w-md bg-white rounded-xl border border-gray-200 shadow-xl p-6"
+      >
+        <h3 class="text-sm font-bold text-black font-jetbrains mb-2">
+          User Created
+        </h3>
+        <p class="text-xs md:text-sm text-gray-500 mb-5">
+          Share these credentials with the user now — the temporary password
+          is shown only once. They can change it anytime via "Forgot password"
+          on the login page.
+        </p>
+
+        <div class="space-y-4 mb-6">
+          <div>
+            <p
+              class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-1.5"
+            >
+              Email
+            </p>
+            <p
+              class="text-xs md:text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 break-all"
+            >
+              {{ createdCredentials.email }}
+            </p>
+          </div>
+          <div>
+            <p
+              class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-1.5"
+            >
+              Temporary Password
+            </p>
+            <p
+              class="text-xs md:text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 font-jetbrains break-all"
+            >
+              {{ createdCredentials.password }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            class="flex-1 inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+            @click="copyCredentials"
+          >
+            <Icon name="heroicons:clipboard" class="mr-2 h-4 w-4" />
+            Copy
+          </button>
+          <button
+            class="flex-1 inline-flex items-center justify-center rounded-xl bg-black px-4 py-2.5 text-xs text-white font-jetbrains hover:bg-gray-800 transition-colors"
+            @click="createdCredentials = null"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -308,15 +404,14 @@ const authStore = useAuthStore();
 const toast = useAppToast();
 const confirm = useConfirm();
 
-const users = ref([]);
-
-const isFetching = ref(true);
 const isSubmitting = ref(false);
 
 const activeDropdown = ref(null);
 const dropdownStyle = ref({});
 const isDrawerOpen = ref(false);
 const selectedUser = ref(null);
+const createdCredentials = ref(null);
+const initialFormSnapshot = ref("");
 
 const formData = ref({
   name: "",
@@ -325,27 +420,45 @@ const formData = ref({
   type: "website",
 });
 
-const fetchUsers = async () => {
-  isFetching.value = true;
-  try {
-    const res = await $fetch(`${config.public.apiBase}/admin/auth/users`, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    });
+const mapUser = (u) => ({
+  uid: u.uid || u.user_id || u.sub,
+  name: u.name || u.displayName || "",
+  email: u.email || "",
+  role: u.role || u.customClaims?.role || "admin",
+  type: u.type || u.customClaims?.type || "website",
+});
 
-    users.value = (res || []).map((u) => ({
-      uid: u.uid || u.user_id || u.sub,
-      name: u.name || u.displayName || "",
-      email: u.email || "",
-      role: u.role || u.customClaims?.role || u.role || "admin",
-      type: u.type || u.customClaims?.type || u.type || "website",
-    }));
-  } catch (error) {
-    console.error("Failed to fetch users:", error);
-    toast.error("Could not load users.");
-  } finally {
-    isFetching.value = false;
-  }
-};
+const {
+  items: users,
+  isFetching,
+  isLoadingMore,
+  hasMore,
+  load: fetchUsers,
+  loadMore: loadMoreUsers,
+  prepend: prependUser,
+  removeWhere: removeUserWhere,
+  updateWhere: updateUserWhere,
+} = useCursorPagination({
+  fetcher: async ({ cursor } = {}) => {
+    try {
+      const res = await $fetch(`${config.public.apiBase}/admin/auth/users`, {
+        query: cursor ? { cursor } : {},
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      });
+
+      return {
+        items: res?.users || [],
+        nextCursor: res?.nextCursor || null,
+        hasMore: Boolean(res?.hasMore),
+      };
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      toast.error(cursor ? "Could not load more users." : "Could not load users.");
+      return { items: [], nextCursor: null, hasMore: false };
+    }
+  },
+  mapItem: mapUser,
+});
 
 onMounted(fetchUsers);
 
@@ -380,6 +493,31 @@ const closeDropdown = () => {
   activeDropdown.value = null;
 };
 
+const openCreateDrawer = () => {
+  selectedUser.value = null;
+  Object.assign(formData.value, {
+    name: "",
+    email: "",
+    role: "admin",
+    type: "website",
+  });
+  initialFormSnapshot.value = JSON.stringify(formData.value);
+  isDrawerOpen.value = true;
+  closeDropdown();
+};
+
+const confirmDiscardUserForm = async () => {
+  if (JSON.stringify(formData.value) === initialFormSnapshot.value) return true;
+  return await confirm.ask({
+    title: "Discard Changes?",
+    message:
+      "You have unsaved changes to this user form. Close and discard them?",
+    confirmText: "Discard",
+    cancelText: "Keep Editing",
+    isDestructive: true,
+  });
+};
+
 const openEditDrawer = (user) => {
   selectedUser.value = { ...user };
   Object.assign(formData.value, {
@@ -388,6 +526,7 @@ const openEditDrawer = (user) => {
     role: user.role,
     type: user.type,
   });
+  initialFormSnapshot.value = JSON.stringify(formData.value);
   isDrawerOpen.value = true;
   closeDropdown();
 };
@@ -418,7 +557,7 @@ const submitUserForm = async () => {
         type: formData.value.type,
       };
 
-      const res = await $fetch(
+      await $fetch(
         `${config.public.apiBase}/admin/auth/update/${uid}`,
         {
           method: "PUT",
@@ -427,14 +566,12 @@ const submitUserForm = async () => {
         },
       );
 
-      const idx = users.value.findIndex((u) => u.uid === uid);
-      if (idx !== -1) users.value[idx] = { uid, ...payload };
+      updateUserWhere((u) => u.uid === uid, payload);
       toast.success("User updated successfully");
     } else {
       const payload = {
         name: formData.value.name,
         email: formData.value.email,
-        password: Math.random().toString(36).slice(-8),
         role: formData.value.role,
         type: formData.value.type,
       };
@@ -446,13 +583,22 @@ const submitUserForm = async () => {
       });
 
       if (res?.user) {
-        users.value.unshift({
+        prependUser({
           uid: res.user.id,
           name: res.user.name,
           email: res.user.email,
           role: res.user.role,
           type: res.user.type,
         });
+      }
+
+      // The backend generates a temporary password when none is supplied;
+      // show it once so the admin can hand it to the new user.
+      if (res?.temporaryPassword) {
+        createdCredentials.value = {
+          email: res.user?.email || payload.email,
+          password: res.temporaryPassword,
+        };
       }
       toast.success("User created successfully");
     }
@@ -463,6 +609,19 @@ const submitUserForm = async () => {
     toast.error(error.data?.error || "Could not save the user.");
   } finally {
     isSubmitting.value = false;
+  }
+};
+
+const copyCredentials = async () => {
+  if (!createdCredentials.value) return;
+
+  try {
+    await navigator.clipboard.writeText(
+      `Email: ${createdCredentials.value.email}\nTemporary password: ${createdCredentials.value.password}`,
+    );
+    toast.success("Credentials copied to clipboard");
+  } catch {
+    toast.error("Could not copy to clipboard");
   }
 };
 
@@ -484,8 +643,7 @@ const confirmUpgrade = async (user) => {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
-    const idx = users.value.findIndex((u) => u.uid === user.uid);
-    if (idx !== -1) users.value[idx].role = "super_admin";
+    updateUserWhere((u) => u.uid === user.uid, { role: "super_admin" });
     toast.success("User promoted to super_admin");
   } catch (error) {
     console.error("Upgrade error:", error);
@@ -511,7 +669,7 @@ const confirmDelete = async (user) => {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
-    users.value = users.value.filter((u) => u.uid !== user.uid);
+    removeUserWhere((u) => u.uid === user.uid);
     toast.success("User deleted successfully");
   } catch (error) {
     console.error("Delete error:", error);

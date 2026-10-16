@@ -1,13 +1,14 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- INVISIBLE OVERLAY: Closes dropdowns when clicking outside -->
     <div
       v-if="activeDropdown"
-      @click="closeDropdown"
       class="fixed inset-0 z-40"
-    ></div>
+      aria-hidden="true"
+      @click="closeDropdown"
+    />
 
     <div
       class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -23,8 +24,8 @@
 
       <button
         v-if="isSuperAdmin"
-        @click="openAddCategoryDrawer"
         class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+        @click="openAddCategoryDrawer"
       >
         <Icon name="heroicons:folder-plus" class="mr-2 h-4 w-4" />
         Add Category
@@ -32,10 +33,24 @@
     </div>
 
     <div
+      v-if="!isSuperAdmin"
+      class="mt-6 flex items-start gap-2.5 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3"
+    >
+      <Icon
+        name="heroicons:eye"
+        class="h-4 w-4 shrink-0 text-blue-600 mt-0.5"
+      />
+      <p class="text-xs font-medium leading-relaxed text-blue-800">
+        You have view-only access to Quick Links. Contact a Super Admin to add
+        or edit links.
+      </p>
+    </div>
+
+    <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 items-start"
     >
       <div
-        v-for="(section, index) in dashboardSections"
+        v-for="section in dashboardSections"
         :key="section.id"
         class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all duration-200"
       >
@@ -49,13 +64,13 @@
           <div class="flex items-center gap-1">
             <!-- Collapse Button (Visible to everyone) -->
             <button
-              @click="toggleCollapse(section.id)"
               class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
               :title="
                 collapsedSections[section.id]
                   ? 'Expand section'
                   : 'Collapse section'
               "
+              @click="toggleCollapse(section.id)"
             >
               <Icon
                 name="heroicons:chevron-down"
@@ -67,8 +82,8 @@
             <!-- Super Admin Dropdown -->
             <div v-if="isSuperAdmin" class="relative z-50">
               <button
-                @click="toggleDropdown('category_' + section.id)"
                 class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
+                @click="toggleDropdown('category_' + section.id)"
               >
                 <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
               </button>
@@ -79,30 +94,30 @@
                 class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
               >
                 <button
+                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
                   @click="
                     openEditCategoryDrawer(section);
                     closeDropdown();
                   "
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
                 >
                   Edit Category
                 </button>
                 <button
+                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
                   @click="
                     openAddLinkDrawer(section.id);
                     closeDropdown();
                   "
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
                 >
                   Add Link
                 </button>
-                <div class="my-1 border-t border-gray-100"></div>
+                <div class="my-1 border-t border-gray-100"/>
                 <button
+                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
                   @click="
                     handleDeleteCategory(section.id);
                     closeDropdown();
                   "
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
                 >
                   Delete Category
                 </button>
@@ -121,38 +136,38 @@
             class="text-center py-5"
           >
             <p
-              class="text-[11px] font-jetbrains font-bold text-gray-400 uppercase tracking-widest"
+              class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
             >
               No links available
             </p>
           </div>
 
-          <a
+          <div
             v-for="link in section.links"
             :key="link.id"
-            :href="link.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 cursor-pointer"
+            class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
           >
-            <span
-              class="text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4 font-jetbrains"
+            <a
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-1 min-w-0 text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4 font-jetbrains"
             >
               {{ link.label }}
-            </span>
+            </a>
 
             <div
               v-if="isSuperAdmin"
               class="shrink-0 relative z-50"
-              @click.prevent.stop
             >
               <button
-                @click="toggleDropdown('link_' + link.id)"
                 class="p-1 rounded hover:bg-gray-200 transition-colors"
+                aria-label="Link actions"
+                @click="toggleDropdown('link_' + link.id)"
               >
                 <Icon
                   name="heroicons:ellipsis-vertical"
-                  class="h-4 w-4 text-gray-400 group-hover:text-black"
+                  class="h-4 w-4 text-gray-500 group-hover:text-black"
                 />
               </button>
 
@@ -162,26 +177,26 @@
                 class="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-lg shadow-xl p-1 flex flex-col"
               >
                 <button
+                  class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
                   @click="
                     openEditLinkDrawer(section.id, link);
                     closeDropdown();
                   "
-                  class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
                 >
                   Edit
                 </button>
                 <button
+                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
                   @click="
                     handleDeleteLink(section.id, link.id);
                     closeDropdown();
                   "
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
                 >
                   Delete
                 </button>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -191,45 +206,51 @@
       :title="editingLinkId ? 'Edit Link' : 'Add New Link'"
       @close="closeDrawer"
     >
-      <form @submit.prevent="submitNewLink" class="p-1 font-poppins space-y-6">
+      <form class="p-1 font-poppins space-y-6" @submit.prevent="submitNewLink">
         <div>
           <label
+            for="quicklink-label"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Link Label
           </label>
           <input
+            id="quicklink-label"
             v-model="newLinkData.label"
             type="text"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="e.g. Staff Directory"
-          />
+          >
         </div>
 
         <div>
           <label
+            for="quicklink-url"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             URL
           </label>
           <input
+            id="quicklink-url"
             v-model="newLinkData.url"
             type="url"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="https://..."
-          />
+          >
         </div>
 
         <div>
           <label
+            for="quicklink-category"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Category
           </label>
           <div class="relative">
             <select
+              id="quicklink-category"
               v-model="newLinkData.sectionId"
               required
               class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
@@ -248,7 +269,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-400"
+                class="h-4 w-4 text-gray-500"
               />
             </div>
           </div>
@@ -258,7 +279,7 @@
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
           >
             <Icon
               v-if="isSubmitting"
@@ -283,29 +304,31 @@
       @close="closeCategoryDrawer"
     >
       <form
-        @submit.prevent="submitNewCategory"
         class="p-1 font-poppins space-y-6"
+        @submit.prevent="submitNewCategory"
       >
         <div>
           <label
+            for="quicklink-category-title"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Category Title
           </label>
           <input
+            id="quicklink-category-title"
             v-model="newCategoryData.title"
             type="text"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
             placeholder="e.g. Media & Assets"
-          />
+          >
         </div>
 
         <div class="pt-6 border-t border-gray-200">
           <button
             type="submit"
             :disabled="isSubmittingCategory"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
           >
             <Icon
               v-if="isSubmittingCategory"
@@ -330,6 +353,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "@/stores/auth";
+import { useConfirm } from "~/composables/useConfirm";
 
 definePageMeta({
   allowedUserTypes: ["executive"],
@@ -338,6 +362,7 @@ definePageMeta({
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast();
+const confirm = useConfirm();
 
 // Permission check
 const isSuperAdmin = computed(() => authStore.user?.role === "super_admin");
@@ -411,7 +436,15 @@ const closeDrawer = () => {
 
 // Delete link
 const handleDeleteLink = async (sectionId, linkId) => {
-  if (!confirm("Are you sure you want to remove this link?")) return;
+  if (!isSuperAdmin.value) return;
+  const answer = await confirm.ask({
+    title: "Remove Link",
+    message: "Are you sure you want to remove this link?",
+    confirmText: "Remove",
+    cancelText: "Cancel",
+    isDestructive: true,
+  });
+  if (!answer) return;
 
   try {
     await $fetch(
@@ -456,6 +489,7 @@ const openAddCategoryDrawer = () => {
 
 // Modify your existing submitNewCategory to handle both POST and PUT
 const submitNewCategory = async () => {
+  if (!isSuperAdmin.value) return;
   isSubmittingCategory.value = true;
   try {
     if (editingCategoryId.value) {
@@ -488,12 +522,16 @@ const submitNewCategory = async () => {
 };
 
 const handleDeleteCategory = async (categoryId) => {
-  if (
-    !confirm(
+  if (!isSuperAdmin.value) return;
+  const answer = await confirm.ask({
+    title: "Delete Category",
+    message:
       "Are you sure you want to delete this entire category and all its links?",
-    )
-  )
-    return;
+    confirmText: "Delete",
+    cancelText: "Cancel",
+    isDestructive: true,
+  });
+  if (!answer) return;
 
   try {
     await $fetch(
@@ -532,6 +570,7 @@ const openAddLinkDrawer = (sectionId) => {
 
 // Modify your existing submitNewLink to handle both POST and PUT
 const submitNewLink = async () => {
+  if (!isSuperAdmin.value) return;
   isSubmitting.value = true;
   try {
     const payload = {

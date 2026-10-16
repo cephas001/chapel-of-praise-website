@@ -33,3 +33,9 @@ export const cleanPhone = (phone) => {
   }
   return cleaned;
 };
+
+export const headcountTotal = (headcount) =>
+  (Number(headcount?.maleStudents) || 0) +
+  (Number(headcount?.femaleStudents) || 0) +
+  (Number(headcount?.maleVisitors) || 0) +
+  (Number(headcount?.femaleVisitors) || 0);

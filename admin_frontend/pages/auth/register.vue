@@ -13,13 +13,13 @@
 
     <!-- Main Form -->
     <form
-      @submit.prevent="handleRegister"
       class="space-y-13 border-t border-gray-200 pt-7"
+      @submit.prevent="handleRegister"
     >
       <!-- Section 1: Account Details -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Account Details
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -47,7 +47,7 @@
                 required
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. John Doe"
-              />
+              >
             </div>
 
             <!-- Email -->
@@ -65,7 +65,7 @@
                 required
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="admin@example.com"
-              />
+              >
             </div>
 
             <!-- Password -->
@@ -82,13 +82,20 @@
                   v-model="formData.password"
                   :type="showPassword ? 'text' : 'password'"
                   required
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 pr-12 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  minlength="8"
+                  :aria-invalid="errors.password ? 'true' : 'false'"
+                  aria-describedby="password-hint password-error"
+                  class="w-full bg-gray-50 border rounded-lg px-4 py-2.5 pr-12 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  :class="
+                    errors.password ? 'border-red-400' : 'border-gray-200'
+                  "
                   placeholder="••••••••"
-                />
+                >
                 <button
                   type="button"
+                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-black focus:outline-none transition-colors"
                   @click="showPassword = !showPassword"
-                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-black focus:outline-none transition-colors"
                 >
                   <Icon
                     v-if="!showPassword"
@@ -98,6 +105,48 @@
                   <Icon v-else name="heroicons:eye-slash" class="h-4 w-4" />
                 </button>
               </div>
+              <p id="password-hint" class="text-[11px] text-gray-500 mt-1.5">
+                At least 8 characters.
+              </p>
+              <p
+                v-if="errors.password"
+                id="password-error"
+                role="alert"
+                class="text-[11px] text-red-600 font-medium mt-1.5"
+              >
+                {{ errors.password }}
+              </p>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="md:col-span-2">
+              <label
+                for="confirm-password"
+                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="confirm-password"
+                v-model="formData.confirmPassword"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                :aria-invalid="errors.confirmPassword ? 'true' : 'false'"
+                aria-describedby="confirm-password-error"
+                class="w-full bg-gray-50 border rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                :class="
+                  errors.confirmPassword ? 'border-red-400' : 'border-gray-200'
+                "
+                placeholder="••••••••"
+              >
+              <p
+                v-if="errors.confirmPassword"
+                id="confirm-password-error"
+                role="alert"
+                class="text-[11px] text-red-600 font-medium mt-1.5"
+              >
+                {{ errors.confirmPassword }}
+              </p>
             </div>
 
             <!-- Admin Type -->
@@ -125,7 +174,7 @@
                 >
                   <Icon
                     name="heroicons:chevron-down"
-                    class="h-4 w-4 text-gray-400"
+                    class="h-4 w-4 text-gray-500"
                   />
                 </div>
               </div>
@@ -155,7 +204,7 @@
                 >
                   <Icon
                     name="heroicons:chevron-down"
-                    class="h-4 w-4 text-gray-400"
+                    class="h-4 w-4 text-gray-500"
                   />
                 </div>
               </div>
@@ -200,36 +249,60 @@ const formData = ref({
   name: "",
   email: "",
   password: "",
+  confirmPassword: "",
   type: "",
   role: "",
 });
 
+const errors = ref({ password: "", confirmPassword: "" });
 const loading = ref(false);
 const showPassword = ref(false);
 
+const validateForm = () => {
+  errors.value = { password: "", confirmPassword: "" };
+
+  if (formData.value.password.length < 8) {
+    errors.value.password = "Password must be at least 8 characters long.";
+  }
+  if (formData.value.confirmPassword !== formData.value.password) {
+    errors.value.confirmPassword = "Passwords do not match.";
+  }
+
+  return !errors.value.password && !errors.value.confirmPassword;
+};
+
 const handleRegister = async () => {
+  if (!validateForm()) return;
+
   loading.value = true;
 
   // Ensure type and role are normalized before sending
   const payload = {
-    ...formData.value,
+    name: formData.value.name,
+    email: formData.value.email,
+    password: formData.value.password,
     type: formData.value.type.toLowerCase(),
     role: formData.value.role.toLowerCase(),
   };
 
   try {
-    const response = await $fetch(
-      `${config.public.apiBase}/admin/auth/register`,
-      {
-        method: "POST",
-        body: payload,
-      },
-    );
+    await $fetch(`${config.public.apiBase}/admin/auth/register`, {
+      method: "POST",
+      body: payload,
+    });
 
     toast.success("Administrator successfully registered!");
 
     // Clear the form on success
-    formData.value = { name: "", email: "", password: "", type: "", role: "" };
+    formData.value = {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      type: "",
+      role: "",
+    };
+    errors.value = { password: "", confirmPassword: "" };
   } catch (error) {
     console.error(error.data?.error || error);
     toast.error(error.data?.error || "An error occurred during registration.");

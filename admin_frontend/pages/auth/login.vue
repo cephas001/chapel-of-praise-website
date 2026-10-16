@@ -7,7 +7,7 @@
     >
       <div class="text-center mb-6">
         <h2
-          class="text-md md:text-xl font-bold text-black uppercase font-jetbrains"
+          class="text-base md:text-xl font-bold text-black uppercase font-jetbrains"
         >
           Chapel of Praise
         </h2>
@@ -16,7 +16,7 @@
         </p>
       </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="handleLogin">
         <div>
           <label
             for="email"
@@ -39,7 +39,7 @@
               required
               class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors bg-white text-black"
               placeholder="reviewer@example.com"
-            />
+            >
           </div>
         </div>
 
@@ -64,12 +64,13 @@
               required
               class="block w-full pl-10 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors bg-white text-black"
               placeholder="••••••••"
-            />
+            >
 
             <button
               type="button"
+              :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-black focus:outline-none"
               @click="showPassword = !showPassword"
-              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-black focus:outline-none"
             >
               <Icon v-if="!showPassword" name="heroicons:eye" class="h-5 w-5" />
 
@@ -78,14 +79,24 @@
           </div>
         </div>
 
+        <div class="flex justify-end">
+          <button
+            type="button"
+            class="text-xs text-gray-600 hover:text-black underline underline-offset-2 font-jetbrains"
+            @click="handleForgotPassword"
+          >
+            Forgot password?
+          </button>
+        </div>
+
         <button
           type="submit"
           :disabled="loading"
           class="w-full flex justify-center items-center gap-1 py-3 px-4 border border-transparent rounded-lg shadow-sm text-xs md:text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
         >
           <Icon
-            name="heroicons:arrow-path"
             v-if="loading"
+            name="heroicons:arrow-path"
             width="4"
             height="4"
             class="animate-spin"
@@ -101,7 +112,7 @@
 import { ref, reactive } from "vue";
 import { useAuthStore } from "~/stores/auth";
 import { useRuntimeConfig, navigateTo, useNuxtApp } from "#app";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 definePageMeta({ layout: false });
 
@@ -145,18 +156,53 @@ async function handleLogin() {
     toast.success("Login successful!");
     navigateTo("/dashboard");
   } catch (error) {
-    // Map Firebase error codes to user-friendly messages
-    console.log(error);
-    if (
+    // Surface the real reason instead of collapsing every failure into
+    // one generic message.
+    const status = error?.response?.status || error?.statusCode;
+    const backendMessage = error?.data?.error || error?.data?.message;
+
+    if (status === 429) {
+      toast.error(
+        backendMessage ||
+          "Too many login attempts. Please try again in 15 minutes.",
+      );
+    } else if (
       error.code === "auth/invalid-credential" ||
-      error.code === "auth/wrong-password"
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
     ) {
       toast.error("Invalid email or password");
+    } else if (error.code === "auth/too-many-requests") {
+      toast.error(
+        "Too many attempts. Please wait a few minutes and try again.",
+      );
+    } else if (
+      error.code === "auth/network-request-failed" ||
+      (typeof navigator !== "undefined" && !navigator.onLine)
+    ) {
+      toast.error("Network error. Check your connection and try again.");
     } else {
-      toast.error("An error occurred during login");
+      toast.error(backendMessage || "An error occurred during login");
     }
   } finally {
     loading.value = false;
+  }
+}
+
+async function handleForgotPassword() {
+  if (!formData.email) {
+    toast.error(
+      "Enter your email address above first, then select “Forgot password?”.",
+    );
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail($auth, formData.email);
+    toast.success("Password reset email sent. Check your inbox.");
+  } catch (error) {
+    console.error("Password reset error:", error);
+    toast.error("Could not send the reset email. Please try again later.");
   }
 }
 </script>

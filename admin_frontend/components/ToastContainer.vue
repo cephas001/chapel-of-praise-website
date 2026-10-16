@@ -1,11 +1,14 @@
 <template>
   <div
+    aria-live="polite"
+    aria-label="Notifications"
     class="fixed bottom-10 right-0 z-9999 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"
   >
     <TransitionGroup name="toast">
       <div
         v-for="toast in toasts"
         :key="toast.id"
+        :role="toast.type === 'error' ? 'alert' : 'status'"
         class="pointer-events-auto overflow-hidden rounded-xl shadow-xl border bg-white flex items-stretch"
         :class="borderColors[toast.type]"
       >
@@ -32,8 +35,9 @@
         </div>
 
         <button
+          aria-label="Dismiss notification"
+          class="px-4 text-gray-500 hover:text-black transition-colors focus:outline-none"
           @click="remove(toast.id)"
-          class="px-4 text-gray-400 hover:text-black transition-colors focus:outline-none"
         >
           <Icon name="material-symbols:close" class="text-lg" />
         </button>

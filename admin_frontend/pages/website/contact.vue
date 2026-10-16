@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div class="mb-8">
@@ -12,13 +12,13 @@
     </div>
 
     <form
-      @submit.prevent="saveSettings"
       class="space-y-13 border-t border-gray-200 pt-7"
+      @submit.prevent="saveSettings"
     >
       <!-- Hero Section -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Hero Section
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -31,37 +31,40 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="contact-hero-kicker"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Kicker</label
               >
               <input
+                id="contact-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
                 placeholder="e.g. Get in touch"
-              />
+              >
             </div>
             <div>
               <label
+                for="contact-hero-headline"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Headline</label
               >
               <input
+                id="contact-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-hero-image"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Hero Image URL</label
               >
-              <input
+              <MediaPickerInput
                 v-model="heroSection.heroImage"
-                type="url"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-                placeholder="https://..."
+                input-id="contact-hero-image"
               />
             </div>
           </div>
@@ -79,7 +82,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Form Section
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -92,25 +95,29 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
+                for="contact-form-heading"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Form Heading</label
               >
               <input
+                id="contact-form-heading"
                 v-model="formSection.formHeading"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-form-description"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Form Description</label
               >
               <textarea
+                id="contact-form-description"
                 v-model="formSection.formDescription"
                 rows="3"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
+              />
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -127,7 +134,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Campus Information
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -140,47 +147,55 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="contact-campus-name"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Campus Location Name</label
               >
               <input
+                id="contact-campus-name"
                 v-model="campusSection.campusName"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div>
               <label
+                for="contact-service-times-title"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Service Times Title</label
               >
               <input
+                id="contact-service-times-title"
                 v-model="campusSection.serviceTimesTitle"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-campus-address"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Campus Address</label
               >
               <textarea
+                id="contact-campus-address"
                 v-model="campusSection.campusAddress"
                 rows="2"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
+              />
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-service-times-details"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Service Times Details</label
               >
               <textarea
+                id="contact-service-times-details"
                 v-model="campusSection.serviceTimesDetails"
                 rows="2"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
-              ></textarea>
+              />
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -197,7 +212,7 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
             Contact Methods & Social
           </h3>
           <p class="text-xs md:text-sm text-gray-500">
@@ -210,58 +225,68 @@
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
+                for="contact-email"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Email</label
               >
               <input
+                id="contact-email"
                 v-model="contactSection.email"
                 type="email"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div>
               <label
+                for="contact-phone"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Phone</label
               >
               <input
+                id="contact-phone"
                 v-model="contactSection.phone"
                 type="text"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-instagram"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Instagram URL</label
               >
               <input
+                id="contact-instagram"
                 v-model="contactSection.instagramUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-twitter"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Twitter URL</label
               >
               <input
+                id="contact-twitter"
                 v-model="contactSection.twitterUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
             <div class="md:col-span-2">
               <label
+                for="contact-youtube"
                 class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
                 >Youtube URL</label
               >
               <input
+                id="contact-youtube"
                 v-model="contactSection.youtubeUrl"
                 type="url"
                 class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-              />
+              >
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -279,16 +304,16 @@
       >
         <button
           type="button"
-          @click="loadSettings"
-          class="px-5 py-2.5 text-xs md:text-sm font-bold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-jetbrains"
+          class="px-5 py-2.5 text-xs md:text-sm text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-jetbrains"
           :disabled="isSaving"
+          @click="loadSettings"
         >
           Discard
         </button>
         <button
           type="submit"
           :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
         >
           <Icon
             v-if="isSaving"

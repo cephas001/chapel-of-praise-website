@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
@@ -15,8 +15,8 @@
       </div>
 
       <button
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
         <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
         New Executive
@@ -28,6 +28,7 @@
     >
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
+          <caption class="sr-only">Executives</caption>
           <thead class="bg-gray-50/50">
             <tr>
               <th
@@ -106,13 +107,30 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
               >
-                <button
-                  @click="openEditDrawer(exec)"
-                  class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
-                  title="View / Edit Details"
-                >
-                  <Icon name="heroicons:pencil-square" class="h-4 w-4" />
-                </button>
+                <div class="flex items-center justify-end gap-1">
+                  <button
+                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    title="View / Edit Details"
+                    aria-label="View or edit executive"
+                    @click="openEditDrawer(exec)"
+                  >
+                    <Icon name="heroicons:pencil-square" class="h-4 w-4" />
+                  </button>
+                  <button
+                    :disabled="deletingId === exec.id"
+                    class="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Delete Executive"
+                    aria-label="Delete executive"
+                    @click="handleDeleteExecutive(exec)"
+                  >
+                    <Icon
+                      v-if="deletingId === exec.id"
+                      name="heroicons:arrow-path"
+                      class="h-4 w-4 animate-spin"
+                    />
+                    <Icon v-else name="heroicons:trash" class="h-4 w-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -156,6 +174,7 @@
 import { ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "~/stores/auth";
+import { useConfirm } from "~/composables/useConfirm";
 
 definePageMeta({
   accessToSuperAdminOnly: true,
@@ -164,10 +183,12 @@ definePageMeta({
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast(); // auto-imported
+const confirm = useConfirm();
 
 const executives = ref([]);
 const isFetching = ref(true);
 const isSubmitting = ref(false);
+const deletingId = ref(null);
 
 const isDrawerOpen = ref(false);
 const selectedExecutive = ref(null);
@@ -250,6 +271,35 @@ const handleFormSubmit = async (formData) => {
     toast.error(error.data?.error || "Could not save the executive."); // migrated
   } finally {
     isSubmitting.value = false;
+  }
+};
+
+const handleDeleteExecutive = async (exec) => {
+  const answer = await confirm.ask({
+    title: "Delete Executive",
+    message: `Are you sure you want to permanently delete ${exec.name}? This cannot be undone.`,
+    confirmText: "Yes, Delete",
+    cancelText: "Cancel",
+  });
+  if (!answer) return;
+
+  deletingId.value = exec.id;
+  try {
+    await $fetch(
+      `${config.public.apiBase}/admin/members/executives/${exec.id}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      },
+    );
+
+    executives.value = executives.value.filter((e) => e.id !== exec.id);
+    toast.success("Executive deleted successfully"); // migrated
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error(error.data?.error || "Could not delete the executive."); // migrated
+  } finally {
+    deletingId.value = null;
   }
 };
 </script>

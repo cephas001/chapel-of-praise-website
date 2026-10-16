@@ -18,13 +18,13 @@
           class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200"
           style="max-height: 400px"
         >
-          <p class="text-xs text-gray-500" v-if="selectedCall">
+          <p v-if="selectedCall" class="text-xs text-gray-500">
             For:
             <span class="font-bold text-black">{{
               selectedCall.callType
             }}</span>
           </p>
-          <p class="text-xs text-gray-500" v-else>
+          <p v-else class="text-xs text-gray-500">
             Select a call to view individuals.
           </p>
         </div>
@@ -32,8 +32,8 @@
 
       <button
         v-if="selectedCall"
+        class="inline-flex items-center px-4 py-2 text-[11px] text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm shrink-0"
         @click="openDrawer"
-        class="inline-flex items-center px-4 py-2 text-[11px] font-bold text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm shrink-0"
       >
         <Icon name="heroicons:plus" class="mr-1.5 h-4 w-4" />
         Add
@@ -62,7 +62,7 @@
     >
       <Icon
         name="heroicons:arrow-path"
-        class="h-8 w-8 text-gray-400 animate-spin mb-3"
+        class="h-8 w-8 text-gray-500 animate-spin mb-3"
       />
       <p
         class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
@@ -112,33 +112,33 @@
 
           <div class="flex flex-wrap gap-x-4 gap-y-2 mt-3">
             <div
-              class="flex items-center text-xs text-gray-600 font-medium"
               v-if="response.phoneNumber"
+              class="flex items-center text-xs text-gray-600 font-medium"
             >
               <Icon
                 name="heroicons:phone"
-                class="h-3.5 w-3.5 mr-1.5 text-gray-400"
+                class="h-3.5 w-3.5 mr-1.5 text-gray-500"
               />
               {{ response.phoneNumber }}
             </div>
             <div
-              class="flex items-center text-xs text-gray-600 font-medium"
               v-if="response.hostel"
+              class="flex items-center text-xs text-gray-600 font-medium"
             >
               <Icon
                 name="heroicons:building-office-2"
-                class="h-3.5 w-3.5 mr-1.5 text-gray-400"
+                class="h-3.5 w-3.5 mr-1.5 text-gray-500"
               />
               {{ response.hostel }}
               {{ response.roomNumber ? `(Rm ${response.roomNumber})` : "" }}
             </div>
             <div
-              class="flex items-center text-xs text-gray-600 font-medium"
               v-if="response.assignedTo"
+              class="flex items-center text-xs text-gray-600 font-medium"
             >
               <Icon
                 name="heroicons:user-circle"
-                class="h-3.5 w-3.5 mr-1.5 text-gray-400"
+                class="h-3.5 w-3.5 mr-1.5 text-gray-500"
               />
               Assigned:
               <span class="font-bold text-gray-900 ml-1">{{
@@ -153,9 +153,11 @@
     <SlideOver
       :is-open="isDrawerOpen"
       :title="`Add Responder - ${selectedCall?.callType || ''}`"
+      :before-close="confirmDiscardDraft"
       @close="closeDrawer"
     >
       <EventAltarCallResponseForm
+        ref="responseFormRef"
         :loading="isSubmitting"
         @submit="handleFormSubmit"
       />
@@ -187,6 +189,19 @@ const responses = ref([]);
 const isFetching = ref(false);
 const isSubmitting = ref(false);
 const isDrawerOpen = ref(false);
+const responseFormRef = ref(null);
+const confirm = useConfirm();
+
+const confirmDiscardDraft = async () => {
+  if (!responseFormRef.value?.isDirty?.()) return true;
+  return await confirm.ask({
+    title: "Discard Responder Details?",
+    message: "You have unsaved details in this form. Close and discard them?",
+    confirmText: "Discard",
+    cancelText: "Keep Editing",
+    isDestructive: true,
+  });
+};
 
 // Watch for changes in the selected altar call to fetch corresponding responses
 watch(
@@ -245,6 +260,7 @@ const handleFormSubmit = async (formData) => {
     );
 
     responses.value.unshift(res.data);
+    responseFormRef.value?.resetForm();
     toast.success("Individual response recorded."); // migrated
     closeDrawer();
   } catch (error) {

@@ -6,7 +6,7 @@
       class="px-6 py-5 border-b border-gray-200 flex items-start justify-between bg-white"
     >
       <div>
-        <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+        <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
           Altar Calls
         </h3>
         <p class="text-xs text-gray-500">
@@ -15,8 +15,8 @@
       </div>
 
       <button
+        class="inline-flex items-center px-4 py-2 text-[11px] text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
         @click="openDrawer"
-        class="inline-flex items-center px-4 py-2 text-[11px] font-bold text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
       >
         <Icon name="heroicons:plus" class="mr-1.5 h-4 w-4" />
         Record
@@ -29,7 +29,7 @@
     >
       <Icon
         name="heroicons:arrow-path"
-        class="h-8 w-8 text-gray-400 animate-spin mb-4"
+        class="h-8 w-8 text-gray-500 animate-spin mb-4"
       />
       <p
         class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
@@ -50,8 +50,8 @@
         Start recording altar call responses for this event.
       </p>
       <button
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains"
         @click="openDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains"
       >
         <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         Record Call
@@ -66,9 +66,14 @@
         <li
           v-for="call in altarCalls"
           :key="call.id"
-          @click="$emit('select-call', call)"
+          role="button"
+          tabindex="0"
+          :aria-label="`View details for ${call.callType} altar call`"
           class="group cursor-pointer px-6 py-5 hover:bg-gray-50/50 transition-colors"
           :class="selectedCall?.id === call.id ? 'bg-gray-50/80' : ''"
+          @click="$emit('select-call', call)"
+          @keydown.enter.self.prevent="$emit('select-call', call)"
+          @keydown.space.self.prevent="$emit('select-call', call)"
         >
           <div>
             <p
@@ -101,9 +106,14 @@
     <SlideOver
       :is-open="isDrawerOpen"
       title="Record Altar Call"
+      :before-close="confirmDiscardDraft"
       @close="closeDrawer"
     >
-      <EventAltarCallForm :loading="isSubmitting" @submit="handleFormSubmit" />
+      <EventAltarCallForm
+        ref="altarCallFormRef"
+        :loading="isSubmitting"
+        @submit="handleFormSubmit"
+      />
     </SlideOver>
   </div>
 </template>
@@ -123,7 +133,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["select-call"]);
+defineEmits(["select-call"]);
 
 const config = useRuntimeConfig();
 const toast = useAppToast();
@@ -132,6 +142,19 @@ const altarCalls = ref([]);
 const isFetching = ref(true);
 const isSubmitting = ref(false);
 const isDrawerOpen = ref(false);
+const altarCallFormRef = ref(null);
+const confirm = useConfirm();
+
+const confirmDiscardDraft = async () => {
+  if (!altarCallFormRef.value?.isDirty?.()) return true;
+  return await confirm.ask({
+    title: "Discard Altar Call?",
+    message: "You have unsaved details in this form. Close and discard them?",
+    confirmText: "Discard",
+    cancelText: "Keep Editing",
+    isDestructive: true,
+  });
+};
 
 const fetchAltarCalls = async () => {
   isFetching.value = true;
@@ -177,6 +200,7 @@ const handleFormSubmit = async (formData) => {
     );
 
     altarCalls.value.unshift(response.data);
+    altarCallFormRef.value?.resetForm();
     toast.success("Altar call recorded successfully!");
     closeDrawer();
   } catch (error) {

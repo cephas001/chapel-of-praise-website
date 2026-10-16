@@ -6,8 +6,9 @@
     >
       <div
         class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+        aria-hidden="true"
         @click="closeAlert"
-      ></div>
+      />
 
       <div
         class="relative w-full max-w-sm overflow-hidden rounded-xl border border-gray-200 bg-white p-6 text-center shadow-2xl transform transition-all animate-fade-in-up"
@@ -70,9 +71,9 @@
         </p>
 
         <button
-          @click="closeAlert"
-          class="w-full inline-flex justify-center rounded-xl border border-transparent px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors font-jetbrains"
+          class="w-full inline-flex justify-center rounded-xl border border-transparent px-4 py-2.5 text-xs md:text-sm text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors font-jetbrains"
           :class="theme.btnClass"
+          @click="closeAlert"
         >
           Okay
         </button>

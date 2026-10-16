@@ -7,7 +7,7 @@
       <div>
         <NuxtLink
           :to="`/events/${eventId}`"
-          class="inline-flex items-center text-[11px] font-jetbrains font-bold text-gray-400 hover:text-black transition-colors mb-3 uppercase tracking-widest"
+          class="inline-flex items-center text-[11px] font-jetbrains font-bold text-gray-500 hover:text-black transition-colors mb-3 uppercase tracking-widest"
         >
           <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" /> Back to
           Event
@@ -20,8 +20,10 @@
       <div class="w-full sm:w-72">
         <div class="relative">
           <select
-            v-model="selectedUnit"
+            :value="selectedUnit"
+            aria-label="Select chapel unit"
             class="w-full bg-white border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm font-semibold appearance-none shadow-sm cursor-pointer"
+            @change="onUnitChange"
           >
             <option value="" disabled>Select Chapel Unit...</option>
             <option v-for="unit in availableUnits" :key="unit" :value="unit">
@@ -31,7 +33,7 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
           </div>
         </div>
       </div>
@@ -39,6 +41,7 @@
 
     <EventAttendanceTable
       v-if="selectedUnit"
+      ref="attendanceRef"
       :event-id="eventId"
       :unit-name="selectedUnit"
     />
@@ -51,7 +54,7 @@
         name="heroicons:cursor-arrow-rays"
         class="mx-auto h-10 w-10 text-gray-300 mb-4"
       />
-      <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+      <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
         Select a Unit
       </h3>
       <p class="text-xs md:text-sm text-gray-500">
@@ -63,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 definePageMeta({
@@ -73,19 +76,29 @@ definePageMeta({
 const route = useRoute();
 const eventId = route.params.id;
 const selectedUnit = ref("");
+const attendanceRef = ref(null);
+const confirm = useConfirm();
 
-const availableUnits = [
-  "Choir",
-  "Editorial",
-  "Ushering",
-  "Protocol",
-  "Media",
-  "Prayer",
-  "Drama",
-  "Bible Study",
-  "Evangelism",
-  "Technical",
-  "Welfare",
-  "Academic",
-];
+const { units: availableUnits, loadUnits } = useChapelUnits();
+
+onMounted(loadUnits);
+
+const onUnitChange = async (event) => {
+  const nextUnit = event.target.value;
+  if (attendanceRef.value?.isDirty) {
+    const ok = await confirm.ask({
+      title: "Unsaved Changes",
+      message:
+        "You have unsaved attendance changes for this roster. Switch units and discard them?",
+      confirmText: "Discard & Switch",
+      cancelText: "Stay",
+      isDestructive: true,
+    });
+    if (!ok) {
+      event.target.value = selectedUnit.value;
+      return;
+    }
+  }
+  selectedUnit.value = nextUnit;
+};
 </script>

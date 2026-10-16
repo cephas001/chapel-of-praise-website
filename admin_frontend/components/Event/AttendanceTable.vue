@@ -6,7 +6,7 @@
     <div v-if="isFetching" class="p-16 text-center">
       <Icon
         name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-400 animate-spin mb-4"
+        class="mx-auto h-10 w-10 text-gray-500 animate-spin mb-4"
       />
       <p
         class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
@@ -20,7 +20,7 @@
         name="heroicons:users"
         class="mx-auto h-12 w-12 text-gray-300 mb-4"
       />
-      <h3 class="text-md font-jetbrains font-bold text-gray-900 mb-1">
+      <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
         No Workers Found
       </h3>
       <p class="text-xs md:text-sm text-gray-500">
@@ -31,6 +31,9 @@
 
     <div v-else class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
       <table class="min-w-full divide-y divide-gray-200">
+        <caption class="sr-only">
+          Attendance roster for members of this event's unit
+        </caption>
         <thead class="bg-gray-50/50">
           <tr>
             <th
@@ -80,7 +83,7 @@
                 {{ member.name }}
               </div>
               <div
-                class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-400"
+                class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-500"
               >
                 {{ member.memberType === "EXECUTIVE" ? "Executive" : "Worker" }}
               </div>
@@ -89,9 +92,9 @@
             <td class="px-6 py-4 whitespace-nowrap text-center">
               <button
                 type="button"
-                @click="toggleOfficiating(member.id)"
                 class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
                 :class="isOfficiating(member.id) ? 'bg-black' : 'bg-gray-200'"
+                @click="toggleOfficiating(member.id)"
               >
                 <span class="sr-only">Toggle Officiating</span>
                 <span
@@ -114,9 +117,9 @@
                     type="radio"
                     :name="`status-${member.id}`"
                     :checked="isPresent(member.id)"
-                    @change="setStatus(member.id, 'present')"
                     class="h-4 w-4 text-black focus:ring-black border-gray-300 cursor-pointer transition-colors"
-                  />
+                    @change="setStatus(member.id, 'present')"
+                  >
                   <span
                     class="ml-2 text-[11px] font-jetbrains font-bold tracking-wide uppercase text-gray-500 group-hover:text-black transition-colors"
                   >
@@ -129,19 +132,19 @@
                     type="radio"
                     :name="`status-${member.id}`"
                     :checked="isPardoned(member.id)"
+                    class="h-4 w-4 text-gray-500 focus:ring-gray-500 border-gray-300 cursor-pointer transition-colors"
                     @change="setStatus(member.id, 'pardoned')"
-                    class="h-4 w-4 text-gray-400 focus:ring-gray-500 border-gray-300 cursor-pointer transition-colors"
-                  />
+                  >
                   <span
                     class="ml-2 text-[11px] font-jetbrains font-bold tracking-wide uppercase text-gray-500 group-hover:text-gray-900 transition-colors"
                   >
-                    Pardoned
+                     Excused
                   </span>
                 </label>
               </div>
               <span
                 v-else
-                class="text-[11px] font-jetbrains font-medium text-gray-400 uppercase tracking-widest"
+                class="text-[11px] font-jetbrains font-medium text-gray-500 uppercase tracking-widest"
               >
                 Not Officiating
               </span>
@@ -182,11 +185,13 @@
     >
       <div class="w-full sm:w-1/2">
         <label
+          for="attendance-additional-comments"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >
           Additional Comments
         </label>
         <textarea
+          id="attendance-additional-comments"
           v-model="additionalComments"
           type="text"
           class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm resize-none"
@@ -195,9 +200,9 @@
         />
       </div>
       <button
-        @click="submitAttendance"
         :disabled="isSubmitting"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains shrink-0 h-[42px]"
+        class="inline-flex items-center justify-center rounded-xl bg-black px-6 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains shrink-0 h-[42px]"
+        @click="submitAttendance"
       >
         <Icon
           v-if="isSubmitting"
@@ -211,9 +216,8 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
-import { useAuthStore } from "~/stores/auth";
 import { useAttendanceLogic } from "~/composables/useAttendanceLogic"; // The composable we just built!
 
 const props = defineProps({
@@ -222,13 +226,13 @@ const props = defineProps({
 });
 
 const config = useRuntimeConfig();
-const authStore = useAuthStore();
 const toast = useAppToast(); // auto-imported
 
 const members = ref([]);
 const isFetching = ref(false);
 const isSubmitting = ref(false);
 const additionalComments = ref("");
+const lastSyncedSnapshot = ref("");
 
 // Destructure our powerful composable
 const {
@@ -246,6 +250,28 @@ const {
 const isOfficiating = (id) => officiatingIds.value.includes(id);
 const isPresent = (id) => presentIds.value.includes(id);
 const isPardoned = (id) => pardonedIds.value.includes(id);
+
+const currentSnapshot = () =>
+  JSON.stringify({
+    officiatingIds: officiatingIds.value,
+    presentIds: presentIds.value,
+    pardonedIds: pardonedIds.value,
+    additionalComments: additionalComments.value,
+  });
+
+const isDirty = computed(
+  () =>
+    lastSyncedSnapshot.value !== "" &&
+    currentSnapshot() !== lastSyncedSnapshot.value,
+);
+
+defineExpose({ isDirty });
+
+// Warn before leaving the page with unsaved roster edits
+useUnsavedChanges(isDirty, {
+  message:
+    "You have unsaved attendance changes for this roster. Leave anyway and discard them?",
+});
 
 const fetchData = async () => {
   if (!props.eventId || !props.unitName) return;
@@ -267,7 +293,8 @@ const fetchData = async () => {
 
     // 3. Load into composable
     loadExistingRecord(attendanceRes);
-  } catch (error) {
+    lastSyncedSnapshot.value = currentSnapshot();
+  } catch {
     toast.error("Could not load the roster."); // migrated
   } finally {
     isFetching.value = false;
@@ -293,8 +320,9 @@ const submitAttendance = async () => {
       body: payload,
     });
 
+    lastSyncedSnapshot.value = currentSnapshot();
     toast.success("Attendance records saved successfully."); // migrated
-  } catch (error) {
+  } catch {
     toast.error("Could not save records."); // migrated
   } finally {
     isSubmitting.value = false;

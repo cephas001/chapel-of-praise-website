@@ -1,14 +1,9 @@
 // middleware/require-auth-and-type.ts
-import {
-  defineNuxtRouteMiddleware,
-  navigateTo,
-  useCookie,
-  useNuxtApp,
-} from "#app";
+import { defineNuxtRouteMiddleware, navigateTo, useCookie } from "#app";
 import { useAuthStore } from "~/stores/auth";
 import { useAppToast } from "~/composables/useAppToast";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   // 1. Token check
   const token = useCookie("admin_token");
   const publicRoutes = ["/auth/login"];
@@ -28,13 +23,25 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return navigateTo("/");
   }
 
-  // 4. Authorization by page meta.allowedUserTypes
+  const authStore = useAuthStore();
+
+  // 4. The admin_token is auto-refreshed by Firebase, while admin_user expires
+  // after 8h. If the token survived but the user cookie expired, rebuild the
+  // session before evaluating permissions.
+  if (token.value && !authStore.user && !publicRoutes.includes(to.path)) {
+    const synced = await authStore.syncUser(token.value);
+
+    if (!synced) {
+      authStore.clearAuth();
+      return navigateTo("/auth/login");
+    }
+  }
+
+  // 5. Authorization by page meta.allowedUserTypes
   // If page doesn't declare allowedUserTypes, treat as unrestricted (change to deny-by-default if desired)
   const rawAllowed = to.meta?.allowedUserTypes ?? null;
   const accessSuperOnly = Boolean(to.meta?.accessToSuperAdminOnly);
 
-  // 5. Get user info from your store
-  const authStore = useAuthStore();
   const userRole = authStore.user?.role;
   const userType = authStore.user?.type;
 

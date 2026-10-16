@@ -1,25 +1,29 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
+  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
     <div>
       <label
+        for="event-date"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Event Date</label
       >
       <input
+        id="event-date"
         v-model="formData.eventDate"
         type="date"
         required
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-      />
+      >
     </div>
 
     <div>
       <label
+        for="event-service"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Service Type</label
       >
       <div class="relative">
         <select
+          id="event-service"
           v-model="formData.service"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -34,7 +38,7 @@
         <div
           class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
         >
-          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-400" />
+          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
         </div>
       </div>
     </div>
@@ -45,11 +49,13 @@
       >
         <div>
           <label
+            for="event-special-program"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Special Program Category</label
           >
           <div class="relative">
             <select
+              id="event-special-program"
               v-model="formData.specialProgram"
               required
               class="w-full bg-white border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
@@ -70,7 +76,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-400"
+                class="h-4 w-4 text-gray-500"
               />
             </div>
           </div>
@@ -78,64 +84,72 @@
 
         <div>
           <label
+            for="event-program-day"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
             >Program Day / Label</label
           >
           <input
+            id="event-program-day"
             v-model="formData.programDay"
             type="text"
             placeholder="e.g. Day 1, Grand Finale"
             class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
-          />
+          >
         </div>
       </div>
     </template>
 
     <div class="grid grid-cols-2 gap-5">
       <div>
-        <label
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-          >Start Time</label
-        >
-        <input
-          v-model="formData.startTime"
+      <label
+        for="event-start-time"
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        >Start Time</label
+      >
+      <input
+        id="event-start-time"
+        v-model="formData.startTime"
           type="time"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm font-jetbrains"
-        />
+        >
       </div>
       <div>
-        <label
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
-          >End Time</label
-        >
-        <input
-          v-model="formData.endTime"
+      <label
+        for="event-end-time"
+        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        >End Time</label
+      >
+      <input
+        id="event-end-time"
+        v-model="formData.endTime"
           type="time"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm font-jetbrains"
-        />
+        >
       </div>
     </div>
 
     <div>
       <label
+        for="event-description"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Event Description</label
       >
       <textarea
+        id="event-description"
         v-model="formData.eventDescription"
         rows="4"
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
         placeholder="Add details, notes, or focus points for this event..."
-      ></textarea>
+      />
     </div>
 
     <div class="pt-6 border-t border-gray-200">
       <button
         type="submit"
         :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"

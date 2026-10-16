@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
@@ -16,8 +16,8 @@
       </div>
 
       <button
+        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
         @click="openCreateDrawer"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
       >
         <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
         New Event
@@ -28,9 +28,78 @@
     <div
       class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
     >
+      <!-- List Controls -->
+      <div
+        class="border-b border-gray-100 p-4 flex flex-col lg:flex-row gap-3 lg:items-center"
+      >
+        <div class="relative flex-1 min-w-0">
+          <label for="events-search" class="sr-only">Search events</label>
+          <Icon
+            name="heroicons:magnifying-glass"
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            id="events-search"
+            v-model="search"
+            type="search"
+            placeholder="Search by service, description or program day..."
+            class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white"
+          >
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+          <div>
+            <label for="events-service-filter" class="sr-only">
+              Filter by service type
+            </label>
+            <select
+              id="events-service-filter"
+              v-model="filters.service"
+              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            >
+              <option value="ALL">All service types</option>
+              <option value="SUNDAY SERVICE">Sunday Service</option>
+              <option value="BIBLE STUDY">Bible Study</option>
+              <option value="PRAYER MEETING">Prayer Meeting</option>
+              <option value="SPECIAL PROGRAM">Special Program</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="events-time-filter" class="sr-only">
+              Filter by time
+            </label>
+            <select
+              id="events-time-filter"
+              v-model="filters.time"
+              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            >
+              <option value="all">All time</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="past">Past</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="events-sort" class="sr-only">Sort events</label>
+            <select
+              id="events-sort"
+              v-model="sortOption"
+              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            >
+              <option value="date:desc">Newest first</option>
+              <option value="date:asc">Oldest first</option>
+              <option value="name:asc">Name A–Z</option>
+              <option value="name:desc">Name Z–A</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- Data Table -->
       <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
         <table class="min-w-full divide-y divide-gray-200">
+          <caption class="sr-only">All events</caption>
           <thead class="bg-gray-50/50">
             <tr>
               <th
@@ -62,13 +131,13 @@
 
           <tbody class="bg-white divide-y divide-gray-100">
             <tr
-              v-for="event in events"
+              v-for="event in paged"
               :key="event.id"
-              class="group cursor-pointer px-6 py-5 hover:bg-gray-50 transition-colors"
+              class="group hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <div class="text-xs md:text-sm font-bold text-gray-900">
+                  <div class="text-xs md:text-sm text-black font-bold">
                     {{
                       event.service === "SPECIAL PROGRAM"
                         ? event.specialProgram
@@ -100,7 +169,7 @@
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-xs md:text-sm font-bold text-gray-900">
+                <div class="text-xs md:text-sm text-black">
                   {{ formatDate(event.eventDate) }}
                 </div>
                 <div
@@ -115,23 +184,26 @@
               >
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    @click="navigateTo(`/events/${event.id}`)"
-                    class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
                     title="Open Event"
+                    aria-label="Open event"
+                    @click="navigateTo(`/events/${event.id}`)"
                   >
                     <Icon name="heroicons:eye" class="h-4 w-4" />
                   </button>
                   <button
-                    @click="openEditDrawer(event)"
-                    class="text-gray-400 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
                     title="Edit Event"
+                    aria-label="Edit event"
+                    @click="openEditDrawer(event)"
                   >
                     <Icon name="heroicons:pencil-square" class="h-4 w-4" />
                   </button>
                   <button
-                    @click="handleDeleteEvent(event.id)"
-                    class="text-gray-400 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                    class="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
                     title="Delete Event"
+                    aria-label="Delete event"
+                    @click="handleDeleteEvent(event.id)"
                   >
                     <Icon name="heroicons:trash" class="h-4 w-4" />
                   </button>
@@ -140,6 +212,60 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- No matches -->
+        <div
+          v-if="!isFetching && events.length > 0 && filtered.length === 0"
+          class="py-16 text-center border-t border-gray-100"
+        >
+          <Icon
+            name="heroicons:magnifying-glass"
+            class="mx-auto h-10 w-10 text-gray-300 mb-4"
+          />
+          <h3 class="text-sm font-bold text-black mb-1 font-jetbrains">
+            No events match your filters
+          </h3>
+          <button
+            class="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+            @click="reset"
+          >
+            Clear filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        v-if="totalPages > 1"
+        class="flex items-center justify-between gap-4 border-t border-gray-100 px-6 py-4"
+      >
+        <p class="text-[11px] font-jetbrains text-gray-500">
+          Showing {{ (page - 1) * pageSize + 1 }}–{{
+            Math.min(page * pageSize, total)
+          }}
+          of {{ total }}
+        </p>
+        <div class="flex items-center gap-2">
+          <button
+            :disabled="page === 1"
+            aria-label="Previous page"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            @click="prevPage"
+          >
+            <Icon name="heroicons:chevron-left" class="h-4 w-4" />
+          </button>
+          <span class="text-[11px] font-jetbrains text-gray-600 font-bold">
+            Page {{ page }} / {{ totalPages }}
+          </span>
+          <button
+            :disabled="page === totalPages"
+            aria-label="Next page"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            @click="nextPage"
+          >
+            <Icon name="heroicons:chevron-right" class="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <!-- Empty State -->
@@ -171,7 +297,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useConfirm } from "~/composables/useConfirm";
 
@@ -187,6 +313,66 @@ const events = ref([]);
 const isFetching = ref(true);
 const isSubmitting = ref(false);
 
+const eventLabel = (event) =>
+  event.service === "SPECIAL PROGRAM"
+    ? event.specialProgram || event.service
+    : event.service;
+
+const startOfToday = () => {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
+};
+
+const {
+  search,
+  filters,
+  sortKey,
+  sortDirection,
+  page,
+  pageSize,
+  filtered,
+  paged,
+  total,
+  totalPages,
+  nextPage,
+  prevPage,
+  reset,
+} = useListControls(events, {
+  searchFields: ["service", "specialProgram", "eventDescription", "programDay"],
+  defaultFilters: { service: "ALL", time: "all" },
+  filter: (event, activeFilters) => {
+    if (
+      activeFilters.service !== "ALL" &&
+      event.service !== activeFilters.service
+    ) {
+      return false;
+    }
+    if (activeFilters.time !== "all") {
+      const isUpcoming = new Date(event.eventDate || 0) >= startOfToday();
+      if (activeFilters.time === "upcoming" && !isUpcoming) return false;
+      if (activeFilters.time === "past" && isUpcoming) return false;
+    }
+    return true;
+  },
+  sorters: {
+    date: (a, b) => new Date(a.eventDate || 0) - new Date(b.eventDate || 0),
+    name: (a, b) => String(eventLabel(a)).localeCompare(String(eventLabel(b))),
+  },
+  defaultSort: "date",
+  defaultDirection: "desc",
+  pageSize: 10,
+});
+
+const sortOption = computed({
+  get: () => `${sortKey.value}:${sortDirection.value}`,
+  set: (value) => {
+    const [key, direction] = value.split(":");
+    sortKey.value = key;
+    sortDirection.value = direction;
+  },
+});
+
 const isDrawerOpen = ref(false);
 const selectedEvent = ref(null);
 
@@ -197,7 +383,7 @@ const fetchEvents = async () => {
     const response = await $fetch(`${config.public.apiBase}/admin/events`);
     events.value = response;
   } catch (error) {
-    console.log("Error fetching events:", error);
+    console.error("Error fetching events:", error);
     toast.error("Could not fetch events. Please try again.");
   } finally {
     isFetching.value = false;

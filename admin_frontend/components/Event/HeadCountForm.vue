@@ -1,58 +1,66 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-6 pt-2 font-poppins">
+  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label
+          for="headcount-male-students"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Male Students</label
         >
         <input
+          id="headcount-male-students"
           v-model.number="formData.maleStudents"
           type="number"
           min="0"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-        />
+        >
       </div>
       <div>
         <label
+          for="headcount-female-students"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Female Students</label
         >
         <input
+          id="headcount-female-students"
           v-model.number="formData.femaleStudents"
           type="number"
           min="0"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-        />
+        >
       </div>
 
       <div>
         <label
+          for="headcount-male-visitors"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Male Visitors</label
         >
         <input
+          id="headcount-male-visitors"
           v-model.number="formData.maleVisitors"
           type="number"
           min="0"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-        />
+        >
       </div>
       <div>
         <label
+          for="headcount-female-visitors"
           class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >Female Visitors</label
         >
         <input
+          id="headcount-female-visitors"
           v-model.number="formData.femaleVisitors"
           type="number"
           min="0"
           required
           class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-        />
+        >
       </div>
     </div>
 
@@ -70,22 +78,24 @@
 
     <div>
       <label
+        for="headcount-additional-comments"
         class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
         >Additional Comments</label
       >
       <textarea
+        id="headcount-additional-comments"
         v-model="formData.additionalComments"
         rows="3"
         class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
         placeholder="Any notes about the attendance..."
-      ></textarea>
+      />
     </div>
 
     <div class="pt-6 border-t border-gray-200">
       <button
         type="submit"
         :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm font-bold text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
       >
         <Icon
           v-if="loading"

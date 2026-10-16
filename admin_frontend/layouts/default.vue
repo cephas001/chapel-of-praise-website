@@ -4,27 +4,30 @@
   >
     <div
       v-if="isSidebarOpen"
-      @click="isSidebarOpen = false"
       class="fixed inset-0 z-70 bg-black/40 backdrop-blur-sm transition-opacity md:hidden"
-    ></div>
+      aria-hidden="true"
+      @click="isSidebarOpen = false"
+    />
 
     <header
       class="md:hidden flex justify-between items-center px-4 w-full bg-white border-b border-gray-200 absolute top-0 h-14 z-60"
     >
       <div class="flex items-center justify-between w-full gap-3">
         <button
-          @click="isSidebarOpen = true"
+          aria-label="Open navigation menu"
           class="p-2 text-black hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center"
+          @click="isSidebarOpen = true"
         >
           <Icon name="heroicons:bars-3" class="h-5 w-5" />
         </button>
         <div class="pr-2">
-          <img
-            src="@/assets/images/Chapel Of Praise Logo.png"
-            alt="Logo"
-            class="w-15 md:hidden rounded-md invert"
-            @click="navigateTo('/dashboard')"
-          />
+          <NuxtLink to="/dashboard" aria-label="Go to dashboard">
+            <img
+              src="@/assets/images/Chapel Of Praise Logo.png"
+              alt="Chapel of Praise logo"
+              class="w-15 md:hidden rounded-md invert"
+            >
+          </NuxtLink>
         </div>
       </div>
     </header>
@@ -37,45 +40,43 @@
       style="will-change: transform"
     >
       <button
-        @click="isSidebarOpen = false"
+        aria-label="Close navigation menu"
         class="md:hidden absolute top-4 right-4 pr-2 py-2 text-gray-800 transition-colors flex items-center justify-end w-full pl-10"
+        @click="isSidebarOpen = false"
       >
         <Icon name="heroicons:x-mark" class="h-6 w-6" />
       </button>
 
       <div class="flex-1 overflow-y-auto overflow-x-hidden px-4 sidebar-scroll">
-        <div class="space-y-6 pb-8 pt-12 pl-2">
+        <div class="space-y-6 pb-8 pt-8 pl-2">
           <div>
             <AppNavTabLabel v-model="showHelpMenu" label="Dashboard & Help" />
             <ul v-show="showHelpMenu" class="space-y-1 mt-2">
               <AppNavLink
                 text="Dashboard"
-                iconName="heroicons:home"
+                icon-name="heroicons:home"
                 url="/dashboard"
                 @click="closeOnMobile"
                 @open-tab="showHelpMenu = true"
               />
               <AppNavLink
+                v-if="canManageOperations"
                 text="Quick Links"
-                iconName="heroicons:link"
+                icon-name="heroicons:link"
                 url="/dashboard/quick-links"
                 @click="closeOnMobile"
                 @open-tab="showHelpMenu = true"
-                v-if="
-                  auth?.user?.type == 'executive' ||
-                  auth?.user?.role == 'super_admin'
-                "
               />
               <AppNavLink
                 text="Help & Support"
-                iconName="heroicons:question-mark-circle"
+                icon-name="heroicons:question-mark-circle"
                 url="/dashboard/help"
                 @click="closeOnMobile"
                 @open-tab="showHelpMenu = true"
               />
               <AppNavLink
                 text="Your Profile"
-                iconName="heroicons:user-circle"
+                icon-name="heroicons:user-circle"
                 url="/dashboard/profile"
                 @click="closeOnMobile"
                 @open-tab="showHelpMenu = true"
@@ -83,11 +84,7 @@
             </ul>
           </div>
 
-          <div
-            v-if="
-              auth?.user?.type == 'website' || auth?.user?.role == 'super_admin'
-            "
-          >
+          <div v-if="canManageWebsite">
             <AppNavTabLabel
               v-model="showWebManagement"
               label="Website Management"
@@ -95,76 +92,78 @@
             <ul v-show="showWebManagement" class="space-y-1 mt-2">
               <AppNavLink
                 text="Homepage"
-                iconName="heroicons:home"
+                icon-name="heroicons:home"
                 url="/website/homepage"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="About Page"
-                iconName="heroicons:book-open"
+                icon-name="heroicons:book-open"
                 url="/website/about"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Leadership Page"
-                iconName="heroicons:users"
+                icon-name="heroicons:users"
                 url="/website/leadership"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Ministries Page"
-                iconName="heroicons:building-office"
+                icon-name="heroicons:building-office"
                 url="/website/ministries"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Giving Page"
-                iconName="heroicons:hand-raised"
+                icon-name="heroicons:hand-raised"
                 url="/website/giving"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Contact Page"
-                iconName="heroicons:envelope"
+                icon-name="heroicons:envelope"
                 url="/website/contact"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Prayer Page"
-                iconName="heroicons:sun"
+                icon-name="heroicons:sun"
                 url="/website/prayer"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Counseling Page"
-                iconName="heroicons:chat-bubble-left-ellipsis"
+                icon-name="heroicons:chat-bubble-left-ellipsis"
                 url="/website/counseling"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
               <AppNavLink
                 text="Events Page"
-                iconName="heroicons:calendar"
+                icon-name="heroicons:calendar"
                 url="/website/events-calendar"
+                @click="closeOnMobile"
+                @open-tab="showWebManagement = true"
+              />
+              <AppNavLink
+                text="Upload Web Images"
+                icon-name="heroicons:photo"
+                url="/website/upload-image"
                 @click="closeOnMobile"
                 @open-tab="showWebManagement = true"
               />
             </ul>
           </div>
 
-          <div
-            v-if="
-              auth?.user?.type == 'executive' ||
-              auth?.user?.role == 'super_admin'
-            "
-          >
+          <div v-if="canManageOperations">
             <AppNavTabLabel
               v-model="showEventOversight"
               label="Event Oversight"
@@ -172,28 +171,28 @@
             <ul v-show="showEventOversight" class="space-y-1 mt-2">
               <AppNavLink
                 text="Events"
-                iconName="heroicons:calendar"
+                icon-name="heroicons:calendar"
                 url="/events"
                 @click="closeOnMobile"
                 @open-tab="showEventOversight = true"
               />
               <AppNavLink
                 text="Unit Attendance"
-                iconName="heroicons:clipboard-document-check"
+                icon-name="heroicons:clipboard-document-check"
                 url="/event-attendance"
                 @click="closeOnMobile"
                 @open-tab="showEventOversight = true"
               />
               <AppNavLink
                 text="Head Count"
-                iconName="heroicons:users"
+                icon-name="heroicons:users"
                 url="/headcounts"
                 @click="closeOnMobile"
                 @open-tab="showEventOversight = true"
               />
               <AppNavLink
                 text="Altar Calls"
-                iconName="heroicons:megaphone"
+                icon-name="heroicons:megaphone"
                 url="/altar-calls"
                 @click="closeOnMobile"
                 @open-tab="showEventOversight = true"
@@ -201,12 +200,7 @@
             </ul>
           </div>
 
-          <div
-            v-if="
-              auth?.user?.type == 'executive' ||
-              auth?.user?.role == 'super_admin'
-            "
-          >
+          <div v-if="canManageOperations">
             <AppNavTabLabel
               v-model="showUnitManagement"
               label="Unit Management"
@@ -214,38 +208,35 @@
             <ul v-show="showUnitManagement" class="space-y-1 mt-2">
               <AppNavLink
                 text="Unit Members"
-                iconName="heroicons:users"
+                icon-name="heroicons:users"
                 url="/members"
                 @click="closeOnMobile"
                 @open-tab="showUnitManagement = true"
               />
               <AppNavLink
                 text="Meeting Attendance"
-                iconName="heroicons:clipboard-document-check"
+                icon-name="heroicons:clipboard-document-check"
                 url="/unit-meetings"
                 @click="closeOnMobile"
                 @open-tab="showUnitManagement = true"
               />
-              <!-- <AppNavLink
+              <AppNavLink
+                v-if="isSuperAdmin"
                 text="Executives"
-                iconName="heroicons:user-group"
+                icon-name="heroicons:user-group"
                 url="/executives"
                 @click="closeOnMobile"
-              /> -->
+                @open-tab="showUnitManagement = true"
+              />
             </ul>
           </div>
 
-          <div
-            v-if="
-              auth?.user?.type == 'executive' ||
-              auth?.user?.role == 'super_admin'
-            "
-          >
+          <div v-if="canManageOperations">
             <AppNavTabLabel v-model="showEvangelism" label="Evangelism" />
             <ul v-show="showEvangelism" class="space-y-1 mt-2">
               <AppNavLink
                 text="Follow-up Records"
-                iconName="heroicons:megaphone"
+                icon-name="heroicons:megaphone"
                 url="/follow-ups"
                 @click="closeOnMobile"
                 @open-tab="showEvangelism = true"
@@ -253,27 +244,22 @@
             </ul>
           </div>
 
-          <div
-            v-if="
-              auth?.user?.type == 'executive' ||
-              auth?.user?.role == 'super_admin'
-            "
-          >
+          <div v-if="canManageOperations">
             <AppNavTabLabel
               v-model="showDataSummaries"
-              label="Data Inference"
+              label="Analytics"
             />
             <ul v-show="showDataSummaries" class="space-y-1 mt-2">
               <AppNavLink
                 text="Data Visualization"
-                iconName="heroicons:chart-bar"
+                icon-name="heroicons:chart-bar"
                 url="/analytics/visuals"
                 @click="closeOnMobile"
                 @open-tab="showDataSummaries = true"
               />
               <AppNavLink
                 text="Data Summaries"
-                iconName="heroicons:presentation-chart-bar"
+                icon-name="heroicons:presentation-chart-bar"
                 url="/analytics/summaries"
                 @click="closeOnMobile"
                 @open-tab="showDataSummaries = true"
@@ -281,7 +267,7 @@
             </ul>
           </div>
 
-          <div v-if="auth.user?.role === 'super_admin'">
+          <div v-if="isSuperAdmin">
             <AppNavTabLabel
               v-model="showUserManagement"
               label="User Management"
@@ -289,14 +275,14 @@
             <ul v-show="showUserManagement" class="space-y-1 mt-2">
               <AppNavLink
                 text="Register New User"
-                iconName="heroicons:user-plus"
+                icon-name="heroicons:user-plus"
                 url="/auth/register"
                 @click="closeOnMobile"
                 @open-tab="showUserManagement = true"
               />
               <AppNavLink
                 text="Manage Users"
-                iconName="heroicons:user-circle"
+                icon-name="heroicons:user-circle"
                 url="/users"
                 @click="closeOnMobile"
                 @open-tab="showUserManagement = true"
@@ -314,8 +300,9 @@
         </p>
 
         <button
+          aria-label="Log out"
+          class="transition-colors duration-200 font-jetbrains text-sm text-black flex items-center"
           @click="handleLogout"
-          class="transition-colors duration-200 font-montserrat text-sm font-bold text-black flex items-center"
         >
           <Icon
             name="heroicons:arrow-right-on-rectangle"
@@ -334,11 +321,28 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useAuthStore } from "~/stores/auth";
 // Assuming you have components like AppNavLink and AppNavTabLabel registered globally or imported here
 
 const auth = useAuthStore();
+
+const isSuperAdmin = computed(() => auth.user?.role === "super_admin");
+
+// Mirrors middleware/auth.global.js: super_admin bypasses everything and the
+// "all" type has full access, otherwise the exact type grants its section.
+const canManageOperations = computed(
+  () =>
+    isSuperAdmin.value ||
+    auth.user?.type === "all" ||
+    auth.user?.type === "executive",
+);
+const canManageWebsite = computed(
+  () =>
+    isSuperAdmin.value ||
+    auth.user?.type === "all" ||
+    auth.user?.type === "website",
+);
 
 // Accordion states
 const showEventOversight = ref(false);
@@ -356,8 +360,6 @@ const closeOnMobile = () => {
     isSidebarOpen.value = false;
   }
 };
-
-console.log(auth.user);
 
 function handleLogout() {
   auth.logout();

@@ -32,13 +32,13 @@
             <button
               v-for="tab in tabs"
               :key="tab.id"
-              @click="activeTab = tab.id"
               :class="[
                 'text-left px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium transition-colors font-jetbrains',
                 activeTab === tab.id
                   ? 'bg-black text-white'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-black',
               ]"
+              @click="activeTab = tab.id"
             >
               {{ tab.label }}
             </button>
@@ -64,7 +64,7 @@
                 class="h-4 w-4 text-gray-700"
               />
             </div>
-            <h2 class="text-sm md:text-md font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
               System Architecture
             </h2>
           </div>
@@ -122,7 +122,7 @@
                 class="h-4 w-4 text-gray-700"
               />
             </div>
-            <h2 class="text-sm md:text-md font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
               Roles & Permissions
             </h2>
           </div>
@@ -148,8 +148,7 @@
                   </li>
                   <li>
                     <strong>Super Admin:</strong> Bypasses all restrictions,
-                    accesses all pages, and manages users and executives[cite:
-                    1].
+                    accesses all pages, and manages users and executives.
                   </li>
                 </ul>
               </div>
@@ -196,7 +195,7 @@
                 class="h-4 w-4 text-gray-700"
               />
             </div>
-            <h2 class="text-sm md:text-md font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
               Core Workflows
             </h2>
           </div>
@@ -278,7 +277,7 @@
                     </h4>
                     <p class="text-xs">
                       Select an event and unit to mark officiating workers as
-                      Present or Pardoned.
+                      Present or Excused.
                     </p>
                   </div>
                 </div>
@@ -323,7 +322,7 @@
                 </li>
                 <li>
                   Click "Save Changes" on individual sections or use the sticky
-                  "Save All Changes" button at the bottom of the page.
+                  "Save Changes" button at the bottom of the page.
                 </li>
               </ul>
             </div>
@@ -335,16 +334,21 @@
               </h3>
               <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
                 <li>
-                  This specific module is used strictly for unit meetings
-                  (distinct from events).
+                  This module is used strictly for unit meetings (distinct from
+                  events).
                 </li>
                 <li>
-                  Attendance data for these meetings is saved locally to your
-                  browser's localStorage.
+                  Attendance records are <strong>synced to the backend</strong>
+                  via the API.
                 </li>
                 <li>
-                  Because it is local, it does not sync to the backend, and
-                  clearing browser data will result in data loss.
+                  After the first manual save, changes are saved automatically
+                  after 1.2 seconds of inactivity. You can also use the "Save
+                  Changes" button at any time.
+                </li>
+                <li>
+                  A sync indicator shows the current save state
+                  (<em>Saved</em>, <em>Unsaved</em>, <em>Saving...</em>).
                 </li>
               </ul>
             </div>
@@ -367,7 +371,7 @@
                 class="h-4 w-4 text-gray-700"
               />
             </div>
-            <h2 class="text-sm md:text-md font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
               Troubleshooting & Edge Cases
             </h2>
           </div>
@@ -400,6 +404,9 @@
               </h4>
               <div class="border border-gray-200 rounded-xl overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
+                  <caption class="sr-only">
+                    Common error messages and their solutions
+                  </caption>
                   <thead class="bg-gray-50">
                     <tr>
                       <th
@@ -463,9 +470,104 @@
               </h4>
               <p class="text-xs md:text-sm">
                 If an officiating worker is not manually marked as Present or
-                Pardoned, the system automatically computes and flags them as
+                Excused, the system automatically computes and flags them as
                 Absent.
               </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: PWA Installation -->
+        <div
+          v-show="activeTab === 'pwa'"
+          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+        >
+          <div
+            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+          >
+            <div
+              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+            >
+              <Icon
+                name="heroicons:device-phone-mobile"
+                class="h-4 w-4 text-gray-700"
+              />
+            </div>
+            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+              Installing the PWA App
+            </h2>
+          </div>
+
+          <div class="space-y-6 text-xs md:text-sm text-black leading-relaxed">
+            <p>
+              The Chapel of Praise system can be installed as a Progressive Web
+              App (PWA) on your device, giving you quick access directly from
+              your home screen — just like a native app. Below are the steps for
+              Android and iPhone.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Android -->
+              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+                <h4
+                  class="font-jetbrains font-bold text-black mb-3 flex items-center gap-2"
+                >
+                  <Icon
+                    name="simple-icons:android"
+                    class="h-4 w-4 text-green-600"
+                  />
+                  Android (Chrome)
+                </h4>
+                <ol class="list-decimal pl-5 space-y-2">
+                  <li>
+                    Open <strong>Chrome</strong> and navigate to the Chapel of
+                    Praise site.
+                  </li>
+                  <li>
+                    Tap the <strong>three-dot menu</strong> (⋮) in the top-right
+                    corner.
+                  </li>
+                  <li>Tap <strong>"Add to Home screen"</strong>.</li>
+                  <li>
+                    Tap <strong>"Add"</strong> on the confirmation dialog.
+                  </li>
+                </ol>
+                <p class="mt-3 text-xs text-gray-500">
+                  You may also see an install banner at the bottom of the screen
+                  — tap <strong>"Install"</strong> to skip the menu steps.
+                </p>
+              </div>
+
+              <!-- iPhone -->
+              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+                <h4
+                  class="font-jetbrains font-bold text-black mb-3 flex items-center gap-2"
+                >
+                  <Icon
+                    name="simple-icons:apple"
+                    class="h-4 w-4 text-gray-700"
+                  />
+                  iPhone (Safari)
+                </h4>
+                <ol class="list-decimal pl-5 space-y-2">
+                  <li>
+                    Open <strong>Safari</strong> and navigate to the Chapel of
+                    Praise site.
+                  </li>
+                  <li>
+                    Tap the <strong>Share button</strong> (square with arrow) at
+                    the bottom of the screen.
+                  </li>
+                  <li>
+                    Scroll down and tap
+                    <strong>"Add to Home Screen"</strong>.
+                  </li>
+                  <li>
+                    Customise the name if desired, then tap
+                    <strong>"Add"</strong> in the top-right corner.
+                  </li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
@@ -484,6 +586,7 @@ const tabs = [
   { id: "permissions", label: "Roles & Access" },
   { id: "workflows", label: "Core Workflows" },
   { id: "troubleshooting", label: "Troubleshooting" },
+  { id: "pwa", label: "App Installation" },
 ];
 </script>
 

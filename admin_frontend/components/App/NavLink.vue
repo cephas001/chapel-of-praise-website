@@ -1,13 +1,13 @@
 <template>
   <NuxtLink
     :to="url"
-    @click="emit('click')"
     :class="[
       'flex items-center px-2 py-2 text-xs md:text-sm font-jetbrains transition-colors duration-200 border-l-[3px] group tracking-wide',
       checkActiveRoute(url)
         ? 'border-black text-black tracking-wider'
         : 'border-transparent text-black  hover:bg-gray-50 hover:border-gray-200',
     ]"
+    @click="emit('click')"
   >
     <Icon
       :name="iconName"
@@ -24,7 +24,7 @@
 import { useRoute } from "vue-router";
 const route = useRoute();
 
-const props = defineProps({
+defineProps({
   text: {
     type: String,
     required: true,

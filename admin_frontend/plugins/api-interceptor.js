@@ -1,9 +1,17 @@
 // plugins/api-interceptor.js
 import { defineNuxtPlugin, useCookie } from "#app";
+import { useAuthStore } from "~/stores/auth";
 
-export default defineNuxtPlugin((nuxtApp) => {
+// Shared guard so a burst of parallel 401s triggers a single logout cycle.
+let isHandlingExpiredSession = false;
+
+export default defineNuxtPlugin(() => {
+  // Captured while the plugin runs inside the Nuxt context so the
+  // async response handler below can safely trigger the modal.
+  const errorModal = useErrorModal();
+
   const customFetch = $fetch.create({
-    onRequest({ request, options }) {
+    onRequest({ options }) {
       // Safely grab the token (Works in Vue components)
       const token = useCookie("admin_token").value;
 
@@ -18,21 +26,35 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     },
 
-    onResponseError({ response }) {
+    async onResponseError({ response }) {
       const status = response.status;
       const data = response._data;
 
-      if (status === 403 || status === 401) {
-        const toast = useAppToast();
+      // Tag the response so local catch blocks know to ignore it!
+      response._handledGlobally = true;
 
+      if (status === 401) {
+        if (isHandlingExpiredSession) return;
+        isHandlingExpiredSession = true;
+
+        try {
+          const backendMessage =
+            data?.error || "Your session has expired. Please log in again.";
+          useAppToast().error(`Session Expired: ${backendMessage}`);
+
+          const authStore = useAuthStore();
+          await authStore.logout();
+        } finally {
+          isHandlingExpiredSession = false;
+        }
+
+        return;
+      }
+
+      if (status === 403) {
         const backendMessage =
           data?.error || "You do not have the required permissions.";
-        toast.error(
-          `${status === 401 ? "Session Expired:" : "Access Denied:"} ${backendMessage}`,
-        );
-
-        // NEW: Tag the response so local catch blocks know to ignore it!
-        response._handledGlobally = true;
+        errorModal.showError(backendMessage, "Access Denied");
       }
     },
   });

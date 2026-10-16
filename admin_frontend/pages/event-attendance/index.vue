@@ -1,6 +1,6 @@
 <!-- pages/event-attendance/index.vue -->
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <div
@@ -22,14 +22,17 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div>
           <label
+            for="attendance-event"
             class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
           >
             1. Select Event
           </label>
           <div class="relative">
             <select
-              v-model="selectedEventId"
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+              id="attendance-event"
+              :value="selectedEventId"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer font-jetbrains"
+              @change="onEventChange"
             >
               <option value="" disabled>Choose Event...</option>
               <option v-for="event in events" :key="event.id" :value="event.id">
@@ -41,7 +44,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-400"
+                class="h-4 w-4 text-gray-500"
               />
             </div>
           </div>
@@ -49,15 +52,18 @@
 
         <div>
           <label
+            for="attendance-unit"
             class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
           >
             2. Select Unit
           </label>
           <div class="relative">
             <select
-              v-model="selectedUnit"
+              id="attendance-unit"
+              :value="selectedUnit"
               :disabled="!selectedEventId"
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed cursor-pointer"
+              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
+              @change="onUnitChange"
             >
               <option value="" disabled>Choose Unit...</option>
               <option v-for="unit in availableUnits" :key="unit" :value="unit">
@@ -69,7 +75,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-400"
+                class="h-4 w-4 text-gray-500"
               />
             </div>
           </div>
@@ -79,6 +85,7 @@
       <div class="border-t border-gray-100 -mx-6 pt-4 px-2">
         <EventAttendanceTable
           v-if="selectedEventId && selectedUnit"
+          ref="attendanceRef"
           :event-id="selectedEventId"
           :unit-name="selectedUnit"
         />
@@ -119,24 +126,51 @@ const events = ref([]);
 const selectedEventId = ref("");
 const selectedUnit = ref("");
 const isFetching = ref(true);
+const attendanceRef = ref(null);
+const confirm = useConfirm();
 
-const availableUnits = [
-  "Choir",
-  "Editorial",
-  "Ushering",
-  "Protocol",
-  "Media",
-  "Prayer",
-  "Drama",
-  "Bible Study",
-  "Evangelism",
-  "Technical",
-  "Welfare",
-  "Academic",
-];
+const { units: availableUnits, loadUnits } = useChapelUnits();
+
+const confirmDiscardRoster = async (question) => {
+  if (!attendanceRef.value?.isDirty) return true;
+  return await confirm.ask({
+    title: "Unsaved Changes",
+    message: question,
+    confirmText: "Discard & Switch",
+    cancelText: "Stay",
+    isDestructive: true,
+  });
+};
+
+const onEventChange = async (event) => {
+  const nextEventId = event.target.value;
+  const ok = await confirmDiscardRoster(
+    "You have unsaved attendance changes for this roster. Switch events and discard them?",
+  );
+  if (!ok) {
+    event.target.value = selectedEventId.value;
+    return;
+  }
+  selectedEventId.value = nextEventId;
+  selectedUnit.value = "";
+};
+
+const onUnitChange = async (event) => {
+  const nextUnit = event.target.value;
+  const ok = await confirmDiscardRoster(
+    "You have unsaved attendance changes for this roster. Switch units and discard them?",
+  );
+  if (!ok) {
+    event.target.value = selectedUnit.value;
+    return;
+  }
+  selectedUnit.value = nextUnit;
+};
 
 // Fetch events to populate the dropdown
 onMounted(async () => {
+  loadUnits();
+
   try {
     const res = await $fetch(`${config.public.apiBase}/admin/events`, {
       headers: { Authorization: `Bearer ${authStore.token}` },

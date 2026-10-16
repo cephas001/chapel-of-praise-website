@@ -1,5 +1,5 @@
 <template>
-  <LoadingScreen :isLoading="isFetching" />
+  <LoadingScreen :is-loading="isFetching" />
 
   <div class="relative min-h-screen pb-32 pt-5 font-poppins">
     <!-- Page Header -->
@@ -18,8 +18,8 @@
 
       <div class="flex items-center gap-3">
         <button
-          @click="openEditDrawer"
           class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+          @click="openEditDrawer"
         >
           <Icon name="heroicons:pencil-square" class="mr-2 h-4 w-4" />
           Edit Profile
@@ -52,7 +52,7 @@
 
           <!-- Avatar -->
           <div
-            class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 mb-4 shadow-inner mt-6"
+            class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 mb-4 shadow-inner mt-6"
           >
             <span class="text-2xl font-black font-jetbrains text-black p-3">
               {{ getInitials(currentUser.name) }}
@@ -60,7 +60,7 @@
           </div>
 
           <!-- User Details -->
-          <h3 class="text-md md:text-lg font-bold text-gray-900 mb-2">
+          <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">
             {{ currentUser.name }}
           </h3>
           <p
@@ -112,11 +112,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <!-- User ID (Masked/Read-Only) -->
               <div>
-                <label
+                <span
                   class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
                 >
                   Account ID (UID)
-                </label>
+                </span>
                 <div
                   class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5"
                 >
@@ -126,9 +126,10 @@
                     {{ maskUID(currentUser.uid) }}
                   </span>
                   <button
-                    @click="copyToClipboard(currentUser.uid)"
-                    class="text-gray-400 hover:text-black transition-colors"
+                    class="text-gray-500 hover:text-black transition-colors"
                     title="Copy UID"
+                    aria-label="Copy account ID"
+                    @click="copyToClipboard(currentUser.uid)"
                   >
                     <Icon name="heroicons:clipboard-document" class="h-4 w-4" />
                   </button>
@@ -137,11 +138,11 @@
 
               <!-- Sign In Provider -->
               <div>
-                <label
+                <span
                   class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
                 >
                   Sign-In Provider
-                </label>
+                </span>
                 <div
                   class="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5"
                 >
@@ -159,11 +160,11 @@
 
               <!-- Last Authenticated -->
               <div>
-                <label
+                <span
                   class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
                 >
                   Last Authenticated
-                </label>
+                </span>
                 <p class="text-xs md:text-sm font-jetbrains text-gray-900 mt-1">
                   {{ formatUnixTime(currentUser.auth_time) }}
                 </p>
@@ -171,11 +172,11 @@
 
               <!-- Session Expiry -->
               <div>
-                <label
+                <span
                   class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
                 >
                   Session Expiry
-                </label>
+                </span>
                 <p class="text-xs md:text-sm font-jetbrains text-gray-900 mt-1">
                   {{ formatUnixTime(currentUser.exp) }}
                 </p>
@@ -198,8 +199,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <!-- Password Reset -->
               <button
-                @click="initiatePasswordReset"
                 class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
+                @click="initiatePasswordReset"
               >
                 <div
                   class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-black group-hover:text-white transition-colors text-gray-600"
@@ -218,9 +219,9 @@
 
               <!-- Verifiy Email -->
               <button
-                @click="initiateEmailVerification"
-                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
                 v-if="!currentUser.email_verified"
+                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
+                @click="initiateEmailVerification"
               >
                 <div
                   class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-black group-hover:text-white transition-colors text-gray-600"
@@ -250,37 +251,41 @@
       @close="closeEditDrawer"
     >
       <form
-        @submit.prevent="submitProfileUpdate"
         class="p-1 font-poppins space-y-6"
+        @submit.prevent="submitProfileUpdate"
       >
         <div>
           <label
+            for="profile-name"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Full Name
           </label>
           <input
+            id="profile-name"
             v-model="editFormData.name"
             type="text"
             required
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
-          />
+          >
         </div>
 
         <div>
           <label
+            for="profile-email"
             class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
           >
             Email Address
           </label>
           <input
+            id="profile-email"
             v-model="editFormData.email"
             type="email"
             required
             disabled
             class="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2.5 text-gray-500 cursor-not-allowed outline-none text-xs md:text-sm"
-          />
-          <p class="text-[10px] text-gray-400 mt-1.5 font-jetbrains">
+          >
+          <p class="text-[10px] text-gray-500 mt-1.5 font-jetbrains">
             Email cannot be changed directly. Contact support for assistance.
           </p>
         </div>
@@ -305,24 +310,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRuntimeConfig } from "#app";
+import { ref, onMounted } from "vue";
+import { useRuntimeConfig, useNuxtApp } from "#app";
 import { useAuthStore } from "@/stores/auth";
 import { useConfirm } from "@/composables/useConfirm";
+import { sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 
 const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast();
 const confirm = useConfirm();
+const { $auth } = useNuxtApp();
 
 // State
 const isFetching = ref(true);
-const isSendingVerification = ref(false);
 const isEditDrawerOpen = ref(false);
 const isSubmittingUpdate = ref(false);
-
-// Permission check
-const isSuperAdmin = computed(() => authStore.user?.role === "super_admin");
 
 // Base current user object structure
 const currentUser = ref({
@@ -440,23 +443,6 @@ onMounted(() => {
 
 // --- Actions ---
 
-const sendVerificationEmail = async () => {
-  isSendingVerification.value = true;
-  try {
-    // TODO: Connect to backend endpoint when ready
-    // await $fetch(`${config.public.apiBase}/admin/auth/send-verification`, { ... })
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Mock delay
-
-    toast.success(
-      `A verification link has been sent to ${currentUser.value.email}.`,
-    );
-  } catch (error) {
-    toast.error("Failed to send verification email. Please try again later.");
-  } finally {
-    isSendingVerification.value = false;
-  }
-};
-
 const initiatePasswordReset = async () => {
   const answer = await confirm.ask({
     title: "Reset Password",
@@ -464,13 +450,15 @@ const initiatePasswordReset = async () => {
       "Are you sure you want to request a password reset? A secure link will be sent to your email.",
     confirmText: "Send Link",
     cancelText: "Cancel",
+    isDestructive: false,
   });
 
   if (answer) {
     try {
-      // TODO: Connect to backend endpoint when ready
+      await sendPasswordResetEmail($auth, currentUser.value.email);
       toast.success("Password reset instructions have been emailed to you.");
     } catch (error) {
+      console.error("Failed to send password reset email:", error);
       toast.error("Failed to send password reset link.");
     }
   }
@@ -482,13 +470,18 @@ const initiateEmailVerification = async () => {
     message: "This will send a verification link to your email. Proceed?",
     confirmText: "Send Link",
     cancelText: "Cancel",
+    isDestructive: false,
   });
 
   if (answer) {
     try {
-      // TODO: Connect to backend endpoint when ready
+      if (!$auth.currentUser) {
+        throw new Error("No authenticated user found");
+      }
+      await sendEmailVerification($auth.currentUser);
       toast.success("A verification link has been sent to your email.");
     } catch (error) {
+      console.error("Failed to send verification email:", error);
       toast.error("Failed to send verification email.");
     }
   }
@@ -509,22 +502,22 @@ const closeEditDrawer = () => {
 const submitProfileUpdate = async () => {
   isSubmittingUpdate.value = true;
   try {
-    const uid = currentUser.value.uid;
     const payload = {
       name: editFormData.value.name,
       // Note: We don't send the email here because it is disabled in the form
     };
 
     const response = await $fetch(
-      `${config.public.apiBase}/admin/auth/update/${uid}`,
+      `${config.public.apiBase}/admin/auth/profile`,
       {
         method: "PUT",
         body: payload,
       },
     );
 
-    // Optimistically update the UI
+    // Keep local state, the Pinia store, and the persisted cookie in sync
     currentUser.value.name = response.user.name;
+    authStore.updateUserName(response.user.name);
 
     toast.success("Your profile information has been successfully saved.");
     closeEditDrawer();
