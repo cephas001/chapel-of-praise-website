@@ -84,7 +84,7 @@
 <script setup>
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead } from "#app";
-import defaultHeroImage from "~/assets/images/chapel.webp";
+import defaultHeroImage from "~/assets/images/chapel.png";
 
 useHead({
   title: "About Us | Chapel of Praise",

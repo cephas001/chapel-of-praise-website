@@ -302,26 +302,23 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRuntimeConfig } from "#app";
 
 // This is the public frontend, so no authStore is needed here.
 const config = useRuntimeConfig();
 
-const availableUnits = [
-  "Choir",
-  "Editorial",
-  "Ushering",
-  "Protocol",
-  "Media",
-  "Prayer",
-  "Drama",
-  "Bible Study",
-  "Evangelism",
-  "Technical",
-  "Welfare",
-  "Academic",
-];
+const availableUnits = ref([]);
+
+onMounted(async () => {
+  try {
+    availableUnits.value = await $fetch(
+      `${config.public.apiBaseUrl}/members/units`,
+    );
+  } catch (error) {
+    console.error("Failed to load chapel units", error);
+  }
+});
 
 const loading = ref(false);
 const errorMessage = ref("");

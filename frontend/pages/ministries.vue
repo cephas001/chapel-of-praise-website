@@ -59,7 +59,7 @@
 
         <!-- Empty State -->
         <div v-if="pageData.ministries.length === 0" class="text-center py-12">
-          <p class="text-gray-500 font-light text-md md:text-lg px-5">
+          <p class="text-gray-500 font-light text-base md:text-lg px-5">
             No ministries listed at this time. Check back soon!
           </p>
         </div>
@@ -71,7 +71,7 @@
 <script setup>
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead } from "#app";
-import defaultHeroImage from "~/assets/images/chapel.webp";
+import defaultHeroImage from "~/assets/images/chapel.png";
 
 useHead({
   title: "Ministries | Chapel of Praise",

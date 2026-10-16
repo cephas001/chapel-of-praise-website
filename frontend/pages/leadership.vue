@@ -38,7 +38,7 @@
             {{ pageData.team.headline }}
           </h2>
           <p
-            class="text-md md:text-lg text-gray-600 max-w-2xl mx-auto font-light"
+            class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto font-light"
           >
             {{ pageData.team.description }}
           </p>

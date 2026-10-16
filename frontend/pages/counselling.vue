@@ -41,7 +41,7 @@
           {{ pageData.form.heading }}
         </h2>
         <p
-          class="text-md md:text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto"
+          class="text-base md:text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto"
         >
           {{ pageData.form.description }}
         </p>

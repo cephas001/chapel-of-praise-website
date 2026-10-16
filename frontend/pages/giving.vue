@@ -34,7 +34,7 @@
         {{ pageData.headline.title }}
       </h2>
       <p
-        class="text-md md:text-lg text-gray-600 font-light leading-relaxed mb-12"
+        class="text-base md:text-lg text-gray-600 font-light leading-relaxed mb-12"
       >
         {{ pageData.headline.description }}
       </p>

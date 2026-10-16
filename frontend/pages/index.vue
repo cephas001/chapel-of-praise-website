@@ -7,9 +7,10 @@
     >
       <div class="absolute inset-0 bg-black/50 z-10 pointer-events-none"></div>
       <img
-        src="~/assets/images/chapel.webp"
+        src="~/assets/images/chapel.png"
         alt="Hero Background"
-        class="absolute inset-0 w-full h-full object-cover z-0"
+        class="absolute inset-0 w-full h-full object-cover z-0 object-center"
+        loading="lazy"
       />
 
       <div
@@ -38,13 +39,14 @@
         <div class="flex gap-4 mt-4">
           <NuxtLink
             :to="pageData.hero.cta1Link"
-            class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm"
+            class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center"
+            target="_blank"
           >
             {{ pageData.hero.cta1Label }}
           </NuxtLink>
           <NuxtLink
             :to="pageData.hero.cta2Link"
-            class="border-2 border-white/80 hover:bg-white hover:text-black text-white font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm relative z-20"
+            class="border-2 border-white/80 hover:bg-white hover:text-black text-white font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm relative z-20 flex items-center"
           >
             {{ pageData.hero.cta2Label }}
           </NuxtLink>
@@ -70,7 +72,7 @@
           {{ pageData.welcome.headline }}
         </h2>
         <p
-          class="mt-4 text-md md:text-lg text-gray-500 max-w-2xl font-medium leading-relaxed"
+          class="mt-4 text-base md:text-lg text-gray-500 max-w-2xl font-medium leading-relaxed"
         >
           {{ pageData.welcome.description }}
         </p>

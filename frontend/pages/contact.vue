@@ -141,7 +141,7 @@
                     {{ pageData.campus.name }}
                   </h4>
                   <p
-                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed whitespace-pre-line"
+                    class="text-sm md:text-base text-gray-600 font-light leading-relaxed whitespace-pre-line"
                   >
                     {{ pageData.campus.address }}
                   </p>
@@ -162,7 +162,7 @@
                     {{ pageData.campus.serviceTimesTitle }}
                   </h4>
                   <p
-                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed whitespace-pre-line"
+                    class="text-sm md:text-base text-gray-600 font-light leading-relaxed whitespace-pre-line"
                   >
                     {{ pageData.campus.serviceTimesDetails }}
                   </p>
@@ -183,7 +183,7 @@
                     Contact Details
                   </h4>
                   <p
-                    class="text-sm md:text-md text-gray-600 font-light leading-relaxed"
+                    class="text-sm md:text-base text-gray-600 font-light leading-relaxed"
                   >
                     Email: {{ pageData.contact.email }}<br />
                     Phone: {{ pageData.contact.phone }}
