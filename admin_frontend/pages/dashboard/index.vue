@@ -196,8 +196,8 @@
                 class="h-4 w-4 text-muted shrink-0 mt-0.5"
               />
               <p class="text-xs text-muted leading-relaxed">
-                If you attempt to open a restricted page, you will see a quick
-                alert and be safely redirected back to your dashboard.
+                If you attempt to open a restricted page, you will be redirected
+                back to your dashboard.
               </p>
             </div>
           </div>
