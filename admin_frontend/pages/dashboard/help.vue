@@ -1,23 +1,23 @@
 <template>
   <div class="mx-auto max-w-5xl">
     <AppHeading
-      class="mb-8"
+      class="mb-8 mt-4"
       title="How to use this app"
-      subtitle="A guide for everyone who helps run Chapel of Praise: signing in, recording a service day, updating the website, and who to ask for help."
+      subtitle="A guide for everyone who helps run Chapel of Praise."
     />
 
     <div
       class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-8"
     >
       <!-- Contents -->
-      <AppCard
-        class="lg:sticky lg:top-24 lg:self-start"
-        body-class="p-2"
-      >
-        <p class="px-3 pb-1 pt-1.5 text-xs font-semibold text-muted">
+      <AppCard class="lg:sticky lg:top-24 lg:self-start" body-class="px-2 py-3">
+        <p class="pl-1 pr-3 pb-3 gpt-1.5 text-xs font-semibold text-muted">
           On this page
         </p>
-        <nav aria-label="On this page" class="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
+        <nav
+          aria-label="On this page"
+          class="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1"
+        >
           <a
             v-for="section in visibleSections"
             :key="section.id"
@@ -43,33 +43,40 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
             This is the team's workspace for Chapel of Praise. From here you
-            plan services, record who attended and who served, follow up with
-            people who respond to altar calls, and keep the church website up to
-            date.
+            plan services, record those who served, follow up with people who
+            respond to altar calls, and keep the church website up to date.
           </p>
 
           <div class="mt-5 rounded-control border border-line bg-subtle/60 p-4">
-            <h3 class="flex items-center gap-2 text-sm font-semibold text-ink">
-              <Icon name="heroicons:identification" class="h-4 w-4 text-muted" />
+            <h3
+              class="flex items-center gap-2 text-xs md:text-sm font-semibold text-ink"
+            >
+              <Icon
+                name="heroicons:identification"
+                class="h-4 w-4 text-muted"
+              />
               Your access level
             </h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink">
+            <p class="mt-2 text-xs md:text-sm leading-relaxed text-ink">
               You're signed in as
-              <span class="font-medium">{{ auth.user?.email || "your account" }}</span>.
+              <span class="font-medium">{{
+                auth.user?.email || "your account"
+              }}</span
+              >.
               {{ accessDescription }}
-            </p>
-            <p class="mt-1.5 text-xs leading-relaxed text-muted">
-              Areas meant for other teams stay hidden, so you only see what you
-              need.
             </p>
           </div>
 
-          <div class="mt-5 space-y-4">
+          <div class="mt-6 space-y-5">
             <div>
-              <h3 class="text-sm font-semibold text-ink">Signing in</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
+                Signing in
+              </h3>
+              <p
+                class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
                 Use the email and password a Super Admin set up for you. If you
                 forget it, tap Forgot password? on the sign-in screen and a
                 reset link goes to your email.
@@ -77,8 +84,12 @@
             </div>
 
             <div>
-              <h3 class="text-sm font-semibold text-ink">Your profile</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
+                Your profile
+              </h3>
+              <p
+                class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
                 Open Your profile from the sidebar to change your password,
                 verify your email and copy your account ID when support asks for
                 it.
@@ -86,28 +97,50 @@
             </div>
 
             <div>
-              <h3 class="text-sm font-semibold text-ink">Put it on your phone</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
+                Put it on your phone
+              </h3>
+              <p
+                class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
                 The app installs like a normal app and works the same as in the
                 browser.
               </p>
-              <div class="mt-3 grid gap-3 sm:grid-cols-2">
-                <div class="rounded-control border border-line bg-subtle/60 p-4">
-                  <h4 class="flex items-center gap-2 text-sm font-semibold text-ink">
-                    <Icon name="simple-icons:android" class="h-4 w-4 text-muted" />
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div
+                  class="rounded-control border border-line bg-subtle/60 p-4"
+                >
+                  <h4
+                    class="flex items-center gap-2 text-xs md:text-sm font-semibold text-ink"
+                  >
+                    <Icon
+                      name="simple-icons:android"
+                      class="h-4 w-4 text-muted"
+                    />
                     Android (Chrome)
                   </h4>
-                  <p class="mt-1.5 text-xs leading-relaxed text-muted">
+                  <p
+                    class="mt-1.5 text-xs leading-relaxed text-muted text-justify"
+                  >
                     Open the site in Chrome, tap the ⋮ menu, then Add to Home
                     screen.
                   </p>
                 </div>
-                <div class="rounded-control border border-line bg-subtle/60 p-4">
-                  <h4 class="flex items-center gap-2 text-sm font-semibold text-ink">
-                    <Icon name="simple-icons:apple" class="h-4 w-4 text-muted" />
+                <div
+                  class="rounded-control border border-line bg-subtle/60 p-4"
+                >
+                  <h4
+                    class="flex items-center gap-2 text-xs md:text-sm font-semibold text-ink"
+                  >
+                    <Icon
+                      name="simple-icons:apple"
+                      class="h-4 w-4 text-muted"
+                    />
                     iPhone (Safari)
                   </h4>
-                  <p class="mt-1.5 text-xs leading-relaxed text-muted">
+                  <p
+                    class="mt-1.5 text-xs leading-relaxed text-muted text-justify"
+                  >
                     Open the site in Safari, tap the Share button, then Add to
                     Home Screen.
                   </p>
@@ -116,15 +149,19 @@
             </div>
           </div>
 
-          <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/dashboard/profile" variant="secondary" size="sm">
+          <div class="mt-5 flex flex-wrap justify-end">
+            <AppButton to="/dashboard/profile" variant="secondary" size="xs">
               Open your profile
             </AppButton>
           </div>
         </AppCard>
 
         <!-- A service day -->
-        <AppCard v-if="canManageOperations" id="service-day" class="scroll-mt-24">
+        <AppCard
+          v-if="canManageOperations"
+          id="service-day"
+          class="scroll-mt-24"
+        >
           <template #header>
             <div class="flex items-center gap-3">
               <div
@@ -136,13 +173,13 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
             Most service days follow the same five steps. Start with the event,
             finish with a follow-up.
           </p>
 
           <ol
-            class="relative mt-5 space-y-5 before:absolute before:bottom-2 before:left-3 before:top-2 before:w-px before:-translate-x-1/2 before:bg-line"
+            class="relative mt-6 space-y-5 before:absolute before:bottom-2 before:left-3 before:top-2 before:w-px before:-translate-x-1/2 before:bg-line"
           >
             <li
               v-for="(step, index) in serviceSteps"
@@ -156,7 +193,9 @@
               </span>
               <div class="min-w-0">
                 <h3 class="text-sm font-semibold text-ink">{{ step.title }}</h3>
-                <p class="mt-1 text-sm leading-relaxed text-muted">
+                <p
+                  class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
+                >
                   {{ step.text }}
                 </p>
               </div>
@@ -164,7 +203,7 @@
           </ol>
 
           <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/events" variant="secondary" size="sm">
+            <AppButton to="/events" variant="secondary" size="xs">
               Open events
             </AppButton>
           </div>
@@ -183,27 +222,32 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
-            Your unit's own meetings run separately from Sunday services, and
-            they get their own attendance records.
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
+            Your unit's own meetings run separately from events, and they get
+            their own attendance records.
           </p>
 
           <div class="mt-5 space-y-4">
             <div>
-              <h3 class="text-sm font-semibold text-ink">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 Taking meeting attendance
               </h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
-                Open Unit meeting attendance, choose your unit and the date,
-                then mark each worker Present or Pardoned. You don't need to
-                babysit the save button: changes save by themselves after a
-                moment, and the badge shows Saved once they're in. There's also
-                a Delete record button if a meeting shouldn't exist.
+              <p
+                class="mt-2 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
+                Open
+                <span class="italic">Unit meeting attendance,</span> choose your
+                unit and the date, then mark each worker
+                <span class="italic">Present</span> or
+                <span class="italic">Pardoned</span>. Changes save by themselves
+                after a moment. There's also a
+                <span class="italic">Delete</span> record button if a meeting
+                shouldn't exist.
               </p>
             </div>
 
-            <div>
-              <h3 class="text-sm font-semibold text-ink">
+            <div class="mt-5">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 What the marks mean
               </h3>
               <dl class="mt-2 divide-y divide-line">
@@ -212,8 +256,10 @@
                   :key="row.term"
                   class="grid gap-1 py-2.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
                 >
-                  <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
-                  <dd class="text-sm leading-relaxed text-muted">
+                  <dt class="text-xs md:text-sm font-semibold text-ink">
+                    {{ row.term }}
+                  </dt>
+                  <dd class="text-xs md:text-sm leading-relaxed text-muted">
                     {{ row.meaning }}
                   </dd>
                 </div>
@@ -221,19 +267,19 @@
             </div>
 
             <div>
-              <h3 class="text-sm font-semibold text-ink">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 The member directory
               </h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <p class="mt-1.5 text-xs md:text-sm leading-relaxed text-muted">
                 Chapel workforce lists every registered worker and executive,
-                grouped by unit. It's the quickest way to check a name or find
-                a phone number.
+                grouped by unit. It's the quickest way to check a name or find a
+                phone number.
               </p>
             </div>
           </div>
 
           <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/unit-meetings" variant="secondary" size="sm">
+            <AppButton to="/unit-meetings" variant="secondary" size="xs">
               Open unit meetings
             </AppButton>
           </div>
@@ -252,28 +298,33 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
-            Nine editors cover the whole church website. If a page shows it,
-            one of these editors controls it: Homepage, About, Leadership,
-            Ministries, Giving, Contact, Prayer, Counseling, and the Events
-            calendar.
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
+            The website editors cover the chapel website. If a page shows it,
+            one of the editors controls it, e.g., Homepage, About, Leadership,
+            etc.
           </p>
 
           <div class="mt-5 space-y-4">
             <div>
-              <h3 class="text-sm font-semibold text-ink">How saving works</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
-                Change what you need, then press Save changes in the bar at the
-                bottom of the page. If you only touched one section, use its
-                own Save Changes button instead. Changed your mind? Discard
-                reloads the last saved version. If you leave with unsaved
-                edits, you'll be asked to confirm first.
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
+                How saving works
+              </h3>
+              <p
+                class="mt-1.5 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
+                Change what you need, then press
+                <span class="italic">Save changes</span> in the bar at the
+                bottom of the page. If you only touched one section, use its own
+                Save Changes button instead.
+                <span class="italic">Changed your mind?</span> Discard reloads
+                the last saved version. If you leave with unsaved edits, you'll
+                be asked to confirm first.
               </p>
             </div>
 
             <div>
-              <h3 class="text-sm font-semibold text-ink">Images</h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">Images</h3>
+              <p class="mt-1.5 text-xs md:text-sm leading-relaxed text-muted">
                 Upload web images is the shared library for pictures across the
                 whole site. Add JPG, PNG, WEBP or GIF files up to 8 MB each,
                 then pick from the library whenever an editor shows a Choose an
@@ -283,7 +334,7 @@
           </div>
 
           <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/website/homepage" variant="secondary" size="sm">
+            <AppButton to="/website/homepage" variant="secondary" size="xs">
               Open the homepage editor
             </AppButton>
           </div>
@@ -302,7 +353,7 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
             Two places to see how the chapel is doing, both fed by the records
             you keep day to day.
           </p>
@@ -313,15 +364,17 @@
               :key="row.term"
               class="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
             >
-              <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
-              <dd class="text-sm leading-relaxed text-muted">
+              <dt class="text-xs md:text-sm font-semibold text-ink">
+                {{ row.term }}
+              </dt>
+              <dd class="text-xs md:text-sm leading-relaxed text-muted">
                 {{ row.meaning }}
               </dd>
             </div>
           </dl>
 
-          <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/analytics/summaries" variant="secondary" size="sm">
+          <div class="mt-4 flex flex-wrap justify-end">
+            <AppButton to="/analytics/summaries" variant="secondary" size="xs">
               Open data summaries
             </AppButton>
           </div>
@@ -340,25 +393,26 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
+          <p class="text-xs md:text-sm leading-relaxed text-ink">
             Super Admin tools for the people side of the app.
           </p>
 
-          <div class="mt-5 space-y-4">
+          <div class="mt-6 space-y-4">
             <div>
-              <h3 class="text-sm font-semibold text-ink">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 Registering a team member
               </h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
-                Open Users and choose Register new user. Set the person's
-                access level at the same time: Website, Operations, or both
-                (shown as All). Their email address becomes their sign-in, so
-                double-check the spelling.
+              <p
+                class="mt-1.5 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
+                Open Users and choose Register new user. Set the person's access
+                level at the same time. Their email address becomes their
+                sign-in, so double-check the spelling.
               </p>
             </div>
 
-            <div>
-              <h3 class="text-sm font-semibold text-ink">
+            <div class="mt-7">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 What each access level includes
               </h3>
               <dl class="mt-2 divide-y divide-line">
@@ -367,8 +421,10 @@
                   :key="row.term"
                   class="grid gap-1 py-2.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
                 >
-                  <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
-                  <dd class="text-sm leading-relaxed text-muted">
+                  <dt class="text-xs md:text-sm font-semibold text-ink">
+                    {{ row.term }}
+                  </dt>
+                  <dd class="text-xs md:text-sm leading-relaxed text-muted">
                     {{ row.meaning }}
                   </dd>
                 </div>
@@ -376,19 +432,19 @@
             </div>
 
             <div>
-              <h3 class="text-sm font-semibold text-ink">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 Executives and quick links
               </h3>
-              <p class="mt-1.5 text-sm leading-relaxed text-muted">
-                The Executives page keeps the chapel's executive roster
-                current. Quick links is the team's shared list of tools and
-                useful links: you add and edit, everyone else can view.
+              <p class="mt-1.5 text-xs md:text-sm leading-relaxed text-muted">
+                The Executives page keeps the chapel's executive roster current.
+                Quick links is the team's shared list of tools and useful links:
+                you add and edit, everyone else can view.
               </p>
             </div>
           </div>
 
           <div class="mt-6 flex flex-wrap justify-end">
-            <AppButton to="/users" variant="secondary" size="sm">
+            <AppButton to="/users" variant="secondary" size="xs">
               Open user management
             </AppButton>
           </div>
@@ -416,10 +472,12 @@
               :key="item.question"
               class="py-4 first:pt-0 last:pb-0"
             >
-              <h3 class="text-sm font-semibold text-ink">
+              <h3 class="text-xs md:text-sm font-semibold text-ink">
                 {{ item.question }}
               </h3>
-              <p class="mt-1 text-sm leading-relaxed text-muted">
+              <p
+                class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
+              >
                 {{ item.answer }}
               </p>
             </div>
@@ -442,7 +500,7 @@
             </div>
           </template>
 
-          <p class="text-sm leading-relaxed text-ink">
+          <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
             Bro. Peter, the chapel's Technical Lead, looks after this app. If
             this guide didn't answer your question, WhatsApp him. He'd rather
             you ask than guess.
@@ -455,7 +513,6 @@
             >
               Message Bro. Peter
             </AppButton>
-            <span class="text-sm text-muted">WhatsApp 0811 298 5079</span>
           </div>
         </AppCard>
 
@@ -478,8 +535,10 @@
               :key="row.term"
               class="grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
             >
-              <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
-              <dd class="text-sm leading-relaxed text-muted">
+              <dt class="text-xs md:text-sm font-semibold text-ink">
+                {{ row.term }}
+              </dt>
+              <dd class="text-xs md:text-sm leading-relaxed text-muted">
                 {{ row.meaning }}
               </dd>
             </div>
@@ -565,7 +624,7 @@ const visibleSections = computed(() =>
 const serviceSteps = [
   {
     title: "Pick the service",
-    text: "Open Events and select the day's service, or add a new one. Set its type, such as Sunday service, Bible study or special program, and confirm the date.",
+    text: "Open Events and select the day's service, or add a new one. Set its type, such as Sunday service, and confirm the date.",
   },
   {
     title: "Record the attendance totals",
