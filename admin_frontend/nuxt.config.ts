@@ -9,6 +9,21 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  // @vite-pwa/nuxt cannot inject the manifest link into Nuxt's SPA shell
+  // (no index.html in the pipeline), so it is declared explicitly here.
+  app: {
+    head: {
+      link: [
+        { rel: "manifest", href: "/manifest.webmanifest" },
+        { rel: "apple-touch-icon", href: "/pwa-192x192.png" },
+      ],
+      meta: [
+        { name: "theme-color", content: "#101319" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+      ],
+    },
+  },
+
   routeRules: {
     "/": { redirect: "/dashboard" },
   },
