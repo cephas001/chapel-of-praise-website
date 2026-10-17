@@ -110,11 +110,11 @@
           Add an executive
         </AppButton>
         <AppButton
-          to="/dashboard/help"
+          to="/dashboard/help#your-unit"
           variant="secondary"
           icon="heroicons:question-mark-circle"
         >
-          How workers get registered
+          About the member directory
         </AppButton>
       </div>
     </AppCard>

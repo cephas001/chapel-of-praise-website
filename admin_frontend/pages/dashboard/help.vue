@@ -1,568 +1,489 @@
 <template>
-  <div class="relative min-h-screen pt-5">
-    <!-- Page Header -->
+  <div class="mx-auto max-w-5xl">
     <AppHeading
       class="mb-8"
-      title="Help & documentation"
-      subtitle="A comprehensive guide to managing the Chapel of Praise system."
+      title="How to use this app"
+      subtitle="A guide for everyone who helps run Chapel of Praise: signing in, recording a service day, updating the website, and who to ask for help."
     />
 
-    <!-- Main Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      <!-- Left Column: Navigation Sidebar -->
-      <div class="lg:col-span-1">
-        <AppCard
-          class="sticky top-24" body-class="p-0"
-        >
-          <div class="bg-subtle/60 border-b border-line px-5 py-4">
-            <h3
-              class="text-xs font-mono font-semibold text-ink"
-            >
-              Topics
-            </h3>
-          </div>
-          <div class="p-2 flex flex-col gap-1">
-            <button
-              v-for="tab in tabs"
-              :key="tab.id"
-              :class="[
-                'text-left rounded-control px-4 py-2.5 text-xs font-medium transition-colors md:text-sm',
-                activeTab === tab.id
-                  ? 'bg-ink text-white'
-                  : 'text-muted hover:bg-subtle hover:text-ink',
-              ]"
-              @click="activeTab = tab.id"
-            >
-              {{ tab.label }}
-            </button>
-          </div>
-        </AppCard>
-      </div>
-
-      <!-- Right Column: Content Area -->
-      <div class="lg:col-span-3 space-y-6">
-        <!-- SECTION: Architecture & Overview -->
-        <AppCard
-          v-show="activeTab === 'overview'"
-          class="animate-fade-in" body-class="p-6 lg:p-8"
-        >
-          <div
-            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
+    <div
+      class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-8"
+    >
+      <!-- Contents -->
+      <AppCard
+        class="lg:sticky lg:top-24 lg:self-start"
+        body-class="p-2"
+      >
+        <p class="px-3 pb-1 pt-1.5 text-xs font-semibold text-muted">
+          On this page
+        </p>
+        <nav aria-label="On this page" class="flex flex-wrap gap-1.5 lg:flex-col lg:gap-1">
+          <a
+            v-for="section in visibleSections"
+            :key="section.id"
+            :href="`#${section.id}`"
+            class="rounded-control border border-line px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-subtle hover:text-ink lg:border-0 lg:px-3 lg:py-2 lg:text-sm"
           >
-            <div
-              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
-            >
-              <Icon
-                name="heroicons:server-stack"
-                class="h-4 w-4 text-ink"
-              />
-            </div>
-            <h2 class="text-sm md:text-base font-semibold text-ink">
-              System Architecture
-            </h2>
-          </div>
+            {{ section.label }}
+          </a>
+        </nav>
+      </AppCard>
 
-          <div class="space-y-4 text-xs md:text-sm text-ink leading-relaxed">
-            <p>
-              The Chapel of Praise digital ecosystem is split into three main
-              components:
-            </p>
-            <ul class="list-disc pl-5 space-y-2 mt-2">
-              <li>
-                <strong>Admin Frontend:</strong> Built using Nuxt 4, Vue 3,
-                Pinia, and Tailwind CSS. It runs as a client-side SPA.
-              </li>
-              <li>
-                <strong>Backend API:</strong> Built on Express 5, utilizing the
-                Firebase Admin SDK to interface with Firestore and Firebase
-                Auth.
-              </li>
-              <li>
-                <strong>Public Frontend:</strong> A separate Nuxt 4 app that
-                makes read-only requests and has no Firebase dependencies.
-              </li>
-            </ul>
-
-            <h4 class="text-sm font-semibold text-ink font-mono mt-6 mb-2">
-              Content Management (CMS)
-            </h4>
-            <ul class="list-disc pl-5 space-y-2">
-              <li>
-                Each public-facing page stores its content in a single Firestore
-                document per page.
-              </li>
-              <li>
-                The document ID corresponds directly to the page name (e.g., the
-                homepage document is stored in the homepage collection).
-              </li>
-            </ul>
-          </div>
-        </AppCard>
-
-        <!-- SECTION: Roles & Permissions -->
-        <AppCard
-          v-show="activeTab === 'permissions'"
-          class="animate-fade-in" body-class="p-6 lg:p-8"
-        >
-          <div
-            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
-          >
-            <div
-              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
-            >
-              <Icon
-                name="heroicons:shield-check"
-                class="h-4 w-4 text-ink"
-              />
-            </div>
-            <h2 class="text-sm md:text-base font-semibold text-ink">
-              Roles & Permissions
-            </h2>
-          </div>
-
-          <div class="space-y-6 text-xs md:text-sm text-ink leading-relaxed">
-            <p>
-              Access is heavily regulated by two main attributes:
-              <strong>Role</strong> and <strong>Type</strong>.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 border border-line rounded-surface bg-subtle/60">
-                <h4
-                  class="font-semibold text-ink mb-2 flex items-center gap-2"
-                >
-                  <Icon name="heroicons:user" class="h-4 w-4 text-danger-text" />
-                  User Roles
-                </h4>
-                <ul class="list-disc pl-5 space-y-1">
-                  <li>
-                    <strong>Admin:</strong> Standard users restricted by their
-                    assigned "Type".
-                  </li>
-                  <li>
-                    <strong>Super Admin:</strong> Bypasses all restrictions,
-                    accesses all pages, and manages users and executives.
-                  </li>
-                </ul>
-              </div>
-
-              <div class="p-4 border border-line rounded-surface bg-subtle/60">
-                <h4
-                  class="font-semibold text-ink mb-2 flex items-center gap-2"
-                >
-                  <Icon name="heroicons:tag" class="h-4 w-4 text-muted" />
-                  Access Types
-                </h4>
-                <ul class="list-disc pl-5 space-y-1">
-                  <li>
-                    <strong>Website:</strong> Can view and edit website CMS
-                    content.
-                  </li>
-                  <li>
-                    <strong>Executive:</strong> Can manage events, headcounts,
-                    altar calls, attendance, and follow-ups.
-                  </li>
-                  <li>
-                    <strong>All:</strong> Possesses both website and executive
-                    capabilities, but cannot manage users.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </AppCard>
-
-        <!-- SECTION: Core Workflows -->
-        <AppCard
-          v-show="activeTab === 'workflows'"
-          class="animate-fade-in" body-class="p-6 lg:p-8"
-        >
-          <div
-            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
-          >
-            <div
-              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
-            >
-              <Icon
-                name="heroicons:arrow-path-rounded-square"
-                class="h-4 w-4 text-ink"
-              />
-            </div>
-            <h2 class="text-sm md:text-base font-semibold text-ink">
-              Core Workflows
-            </h2>
-          </div>
-
-          <div class="space-y-8 text-xs md:text-sm text-ink leading-relaxed">
-            <!-- Event Lifecycle -->
-            <div>
-              <h3 class="font-semibold text-ink text-base mb-3">
-                The Event Lifecycle
-              </h3>
-              <p class="mb-4">
-                Church executives handle events through a specific sequence:
-              </p>
-
+      <div class="min-w-0 space-y-6">
+        <!-- Start here -->
+        <AppCard id="start-here" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
               <div
-                class="space-y-4 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-line"
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
               >
-                <div
-                  class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
-                >
-                  <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
-                  >
-                    1
-                  </div>
-                  <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
-                  >
-                    <h4
-                      class="font-semibold text-ink text-xs mb-1"
-                    >
-                      Create Event
-                    </h4>
-                    <p class="text-xs">
-                      Navigate to Events to define the date, service type, and
-                      program specifics.
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
-                >
-                  <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
-                  >
-                    2
-                  </div>
-                  <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
-                  >
-                    <h4
-                      class="font-semibold text-ink text-xs mb-1"
-                    >
-                      Record Headcounts
-                    </h4>
-                    <p class="text-xs">
-                      Navigate to Head Counts to input male/female student and
-                      visitor demographics.
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
-                >
-                  <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
-                  >
-                    3
-                  </div>
-                  <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
-                  >
-                    <h4
-                      class="font-semibold text-ink text-xs mb-1"
-                    >
-                      Unit Attendance
-                    </h4>
-                    <p class="text-xs">
-                      Select an event and unit to mark officiating workers as
-                      Present or Excused.
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
-                >
-                  <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
-                  >
-                    4
-                  </div>
-                  <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
-                  >
-                    <h4
-                      class="font-semibold text-ink text-xs mb-1"
-                    >
-                      Altar Calls & Follow-ups
-                    </h4>
-                    <p class="text-xs">
-                      Record altar calls from the event detail page, input
-                      responder details, and track them via Follow-up Records.
-                    </p>
-                  </div>
-                </div>
+                <Icon name="heroicons:rocket-launch" class="h-4 w-4 text-ink" />
               </div>
+              <AppHeading level="2" title="Start here" />
             </div>
+          </template>
 
-            <!-- Website Content Workflow -->
-            <div class="pt-6 border-t border-line">
-              <h3 class="font-semibold text-ink text-sm mb-4">
-                Updating Website Content
-              </h3>
-              <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
-                <li>
-                  Navigate to the appropriate CMS page under Website Management.
-                </li>
-                <li>
-                  Edit sections using standard text fields or by adding/removing
-                  dynamic array items.
-                </li>
-                <li>
-                  Click "Save Changes" on individual sections or use the sticky
-                  "Save Changes" button at the bottom of the page.
-                </li>
-              </ul>
-            </div>
+          <p class="text-sm leading-relaxed text-ink">
+            This is the team's workspace for Chapel of Praise. From here you
+            plan services, record who attended and who served, follow up with
+            people who respond to altar calls, and keep the church website up to
+            date.
+          </p>
 
-            <!-- Unit Meeting Attendance -->
-            <div class="pt-6 border-t border-line">
-              <h3 class="font-semibold text-ink text-sm mb-4">
-                Unit Meeting Attendance
-              </h3>
-              <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
-                <li>
-                  This module is used strictly for unit meetings (distinct from
-                  events).
-                </li>
-                <li>
-                  Attendance records are <strong>synced to the backend</strong>
-                  via the API.
-                </li>
-                <li>
-                  After the first manual save, changes are saved automatically
-                  after 1.2 seconds of inactivity. You can also use the "Save
-                  Changes" button at any time.
-                </li>
-                <li>
-                  A sync indicator shows the current save state
-                  (<em>Saved</em>, <em>Unsaved</em>, <em>Saving...</em>).
-                </li>
-              </ul>
-            </div>
-          </div>
-        </AppCard>
-
-        <!-- SECTION: Troubleshooting -->
-        <AppCard
-          v-show="activeTab === 'troubleshooting'"
-          class="animate-fade-in" body-class="p-6 lg:p-8"
-        >
-          <div
-            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
-          >
-            <div
-              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
-            >
-              <Icon
-                name="heroicons:wrench-screwdriver"
-                class="h-4 w-4 text-ink"
-              />
-            </div>
-            <h2 class="text-sm md:text-base font-semibold text-ink">
-              Troubleshooting & Edge Cases
-            </h2>
+          <div class="mt-5 rounded-control border border-line bg-subtle/60 p-4">
+            <h3 class="flex items-center gap-2 text-sm font-semibold text-ink">
+              <Icon name="heroicons:identification" class="h-4 w-4 text-muted" />
+              Your access level
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink">
+              You're signed in as
+              <span class="font-medium">{{ auth.user?.email || "your account" }}</span>.
+              {{ accessDescription }}
+            </p>
+            <p class="mt-1.5 text-xs leading-relaxed text-muted">
+              Areas meant for other teams stay hidden, so you only see what you
+              need.
+            </p>
           </div>
 
-          <div
-            class="space-y-6 text-xs md:text-sm text-muted leading-relaxed"
-          >
-            <div class="bg-danger-surface border border-danger-line rounded-surface p-4">
-              <h4
-                class="font-semibold text-danger-text text-xs mb-3"
-              >
-                Important Limitations
-              </h4>
-              <ul class="list-disc pl-5 space-y-2 text-danger-text/80">
-                <li>
-                  <strong>No Cascading Deletes:</strong> Deleting an event does
-                  not automatically delete its related headcounts, altar calls,
-                  attendance records, or follow-ups.
-                </li>
-                <li>
-                  <strong>No Soft Deletes:</strong> The deletion of events and
-                  users is permanent; there is no recovery mechanism.
-                </li>
-              </ul>
-            </div>
-
+          <div class="mt-5 space-y-4">
             <div>
-              <h4 class="font-semibold text-ink mb-3">
-                Common Errors
-              </h4>
-              <div class="border border-line rounded-surface overflow-hidden">
-                <table class="min-w-full divide-y divide-line">
-                  <caption class="sr-only">
-                    Common error messages and their solutions
-                  </caption>
-                  <thead class="bg-subtle">
-                    <tr>
-                      <th
-                        class="px-4 py-3 text-left font-mono text-xs font-medium text-muted"
-                      >
-                        Error Message
-                      </th>
-                      <th
-                        class="px-4 py-3 text-left font-mono text-xs font-medium text-muted"
-                      >
-                        Cause & Resolution
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-line bg-surface">
-                    <tr>
-                      <td class="px-4 py-3 font-medium text-ink text-xs">
-                        "Session Expired"
-                      </td>
-                      <td class="px-4 py-3 text-xs">
-                        The Firebase ID token has expired; you must log in
-                        again.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-4 py-3 font-medium text-ink text-xs">
-                        "Access Denied"
-                      </td>
-                      <td class="px-4 py-3 text-xs">
-                        Your user role or type does not match the required
-                        permissions for the page.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-4 py-3 font-medium text-ink text-xs">
-                        "Invalid passkey"
-                      </td>
-                      <td class="px-4 py-3 text-xs">
-                        During public worker registration, the passkey entered
-                        does not match the record in the unitPasskeys document.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-4 py-3 font-medium text-ink text-xs">
-                        404 Error (Events)
-                      </td>
-                      <td class="px-4 py-3 text-xs">
-                        The specific Event ID doesn't exist; it may have been
-                        deleted. Note: Public content endpoints return empty
-                        objects rather than a 404.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div>
-              <h4 class="font-semibold text-ink mb-3">
-                Automated Attendance Behavior
-              </h4>
-              <p class="text-xs md:text-sm">
-                If an officiating worker is not manually marked as Present or
-                Excused, the system automatically computes and flags them as
-                Absent.
+              <h3 class="text-sm font-semibold text-ink">Signing in</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Use the email and password a Super Admin set up for you. If you
+                forget it, tap Forgot password? on the sign-in screen and a
+                reset link goes to your email.
               </p>
             </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">Your profile</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Open Your profile from the sidebar to change your password,
+                verify your email and copy your account ID when support asks for
+                it.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">Put it on your phone</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                The app installs like a normal app and works the same as in the
+                browser.
+              </p>
+              <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-control border border-line bg-subtle/60 p-4">
+                  <h4 class="flex items-center gap-2 text-sm font-semibold text-ink">
+                    <Icon name="simple-icons:android" class="h-4 w-4 text-muted" />
+                    Android (Chrome)
+                  </h4>
+                  <p class="mt-1.5 text-xs leading-relaxed text-muted">
+                    Open the site in Chrome, tap the ⋮ menu, then Add to Home
+                    screen.
+                  </p>
+                </div>
+                <div class="rounded-control border border-line bg-subtle/60 p-4">
+                  <h4 class="flex items-center gap-2 text-sm font-semibold text-ink">
+                    <Icon name="simple-icons:apple" class="h-4 w-4 text-muted" />
+                    iPhone (Safari)
+                  </h4>
+                  <p class="mt-1.5 text-xs leading-relaxed text-muted">
+                    Open the site in Safari, tap the Share button, then Add to
+                    Home Screen.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/dashboard/profile" variant="secondary" size="sm">
+              Open your profile
+            </AppButton>
           </div>
         </AppCard>
 
-        <!-- SECTION: PWA Installation -->
-        <AppCard
-          v-show="activeTab === 'pwa'"
-          class="animate-fade-in" body-class="p-6 lg:p-8"
-        >
-          <div
-            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
-          >
-            <div
-              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
-            >
-              <Icon
-                name="heroicons:device-phone-mobile"
-                class="h-4 w-4 text-ink"
-              />
+        <!-- A service day -->
+        <AppCard v-if="canManageOperations" id="service-day" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:calendar-days" class="h-4 w-4 text-ink" />
+              </div>
+              <AppHeading level="2" title="A service day" />
             </div>
-            <h2 class="text-sm md:text-base font-semibold text-ink">
-              Installing the PWA App
-            </h2>
-          </div>
+          </template>
 
-          <div class="space-y-6 text-xs md:text-sm text-ink leading-relaxed">
-            <p>
-              The Chapel of Praise system can be installed as a Progressive Web
-              App (PWA) on your device, giving you quick access directly from
-              your home screen — just like a native app. Below are the steps for
-              Android and iPhone.
-            </p>
+          <p class="text-sm leading-relaxed text-ink">
+            Most service days follow the same five steps. Start with the event,
+            finish with a follow-up.
+          </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Android -->
-              <div class="p-4 border border-line rounded-surface bg-subtle/60">
-                <h4
-                  class="font-semibold text-ink mb-3 flex items-center gap-2"
-                >
-                  <Icon
-                    name="simple-icons:android"
-                    class="h-4 w-4 text-success-text"
-                  />
-                  Android (Chrome)
-                </h4>
-                <ol class="list-decimal pl-5 space-y-2">
-                  <li>
-                    Open <strong>Chrome</strong> and navigate to the Chapel of
-                    Praise site.
-                  </li>
-                  <li>
-                    Tap the <strong>three-dot menu</strong> (⋮) in the top-right
-                    corner.
-                  </li>
-                  <li>Tap <strong>"Add to Home screen"</strong>.</li>
-                  <li>
-                    Tap <strong>"Add"</strong> on the confirmation dialog.
-                  </li>
-                </ol>
-                <p class="mt-3 text-xs text-muted">
-                  You may also see an install banner at the bottom of the screen
-                  — tap <strong>"Install"</strong> to skip the menu steps.
+          <ol
+            class="relative mt-5 space-y-5 before:absolute before:bottom-2 before:left-3 before:top-2 before:w-px before:-translate-x-1/2 before:bg-line"
+          >
+            <li
+              v-for="(step, index) in serviceSteps"
+              :key="step.title"
+              class="flex gap-4"
+            >
+              <span
+                class="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-line bg-subtle text-xs font-semibold text-ink"
+              >
+                {{ index + 1 }}
+              </span>
+              <div class="min-w-0">
+                <h3 class="text-sm font-semibold text-ink">{{ step.title }}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  {{ step.text }}
                 </p>
               </div>
+            </li>
+          </ol>
 
-              <!-- iPhone -->
-              <div class="p-4 border border-line rounded-surface bg-subtle/60">
-                <h4
-                  class="font-semibold text-ink mb-3 flex items-center gap-2"
-                >
-                  <Icon
-                    name="simple-icons:apple"
-                    class="h-4 w-4 text-ink"
-                  />
-                  iPhone (Safari)
-                </h4>
-                <ol class="list-decimal pl-5 space-y-2">
-                  <li>
-                    Open <strong>Safari</strong> and navigate to the Chapel of
-                    Praise site.
-                  </li>
-                  <li>
-                    Tap the <strong>Share button</strong> (square with arrow) at
-                    the bottom of the screen.
-                  </li>
-                  <li>
-                    Scroll down and tap
-                    <strong>"Add to Home Screen"</strong>.
-                  </li>
-                  <li>
-                    Customise the name if desired, then tap
-                    <strong>"Add"</strong> in the top-right corner.
-                  </li>
-                </ol>
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/events" variant="secondary" size="sm">
+              Open events
+            </AppButton>
+          </div>
+        </AppCard>
+
+        <!-- Your chapel unit -->
+        <AppCard v-if="canManageOperations" id="your-unit" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:user-group" class="h-4 w-4 text-ink" />
               </div>
+              <AppHeading level="2" title="Your chapel unit" />
+            </div>
+          </template>
+
+          <p class="text-sm leading-relaxed text-ink">
+            Your unit's own meetings run separately from Sunday services, and
+            they get their own attendance records.
+          </p>
+
+          <div class="mt-5 space-y-4">
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                Taking meeting attendance
+              </h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Open Unit meeting attendance, choose your unit and the date,
+                then mark each worker Present or Pardoned. You don't need to
+                babysit the save button: changes save by themselves after a
+                moment, and the badge shows Saved once they're in. There's also
+                a Delete record button if a meeting shouldn't exist.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                What the marks mean
+              </h3>
+              <dl class="mt-2 divide-y divide-line">
+                <div
+                  v-for="row in unitMarks"
+                  :key="row.term"
+                  class="grid gap-1 py-2.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
+                >
+                  <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
+                  <dd class="text-sm leading-relaxed text-muted">
+                    {{ row.meaning }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                The member directory
+              </h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Chapel workforce lists every registered worker and executive,
+                grouped by unit. It's the quickest way to check a name or find
+                a phone number.
+              </p>
             </div>
           </div>
+
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/unit-meetings" variant="secondary" size="sm">
+              Open unit meetings
+            </AppButton>
+          </div>
+        </AppCard>
+
+        <!-- The church website -->
+        <AppCard v-if="canManageWebsite" id="website" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:globe-alt" class="h-4 w-4 text-ink" />
+              </div>
+              <AppHeading level="2" title="The church website" />
+            </div>
+          </template>
+
+          <p class="text-sm leading-relaxed text-ink">
+            Nine editors cover the whole church website. If a page shows it,
+            one of these editors controls it: Homepage, About, Leadership,
+            Ministries, Giving, Contact, Prayer, Counseling, and the Events
+            calendar.
+          </p>
+
+          <div class="mt-5 space-y-4">
+            <div>
+              <h3 class="text-sm font-semibold text-ink">How saving works</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Change what you need, then press Save changes in the bar at the
+                bottom of the page. If you only touched one section, use its
+                own Save Changes button instead. Changed your mind? Discard
+                reloads the last saved version. If you leave with unsaved
+                edits, you'll be asked to confirm first.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">Images</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Upload web images is the shared library for pictures across the
+                whole site. Add JPG, PNG, WEBP or GIF files up to 8 MB each,
+                then pick from the library whenever an editor shows a Choose an
+                image button.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/website/homepage" variant="secondary" size="sm">
+              Open the homepage editor
+            </AppButton>
+          </div>
+        </AppCard>
+
+        <!-- Numbers & reports -->
+        <AppCard v-if="canManageOperations" id="reports" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:chart-bar" class="h-4 w-4 text-ink" />
+              </div>
+              <AppHeading level="2" title="Numbers & reports" />
+            </div>
+          </template>
+
+          <p class="text-sm leading-relaxed text-ink">
+            Two places to see how the chapel is doing, both fed by the records
+            you keep day to day.
+          </p>
+
+          <dl class="mt-4 divide-y divide-line">
+            <div
+              v-for="row in reportViews"
+              :key="row.term"
+              class="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
+            >
+              <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
+              <dd class="text-sm leading-relaxed text-muted">
+                {{ row.meaning }}
+              </dd>
+            </div>
+          </dl>
+
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/analytics/summaries" variant="secondary" size="sm">
+              Open data summaries
+            </AppButton>
+          </div>
+        </AppCard>
+
+        <!-- Leading the team -->
+        <AppCard v-if="isSuperAdmin" id="leading" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:shield-check" class="h-4 w-4 text-ink" />
+              </div>
+              <AppHeading level="2" title="Leading the team" />
+            </div>
+          </template>
+
+          <p class="text-sm leading-relaxed text-ink">
+            Super Admin tools for the people side of the app.
+          </p>
+
+          <div class="mt-5 space-y-4">
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                Registering a team member
+              </h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                Open Users and choose Register new user. Set the person's
+                access level at the same time: Website, Operations, or both
+                (shown as All). Their email address becomes their sign-in, so
+                double-check the spelling.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                What each access level includes
+              </h3>
+              <dl class="mt-2 divide-y divide-line">
+                <div
+                  v-for="row in accessLevels"
+                  :key="row.term"
+                  class="grid gap-1 py-2.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
+                >
+                  <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
+                  <dd class="text-sm leading-relaxed text-muted">
+                    {{ row.meaning }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-semibold text-ink">
+                Executives and quick links
+              </h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-muted">
+                The Executives page keeps the chapel's executive roster
+                current. Quick links is the team's shared list of tools and
+                useful links: you add and edit, everyone else can view.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap justify-end">
+            <AppButton to="/users" variant="secondary" size="sm">
+              Open user management
+            </AppButton>
+          </div>
+        </AppCard>
+
+        <!-- If something's wrong -->
+        <AppCard id="troubleshooting" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon
+                  name="heroicons:wrench-screwdriver"
+                  class="h-4 w-4 text-ink"
+                />
+              </div>
+              <AppHeading level="2" title="If something's wrong" />
+            </div>
+          </template>
+
+          <div class="divide-y divide-line">
+            <div
+              v-for="item in troubleshooting"
+              :key="item.question"
+              class="py-4 first:pt-0 last:pb-0"
+            >
+              <h3 class="text-sm font-semibold text-ink">
+                {{ item.question }}
+              </h3>
+              <p class="mt-1 text-sm leading-relaxed text-muted">
+                {{ item.answer }}
+              </p>
+            </div>
+          </div>
+        </AppCard>
+
+        <!-- Still stuck? -->
+        <AppCard id="contact" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon
+                  name="heroicons:chat-bubble-left-right"
+                  class="h-4 w-4 text-ink"
+                />
+              </div>
+              <AppHeading level="2" title="Still stuck?" />
+            </div>
+          </template>
+
+          <p class="text-sm leading-relaxed text-ink">
+            Bro. Peter, the chapel's Technical Lead, looks after this app. If
+            this guide didn't answer your question, WhatsApp him. He'd rather
+            you ask than guess.
+          </p>
+
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <AppButton
+              :to="whatsappLink"
+              icon="heroicons:chat-bubble-left-right"
+            >
+              Message Bro. Peter
+            </AppButton>
+            <span class="text-sm text-muted">WhatsApp 0811 298 5079</span>
+          </div>
+        </AppCard>
+
+        <!-- Words we use -->
+        <AppCard id="glossary" class="scroll-mt-24">
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line bg-subtle"
+              >
+                <Icon name="heroicons:book-open" class="h-4 w-4 text-ink" />
+              </div>
+              <AppHeading level="2" title="Words we use" />
+            </div>
+          </template>
+
+          <dl class="divide-y divide-line">
+            <div
+              v-for="row in glossary"
+              :key="row.term"
+              class="grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
+            >
+              <dt class="text-sm font-semibold text-ink">{{ row.term }}</dt>
+              <dd class="text-sm leading-relaxed text-muted">
+                {{ row.meaning }}
+              </dd>
+            </div>
+          </dl>
         </AppCard>
       </div>
     </div>
@@ -570,32 +491,235 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed } from "vue";
+import { useAuthStore } from "~/stores/auth";
 
-const activeTab = ref("overview");
+const auth = useAuthStore();
 
-const tabs = [
-  { id: "overview", label: "System Overview" },
-  { id: "permissions", label: "Roles & Access" },
-  { id: "workflows", label: "Core Workflows" },
-  { id: "troubleshooting", label: "Troubleshooting" },
-  { id: "pwa", label: "App Installation" },
+// Mirrors middleware/auth.global.js and layouts/default.vue so the guide only
+// shows the sections a person can actually use.
+const isSuperAdmin = computed(() => auth.user?.role === "super_admin");
+const canManageOperations = computed(
+  () =>
+    isSuperAdmin.value ||
+    auth.user?.type === "all" ||
+    auth.user?.type === "executive",
+);
+const canManageWebsite = computed(
+  () =>
+    isSuperAdmin.value ||
+    auth.user?.type === "all" ||
+    auth.user?.type === "website",
+);
+
+const accessDescription = computed(() => {
+  if (isSuperAdmin.value) {
+    return "This is the highest access level, so every part of the app is open to you.";
+  }
+  const operations = canManageOperations.value;
+  const website = canManageWebsite.value;
+  if (operations && website) {
+    return "You can record services and events, and update the church website.";
+  }
+  if (operations) {
+    return "You can record services and events, mark attendance, capture altar calls and follow up with people.";
+  }
+  if (website) {
+    return "You can update the church website pages and the image library.";
+  }
+  return "Your account does not have an area assigned yet. Ask a Super Admin to set your access.";
+});
+
+const sections = computed(() => [
+  { id: "start-here", label: "Start here", visible: true },
+  {
+    id: "service-day",
+    label: "A service day",
+    visible: canManageOperations.value,
+  },
+  {
+    id: "your-unit",
+    label: "Your chapel unit",
+    visible: canManageOperations.value,
+  },
+  {
+    id: "website",
+    label: "The church website",
+    visible: canManageWebsite.value,
+  },
+  {
+    id: "reports",
+    label: "Numbers & reports",
+    visible: canManageOperations.value,
+  },
+  { id: "leading", label: "Leading the team", visible: isSuperAdmin.value },
+  { id: "troubleshooting", label: "If something's wrong", visible: true },
+  { id: "contact", label: "Still stuck?", visible: true },
+  { id: "glossary", label: "Words we use", visible: true },
+]);
+
+const visibleSections = computed(() =>
+  sections.value.filter((section) => section.visible),
+);
+
+const serviceSteps = [
+  {
+    title: "Pick the service",
+    text: "Open Events and select the day's service, or add a new one. Set its type, such as Sunday service, Bible study or special program, and confirm the date.",
+  },
+  {
+    title: "Record the attendance totals",
+    text: "In Head count, enter the numbers: students and visitors, male and female. The total adds up as you type.",
+  },
+  {
+    title: "Mark who served",
+    text: "In Unit attendance, open the service and the unit, then mark each worker Present or Pardoned. Anyone left unmarked is counted absent automatically, so check the list before you save.",
+  },
+  {
+    title: "Record the altar calls",
+    text: "Open the service and add each call with its type and number of responders. Then add each person's name and phone number so nobody is missed.",
+  },
+  {
+    title: "Follow up with them",
+    text: "Follow-up records keeps every responder and first-timer in one place. Set a status (Pending, Contacted, Completed) and leave a note after each call or message.",
+  },
 ];
+
+const unitMarks = [
+  {
+    term: "Officiating",
+    meaning: "On duty for that service or meeting.",
+  },
+  {
+    term: "Present",
+    meaning: "Attended the meeting.",
+  },
+  {
+    term: "Pardoned",
+    meaning: "Excused. The worker let the unit know they could not make it.",
+  },
+  {
+    term: "Absent",
+    meaning: "Counted automatically for anyone you don't mark.",
+  },
+];
+
+const reportViews = [
+  {
+    term: "Data visualization",
+    meaning:
+      "Charts and trends: attendance over the last six months, altar calls by type, and follow-up progress.",
+  },
+  {
+    term: "Data summaries",
+    meaning:
+      "The same story as totals and snapshots: events, attendance, altar calls, follow-ups and membership at a glance.",
+  },
+];
+
+const accessLevels = [
+  {
+    term: "Website",
+    meaning: "The church website pages and the image library.",
+  },
+  {
+    term: "Operations",
+    meaning:
+      "Services and events, attendance, altar calls, follow-ups and reports.",
+  },
+  {
+    term: "All",
+    meaning: "Both of the above.",
+  },
+  {
+    term: "Super Admin",
+    meaning:
+      "Everything, including managing users and executives. Give it only to someone who truly needs full control.",
+  },
+];
+
+const troubleshooting = [
+  {
+    question: "I was signed out on my own",
+    answer:
+      "Sign-ins expire after a while to keep chapel data safe. Sign in again with your email and password. Nothing you saved is lost.",
+  },
+  {
+    question: "Access denied showed when I opened a page",
+    answer:
+      "That page belongs to another team's area and stays hidden until a Super Admin gives you that access level.",
+  },
+  {
+    question: "I forgot my password",
+    answer:
+      "On the sign-in screen, tap Forgot password? and a reset link goes to your registered email. If it never arrives, ask a Super Admin to check the email on your account.",
+  },
+  {
+    question: "I can't install the app",
+    answer:
+      "Installing works in Chrome on Android and Safari on iPhone, opened from the real site address. If the option doesn't appear, the app still works normally in the browser.",
+  },
+  {
+    question: "Something was deleted by mistake",
+    answer:
+      "Deleting events, users and records is permanent. There is no recycle bin, so pause before confirming a delete. One more thing: deleting an event does not remove its attendance totals or altar call records; they stay on their own pages.",
+  },
+  {
+    question: "The page won't load or looks wrong",
+    answer:
+      "Refresh once. If it keeps happening, note which page and tell Bro. Peter; his details are just below.",
+  },
+];
+
+const glossary = [
+  {
+    term: "Event",
+    meaning:
+      "A service, meeting or program the chapel is running, such as a Sunday service, Bible study or workers retreat.",
+  },
+  {
+    term: "Unit",
+    meaning:
+      "One of the chapel's serving teams, such as Choir, Ushering, Media or Protocol.",
+  },
+  {
+    term: "Head count",
+    meaning:
+      "The day's attendance totals, split into students and visitors, male and female.",
+  },
+  {
+    term: "Altar call",
+    meaning:
+      "The invitation during a service for people to respond. Each one is recorded by type, such as salvation, rededication, Holy Ghost baptism or healing.",
+  },
+  {
+    term: "Responder",
+    meaning: "Someone who answered an altar call.",
+  },
+  {
+    term: "First timer",
+    meaning: "Someone visiting Chapel of Praise for the first time.",
+  },
+  {
+    term: "New convert",
+    meaning: "Someone who gave their life to Christ at an altar call.",
+  },
+  {
+    term: "Follow-up",
+    meaning:
+      "Checking in on a first-timer or new convert, usually with a call, a WhatsApp message or a note.",
+  },
+  {
+    term: "Quick links",
+    meaning:
+      "The team's shared list of tools and useful links, managed by Super Admins.",
+  },
+  {
+    term: "Super Admin",
+    meaning:
+      "The access level that can see and do everything, including managing users and executives.",
+  },
+];
+
+const whatsappLink = "https://wa.me/2348112985079";
 </script>
-
-<style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>

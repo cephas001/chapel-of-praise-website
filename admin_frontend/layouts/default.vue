@@ -74,7 +74,7 @@
             </li>
             <li>
               <AppNavLink
-                text="Help & support"
+                text="Help & getting started"
                 icon-name="heroicons:question-mark-circle"
                 url="/dashboard/help"
                 @click="closeDrawer"
