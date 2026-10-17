@@ -72,40 +72,38 @@
       <div class="lg:col-span-2 space-y-6">
         <AppCard body-class="p-2">
           <template #header>
-            <h3 class="text-base font-semibold text-ink">
-              Core modules
-            </h3>
+            <h3 class="text-base font-semibold text-ink">Core modules</h3>
           </template>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <NuxtLink
-                v-for="module in coreModules"
-                :key="module.id"
-                :to="module.route"
-                class="group flex items-start p-4 rounded-control hover:bg-subtle border border-transparent hover:border-line transition-colors cursor-pointer"
+            <NuxtLink
+              v-for="module in coreModules"
+              :key="module.id"
+              :to="module.route"
+              class="group flex items-start p-4 rounded-control hover:bg-subtle border border-transparent hover:border-line transition-colors cursor-pointer"
+            >
+              <div
+                class="h-10 w-10 rounded-control border border-line bg-surface flex items-center justify-center shrink-0 group-hover:border-muted transition-colors"
               >
-                <div
-                  class="h-10 w-10 rounded-control border border-line bg-surface flex items-center justify-center shrink-0 group-hover:border-muted transition-colors"
-                >
+                <Icon
+                  :name="module.icon"
+                  class="h-5 w-5 text-muted group-hover:text-ink"
+                />
+              </div>
+              <div class="ml-4 flex-1">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="text-sm font-semibold text-ink">
+                    {{ module.title }}
+                  </h4>
                   <Icon
-                    :name="module.icon"
-                    class="h-5 w-5 text-muted group-hover:text-ink"
+                    name="heroicons:arrow-right"
+                    class="h-4 w-4 text-line opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition"
                   />
                 </div>
-                <div class="ml-4 flex-1">
-                  <div class="flex items-center justify-between mb-1">
-                    <h4 class="text-sm font-semibold text-ink">
-                      {{ module.title }}
-                    </h4>
-                    <Icon
-                      name="heroicons:arrow-right"
-                      class="h-4 w-4 text-line opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition"
-                    />
-                  </div>
-                  <p class="text-sm text-muted leading-relaxed">
-                    {{ module.description }}
-                  </p>
-                </div>
-              </NuxtLink>
+                <p class="text-sm text-muted leading-relaxed">
+                  {{ module.description }}
+                </p>
+              </div>
+            </NuxtLink>
           </div>
         </AppCard>
 
@@ -125,8 +123,7 @@
                 External tools & quick links
               </h3>
               <p class="text-sm text-muted">
-                Access external services, drive folders and other operational
-                tools.
+                Access external services and other tools.
               </p>
             </div>
           </div>
@@ -147,92 +144,63 @@
           <template #header>
             <div class="flex items-center gap-2">
               <Icon name="heroicons:shield-check" class="h-4 w-4 text-muted" />
-              <h3 class="text-base font-semibold text-ink">
-                Access & permissions
-              </h3>
+              <h3 class="text-base font-semibold text-ink">Permissions</h3>
             </div>
           </template>
-            <p class="text-sm text-muted leading-relaxed mb-6">
-              To keep Chapel data secure, your account is configured with
-              specific access levels. Here is how it works:
-            </p>
+          <p class="text-sm text-muted leading-relaxed mb-6">
+            Your account has specific access levels to keep data safe. Here is
+            how it works:
+          </p>
 
-            <!-- Scannable Feature List -->
-            <ul class="space-y-5 mb-6">
-              <li class="flex items-start gap-3">
-                <div
-                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-subtle flex items-center justify-center border border-line"
-                >
-                  <Icon
-                    name="heroicons:lock-closed"
-                    class="h-3 w-3 text-muted"
-                  />
-                </div>
-                <div>
-                  <strong
-                    class="text-sm font-semibold text-ink block mb-1"
-                  >
-                    Secure sessions
-                  </strong>
-                  <p class="text-sm text-muted leading-relaxed">
-                    You must remain actively signed in. Inactive sessions will
-                    securely lock you out to protect data.
-                  </p>
-                </div>
-              </li>
-
-              <li class="flex items-start gap-3">
-                <div
-                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-subtle flex items-center justify-center border border-line"
-                >
-                  <Icon name="heroicons:users" class="h-3 w-3 text-muted" />
-                </div>
-                <div>
-                  <strong
-                    class="text-sm font-semibold text-ink block mb-1"
-                  >
-                    Tailored access
-                  </strong>
-                  <p class="text-sm text-muted leading-relaxed">
-                    Your permissions are tied to your role (e.g., Website,
-                    Executive). You will only see the tools you need.
-                  </p>
-                </div>
-              </li>
-
-              <li class="flex items-start gap-3">
-                <div
-                  class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-subtle flex items-center justify-center border border-line"
-                >
-                  <Icon name="heroicons:star" class="h-3 w-3 text-warning-text" />
-                </div>
-                <div>
-                  <strong
-                    class="text-sm font-semibold text-ink block mb-1"
-                  >
-                    Super admins
-                  </strong>
-                  <p class="text-sm text-muted leading-relaxed">
-                    Users with Super Admin privileges bypass all restrictions
-                    and have full control over the system.
-                  </p>
-                </div>
-              </li>
-            </ul>
-
-            <!-- Info Callout -->
-            <div class="p-4 bg-subtle border border-line rounded-control">
-              <div class="flex items-start gap-2.5">
-                <Icon
-                  name="heroicons:information-circle"
-                  class="h-4 w-4 text-muted shrink-0 mt-0.5"
-                />
-                <p class="text-xs text-muted leading-relaxed">
-                  If you attempt to open a restricted page, you will see a quick
-                  alert and be safely redirected back to your dashboard.
+          <!-- Scannable Feature List -->
+          <ul class="space-y-5 mb-6">
+            <li class="flex items-start gap-3">
+              <div
+                class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-subtle flex items-center justify-center border border-line"
+              >
+                <Icon name="heroicons:lock-closed" class="h-3 w-3 text-muted" />
+              </div>
+              <div>
+                <strong class="text-sm font-semibold text-ink block mb-1">
+                  Secure sessions
+                </strong>
+                <p class="text-sm text-muted leading-relaxed">
+                  You must remain actively signed in.
                 </p>
               </div>
+            </li>
+
+            <li class="flex items-start gap-3">
+              <div
+                class="mt-0.5 shrink-0 h-6 w-6 rounded-full bg-subtle flex items-center justify-center border border-line"
+              >
+                <Icon name="heroicons:users" class="h-3 w-3 text-muted" />
+              </div>
+              <div>
+                <strong class="text-sm font-semibold text-ink block mb-1">
+                  Tailored access
+                </strong>
+                <p class="text-sm text-muted leading-relaxed">
+                  Your permissions are tied to your role. You will only see the
+                  tools you need.
+                </p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Info Callout -->
+          <div class="p-4 bg-subtle border border-line rounded-control">
+            <div class="flex items-start gap-2.5">
+              <Icon
+                name="heroicons:information-circle"
+                class="h-4 w-4 text-muted shrink-0 mt-0.5"
+              />
+              <p class="text-xs text-muted leading-relaxed">
+                If you attempt to open a restricted page, you will see a quick
+                alert and be safely redirected back to your dashboard.
+              </p>
             </div>
+          </div>
         </AppCard>
       </div>
     </div>
@@ -366,8 +334,7 @@ const allModules = [
     id: "events",
     access: "operations",
     title: "Event Operations",
-    description:
-      "Manage upcoming services, special programs, and view historical event data.",
+    description: "Manage upcoming services.",
     icon: "heroicons:calendar",
     route: "/events",
   },
@@ -375,8 +342,7 @@ const allModules = [
     id: "altar-calls",
     access: "operations",
     title: "Altar Call Records",
-    description:
-      "Track responses, assign follow-ups, and manage salvation and rededication records.",
+    description: "Track responses and assign follow-ups.",
     icon: "heroicons:megaphone",
     route: "/altar-calls",
   },
@@ -384,8 +350,7 @@ const allModules = [
     id: "website",
     access: "website",
     title: "Website Content",
-    description:
-      "Edit the chapel website's pages, update content, and manage media.",
+    description: "Edit the chapel website's pages.",
     icon: "heroicons:globe-alt",
     route: "/website/homepage",
   },
@@ -394,8 +359,7 @@ const allModules = [
     id: "profile",
     access: "always",
     title: "My Profile",
-    description:
-      "Update your personal details, secure your account, and revoke active sessions.",
+    description: "Update your personal details.",
     icon: "heroicons:finger-print",
     route: "/dashboard/profile",
   },

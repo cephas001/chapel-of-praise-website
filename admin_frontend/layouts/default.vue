@@ -8,10 +8,10 @@
   <div
     class="min-h-dvh bg-canvas text-ink lg:grid lg:grid-cols-[256px_minmax(0,1fr)]"
   >
-    <!-- Scrim: mobile drawer only -->
+    <!-- Scrim: mobile drawer only; stays mounted so it can fade both ways -->
     <div
-      v-if="isSidebarOpen"
-      class="fixed inset-0 z-scrim bg-ink/40 lg:hidden"
+      class="fixed inset-0 z-scrim bg-ink/40 transition-opacity duration-200 ease-out motion-reduce:transition-none lg:hidden"
+      :class="isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'"
       aria-hidden="true"
       @click="closeDrawer"
     />
@@ -24,12 +24,12 @@
           ? 'visible translate-x-0'
           : 'invisible -translate-x-full lg:visible lg:translate-x-0'
       "
-      class="fixed inset-y-0 left-0 z-panel flex w-66 max-w-[85vw] flex-col border-r border-line bg-surface transition-[transform,visibility] duration-200 ease-out lg:sticky lg:top-0 lg:z-0 lg:h-dvh lg:w-auto lg:max-w-none"
+      class="fixed inset-y-0 left-0 z-panel flex w-66 max-w-[85vw] flex-col border-r border-line bg-surface transition-[transform,visibility] duration-200 ease-out motion-reduce:transition-none lg:sticky lg:top-0 lg:z-0 lg:h-dvh lg:w-auto lg:max-w-none"
       aria-label="Primary navigation"
     >
       <!-- Brand -->
       <div
-        class="flex items-center justify-between gap-2 border-b border-line py-3 pl-5 pr-3"
+        class="flex items-center justify-between gap-2 border-b border-line pt-5 pb-3 pl-5 pr-3"
       >
         <NuxtLink to="/dashboard" class="min-w-0">
           <span class="block text-sm font-semibold tracking-tight text-ink">
@@ -330,15 +330,20 @@
 
       <!-- Account -->
       <div class="border-t border-line p-3">
-        <p class="truncate px-3 pb-1.5 font-mono text-xs font-medium text-muted">
+        <p
+          class="truncate px-3 pb-1.5 font-mono text-xs font-medium text-muted"
+        >
           {{ auth.user?.email || "Administrator" }}
         </p>
         <button
           type="button"
-          class="flex w-full items-center gap-2.5 rounded-control px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-subtle hover:text-ink"
+          class="flex w-full items-center gap-2.5 rounded-control px-3 py-2 text-xs font-medium text-muted transition-colors hover:bg-subtle hover:text-ink"
           @click="handleLogout"
         >
-          <Icon name="heroicons:arrow-right-on-rectangle" class="h-4 w-4 shrink-0" />
+          <Icon
+            name="heroicons:arrow-right-on-rectangle"
+            class="h-4 w-4 shrink-0"
+          />
           Sign out
         </button>
       </div>
@@ -348,7 +353,7 @@
     <div class="flex min-w-0 flex-col">
       <!-- Mobile header: 56px, sticky, below scrims so the drawer dims it -->
       <header
-        class="sticky top-0 z-chrome flex h-14 items-center gap-3 border-b border-line bg-surface px-4 lg:hidden"
+        class="sticky top-0 z-chrome flex h-14 items-center gap-1 border-b border-line bg-surface px-4 lg:hidden"
       >
         <button
           type="button"
@@ -360,11 +365,12 @@
         >
           <Icon name="heroicons:bars-3" class="h-5 w-5" />
         </button>
-        <NuxtLink
-          to="/dashboard"
-          class="truncate text-sm font-semibold tracking-tight text-ink"
-        >
-          Chapel of Praise
+        <NuxtLink to="/dashboard">
+          <img
+            src="@/assets/images/Chapel Of Praise Logo.png"
+            alt="Chapel of Praise"
+            class="invert w-15"
+          >
         </NuxtLink>
       </header>
 
