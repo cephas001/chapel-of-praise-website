@@ -1,17 +1,17 @@
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8"
+    class="min-h-screen flex items-center justify-center bg-subtle px-4 sm:px-6 lg:px-8"
   >
-    <div
-      class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
+    <AppCard
+      class="max-w-md w-full" body-class="p-8"
     >
       <div class="text-center mb-6">
         <h2
-          class="text-base md:text-xl font-bold text-black uppercase font-jetbrains"
+          class="text-base md:text-xl font-semibold text-ink"
         >
           Chapel of Praise
         </h2>
-        <p class="text-xs md:text-sm text-gray-700 mt-1 font-jetbrains">
+        <p class="text-xs md:text-sm text-muted mt-1">
           Admin Portal
         </p>
       </div>
@@ -20,7 +20,7 @@
         <div>
           <label
             for="email"
-            class="block text-xs md:text-sm text-black mb-1 font-jetbrains font-medium"
+            class="block text-xs font-medium text-ink mb-1"
             >Email
           </label>
           <div class="relative">
@@ -29,7 +29,7 @@
             >
               <Icon
                 name="heroicons:envelope"
-                class="md:h-5 md:w-5 text-black"
+                class="md:h-5 md:w-5 text-ink"
               />
             </div>
             <input
@@ -37,7 +37,7 @@
               v-model="formData.email"
               type="email"
               required
-              class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors bg-white text-black"
+              class="block w-full rounded-control border border-line bg-surface py-2.5 pl-10 pr-3 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
               placeholder="reviewer@example.com"
             >
           </div>
@@ -46,7 +46,7 @@
         <div>
           <label
             for="password"
-            class="block text-xs md:text-sm font-medium text-black mb-1 font-jetbrains"
+            class="block text-xs font-medium text-ink mb-1"
             >Password</label
           >
 
@@ -54,7 +54,7 @@
             <div
               class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
             >
-              <Icon name="heroicons:lock-closed" class="h-5 w-5 text-black" />
+              <Icon name="heroicons:lock-closed" class="h-5 w-5 text-ink" />
             </div>
 
             <input
@@ -62,14 +62,14 @@
               v-model="formData.password"
               :type="showPassword ? 'text' : 'password'"
               required
-              class="block w-full pl-10 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors bg-white text-black"
+              class="block w-full rounded-control border border-line bg-surface py-2.5 pl-10 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
               placeholder="••••••••"
             >
 
             <button
               type="button"
               :aria-label="showPassword ? 'Hide password' : 'Show password'"
-              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-black focus:outline-none"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-muted transition-colors hover:text-ink focus:outline-none"
               @click="showPassword = !showPassword"
             >
               <Icon v-if="!showPassword" name="heroicons:eye" class="h-5 w-5" />
@@ -82,29 +82,23 @@
         <div class="flex justify-end">
           <button
             type="button"
-            class="text-xs text-gray-600 hover:text-black underline underline-offset-2 font-jetbrains"
+            class="text-xs text-muted underline underline-offset-2 transition-colors hover:text-ink"
             @click="handleForgotPassword"
           >
             Forgot password?
           </button>
         </div>
 
-        <button
+        <AppButton
           type="submit"
-          :disabled="loading"
-          class="w-full flex justify-center items-center gap-1 py-3 px-4 border border-transparent rounded-lg shadow-sm text-xs md:text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
+          size="lg"
+          :loading="loading"
+          class="w-full"
         >
-          <Icon
-            v-if="loading"
-            name="heroicons:arrow-path"
-            width="4"
-            height="4"
-            class="animate-spin"
-          />
-          {{ loading ? "Signing in..." : "Sign In" }}
-        </button>
+          {{ loading ? "Signing in..." : "Sign in" }}
+        </AppButton>
       </form>
-    </div>
+    </AppCard>
   </div>
 </template>
 

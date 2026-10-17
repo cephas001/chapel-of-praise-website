@@ -2,10 +2,10 @@
   <Transition name="fade">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-[9999] flex items-center justify-center px-4 sm:px-0"
+      class="fixed inset-0 z-overlay flex items-center justify-center px-4 sm:px-0"
     >
       <div
-        class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+        class="absolute inset-0 bg-ink/40 backdrop-blur-sm transition-opacity"
         aria-hidden="true"
         @click="respond(false)"
       />
@@ -20,7 +20,7 @@
           :aria-labelledby="titleId"
           :aria-describedby="messageId"
           tabindex="-1"
-          class="relative z-10 w-full max-w-sm overflow-hidden rounded-xl border border-gray-200 bg-white text-center shadow-2xl outline-none"
+          class="relative w-full max-w-sm overflow-hidden rounded-surface border border-line bg-surface text-center shadow-overlay outline-none"
           @keydown.esc.stop.prevent="respond(false)"
           @keydown.tab="trapFocus"
         >
@@ -29,8 +29,8 @@
               class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
               :class="
                 isDestructive
-                  ? 'bg-red-50 text-red-600'
-                  : 'bg-blue-50 text-blue-600'
+                  ? 'bg-danger-surface text-danger-text'
+                  : 'bg-subtle text-ink'
               "
             >
               <Icon
@@ -43,28 +43,28 @@
               />
             </div>
 
-            <h3 :id="titleId" class="mb-2 text-sm font-bold text-gray-900 font-jetbrains">
+            <h3 :id="titleId" class="mb-2 text-base font-semibold text-ink">
               {{ title }}
             </h3>
-            <p :id="messageId" class="text-xs md:text-sm text-gray-500 leading-relaxed">
+            <p :id="messageId" class="text-sm text-muted leading-relaxed">
               {{ message }}
             </p>
           </div>
 
-          <div class="flex items-center border-t border-gray-200 bg-gray-50/70">
+          <div class="flex items-center border-t border-line bg-subtle/70">
             <button
               ref="cancelButtonRef"
-              class="flex-1 py-4 text-xs md:text-sm font-jetbrains text-gray-600 hover:bg-gray-100 transition-colors border-r border-gray-200 outline-none"
+              class="flex-1 py-4 text-sm text-muted hover:bg-subtle transition-colors border-r border-line outline-none"
               @click="respond(false)"
             >
               {{ cancelText }}
             </button>
             <button
-              class="flex-1 py-4 text-xs md:text-sm font-jetbrains transition-colors outline-none"
+              class="flex-1 py-4 text-sm transition-colors outline-none"
               :class="
                 isDestructive
-                  ? 'text-red-600 hover:bg-red-50'
-                  : 'text-blue-600 hover:bg-blue-50'
+                  ? 'text-danger-text hover:bg-danger-surface'
+                  : 'text-ink hover:bg-subtle'
               "
               @click="respond(true)"
             >

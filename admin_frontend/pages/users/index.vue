@@ -1,80 +1,68 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="User management"
+      subtitle="View and manage authenticated users. Promote admins, edit profiles, or remove accounts."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          User Management
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          View and manage authenticated users. Promote admins, edit profiles, or
-          remove accounts.
-        </p>
-      </div>
+      <template #actions>
+        <AppButton icon="heroicons:user-plus" @click="openCreateDrawer">
+          New user
+        </AppButton>
+      </template>
+    </AppHeading>
 
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        @click="openCreateDrawer"
-      >
-        <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
-        New User
-      </button>
-    </div>
-
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-    >
+    <AppCard body-class="p-0">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">Admin user accounts</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 User
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Email
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Role
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <tr
               v-for="user in users"
               :key="user.uid"
-              class="group hover:bg-gray-50 transition-colors"
+              class="group transition-colors hover:bg-subtle/40"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
                   <div
-                    class="h-10 w-10 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm shrink-0"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-subtle font-mono text-sm font-medium text-ink"
                   >
                     {{
                       user.name
@@ -83,11 +71,11 @@
                     }}
                   </div>
                   <div>
-                    <div class="text-xs md:text-sm font-bold text-gray-900">
+                    <div class="text-xs font-medium text-ink md:text-sm">
                       {{ user.name || "—" }}
                     </div>
                     <div
-                      class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide flex items-center gap-1"
+                      class="mt-0.5 flex items-center gap-1 text-xs text-muted"
                     >
                       <Icon name="heroicons:envelope" class="h-3 w-3" />
                       {{ user.email }}
@@ -96,19 +84,19 @@
                 </div>
               </td>
 
-              <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
+              <td class="px-6 py-4 whitespace-nowrap text-xs text-muted">
                 {{ user.email }}
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-gray-100 text-gray-700"
+                  class="inline-flex items-center rounded-badge border border-line bg-subtle px-2.5 py-1 font-mono text-xs font-medium text-muted"
                 >
                   {{ user.role }}
                 </span>
               </td>
 
-              <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-700">
+              <td class="px-6 py-4 whitespace-nowrap text-xs text-muted">
                 {{ user.type || "—" }}
               </td>
 
@@ -117,7 +105,7 @@
               >
                 <div class="relative inline-flex items-center">
                   <button
-                    class="p-1 rounded hover:bg-gray-200 transition-colors text-gray-500"
+                    class="rounded-control p-1 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="Actions"
                     aria-label="User actions"
                     @click.stop="toggleDropdown($event, user)"
@@ -129,31 +117,31 @@
                     <div
                       v-if="activeDropdown === 'user_' + user.uid"
                       v-click-outside="closeDropdown"
-                      class="absolute w-44 bg-white border border-gray-100 rounded-lg shadow-xl p-1 flex flex-col z-[9999]"
+                      class="absolute z-overlay flex w-44 flex-col rounded-surface border border-line bg-surface p-1 shadow-overlay"
                       :style="dropdownStyle"
                     >
                       <button
                         v-if="user.role !== 'super_admin'"
-                        class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                        class="w-full rounded-control px-3 py-2 text-left text-xs text-ink transition-colors hover:bg-subtle"
                         @click="confirmUpgrade(user)"
                       >
-                        Promote User
+                        Promote user
                       </button>
 
                       <button
-                        class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                        class="w-full rounded-control px-3 py-2 text-left text-xs text-ink transition-colors hover:bg-subtle"
                         @click="openEditDrawer(user)"
                       >
-                        Edit User
+                        Edit user
                       </button>
 
-                      <div class="my-1 border-t border-gray-100"/>
+                      <div class="my-1 border-t border-line" />
 
                       <button
-                        class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
+                        class="w-full rounded-control px-3 py-2 text-left text-xs text-danger-text transition-colors hover:bg-danger-surface"
                         @click="confirmDelete(user)"
                       >
-                        Delete User
+                        Delete user
                       </button>
                     </div>
                   </Teleport>
@@ -166,51 +154,48 @@
 
       <div
         v-if="hasMore"
-        class="border-t border-gray-100 p-4 flex justify-center"
+        class="flex justify-center border-t border-line p-4"
       >
-        <button
-          :disabled="isLoadingMore"
-          class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+        <AppButton
+          variant="secondary"
+          size="sm"
+          icon="heroicons:arrow-path"
+          :loading="isLoadingMore"
           @click="loadMoreUsers"
         >
-          <Icon
-            v-if="isLoadingMore"
-            name="heroicons:arrow-path"
-            class="mr-2 h-4 w-4 animate-spin"
-          />
-          {{ isLoadingMore ? "Loading..." : "Load More" }}
-        </button>
+          {{ isLoadingMore ? "Loading…" : "Load more" }}
+        </AppButton>
       </div>
 
       <div
         v-if="!isFetching && users.length === 0"
-        class="py-20 text-center border-t border-gray-100"
+        class="border-t border-line py-20 text-center"
       >
         <Icon
           name="heroicons:users"
-          class="mx-auto h-12 w-12 text-gray-300 mb-4"
+          class="mx-auto mb-4 h-12 w-12 text-line"
         />
-        <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+        <h3 class="mb-1 text-sm font-semibold text-ink">
           No users found
         </h3>
-        <p class="text-gray-500 text-xs md:text-sm px-5">
+        <p class="px-5 text-xs text-muted md:text-sm">
           Users will appear here once created.
         </p>
       </div>
-    </div>
+    </AppCard>
 
-    <!-- SlideOver: Create / Edit User -->
+    <!-- SlideOver: Create / Edit user -->
     <SlideOver
       :is-open="isDrawerOpen"
-      :title="selectedUser ? 'Edit User' : 'Register New User'"
+      :title="selectedUser ? 'Edit user' : 'Register new user'"
       :before-close="confirmDiscardUserForm"
       @close="closeDrawer"
     >
-      <form class="p-1 font-poppins space-y-6" @submit.prevent="submitUserForm">
+      <form class="space-y-6 p-1" @submit.prevent="submitUserForm">
         <div>
           <label
             for="user-name"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Full Name
           </label>
@@ -219,7 +204,7 @@
             v-model="formData.name"
             type="text"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             placeholder="e.g. Jane Doe"
           >
         </div>
@@ -227,7 +212,7 @@
         <div>
           <label
             for="user-email"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Email
           </label>
@@ -236,7 +221,7 @@
             v-model="formData.email"
             type="email"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             placeholder="user@example.com"
           >
         </div>
@@ -245,7 +230,7 @@
           <div>
             <label
               for="user-role"
-              class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              class="block text-xs font-medium text-ink mb-2"
             >
               Role
             </label>
@@ -253,7 +238,7 @@
               id="user-role"
               v-model="formData.role"
               required
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm cursor-pointer"
             >
               <option value="admin">Admin</option>
               <option value="super_admin">Super Admin</option>
@@ -263,7 +248,7 @@
           <div>
             <label
               for="user-type"
-              class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+              class="block text-xs font-medium text-ink mb-2"
             >
               Type
             </label>
@@ -271,7 +256,7 @@
               id="user-type"
               v-model="formData.type"
               required
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm cursor-pointer"
             >
               <option value="website">Website</option>
               <option value="executive">Executive</option>
@@ -280,27 +265,23 @@
           </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-200">
-          <button
+        <div class="border-t border-line pt-6">
+          <AppButton
             type="submit"
-            :disabled="isSubmitting"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            size="lg"
+            class="w-full"
+            :loading="isSubmitting"
           >
-            <Icon
-              v-if="isSubmitting"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
             {{
               isSubmitting
                 ? selectedUser
-                  ? "Updating..."
-                  : "Saving..."
+                  ? "Updating…"
+                  : "Saving…"
                 : selectedUser
-                  ? "Update User"
-                  : "Create User"
+                  ? "Update user"
+                  : "Create user"
             }}
-          </button>
+          </AppButton>
         </div>
       </form>
     </SlideOver>
@@ -308,20 +289,20 @@
     <!-- Temporary credentials (shown once after creating a user) -->
     <div
       v-if="createdCredentials"
-      class="fixed inset-0 z-[9998] flex items-center justify-center p-4 font-poppins"
+      class="fixed inset-0 z-overlay flex items-center justify-center p-4"
     >
       <div
-        class="absolute inset-0 bg-black/40"
+        class="absolute inset-0 bg-ink/40"
         aria-hidden="true"
         @click="createdCredentials = null"
       />
       <div
-        class="relative w-full max-w-md bg-white rounded-xl border border-gray-200 shadow-xl p-6"
+        class="relative w-full max-w-md rounded-surface border border-line bg-surface p-6 shadow-overlay"
       >
-        <h3 class="text-sm font-bold text-black font-jetbrains mb-2">
-          User Created
+        <h3 class="mb-2 text-base font-semibold text-ink">
+          User created
         </h3>
-        <p class="text-xs md:text-sm text-gray-500 mb-5">
+        <p class="mb-5 text-xs text-muted md:text-sm">
           Share these credentials with the user now — the temporary password
           is shown only once. They can change it anytime via "Forgot password"
           on the login page.
@@ -330,24 +311,24 @@
         <div class="space-y-4 mb-6">
           <div>
             <p
-              class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-1.5"
+              class="mb-1.5 text-xs font-medium text-ink"
             >
               Email
             </p>
             <p
-              class="text-xs md:text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 break-all"
+              class="break-all rounded-control border border-line bg-subtle px-3 py-2.5 font-mono text-xs text-ink md:text-sm"
             >
               {{ createdCredentials.email }}
             </p>
           </div>
           <div>
             <p
-              class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-1.5"
+              class="mb-1.5 text-xs font-medium text-ink"
             >
-              Temporary Password
+              Temporary password
             </p>
             <p
-              class="text-xs md:text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 font-jetbrains break-all"
+              class="break-all rounded-control border border-line bg-subtle px-3 py-2.5 font-mono text-xs text-ink md:text-sm"
             >
               {{ createdCredentials.password }}
             </p>
@@ -355,19 +336,17 @@
         </div>
 
         <div class="flex gap-3">
-          <button
-            class="flex-1 inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+          <AppButton
+            variant="secondary"
+            icon="heroicons:clipboard"
+            class="flex-1"
             @click="copyCredentials"
           >
-            <Icon name="heroicons:clipboard" class="mr-2 h-4 w-4" />
             Copy
-          </button>
-          <button
-            class="flex-1 inline-flex items-center justify-center rounded-xl bg-black px-4 py-2.5 text-xs text-white font-jetbrains hover:bg-gray-800 transition-colors"
-            @click="createdCredentials = null"
-          >
+          </AppButton>
+          <AppButton class="flex-1" @click="createdCredentials = null">
             Done
-          </button>
+          </AppButton>
         </div>
       </div>
     </div>
@@ -509,11 +488,11 @@ const openCreateDrawer = () => {
 const confirmDiscardUserForm = async () => {
   if (JSON.stringify(formData.value) === initialFormSnapshot.value) return true;
   return await confirm.ask({
-    title: "Discard Changes?",
+    title: "Discard changes?",
     message:
       "You have unsaved changes to this user form. Close and discard them?",
     confirmText: "Discard",
-    cancelText: "Keep Editing",
+    cancelText: "Keep editing",
     isDestructive: true,
   });
 };
@@ -628,7 +607,7 @@ const copyCredentials = async () => {
 const confirmUpgrade = async (user) => {
   closeDropdown();
   const answer = await confirm.ask({
-    title: "Promote User",
+    title: "Promote user",
     message: `Promote ${user.name || user.email} to Super Admin? This grants full access.`,
     confirmText: "Promote",
     cancelText: "Cancel",
@@ -654,7 +633,7 @@ const confirmUpgrade = async (user) => {
 const confirmDelete = async (user) => {
   closeDropdown();
   const answer = await confirm.ask({
-    title: "Delete User",
+    title: "Delete user",
     message: `Are you sure you want to permanently delete ${user.name || user.email}? This cannot be undone.`,
     confirmText: "Delete",
     cancelText: "Cancel",

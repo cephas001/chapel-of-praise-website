@@ -1,47 +1,41 @@
 <template>
-  <div class="relative min-h-screen pb-20 pt-5 font-poppins">
+  <div class="relative min-h-screen pb-20 pt-5">
     <LoadingScreen :is-loading="isFetching" />
 
-    <div class="mb-8">
-      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-        Data Summaries
-      </h2>
-      <p class="text-gray-500 text-xs md:text-sm">
-        A snapshot of events, attendance, altar calls, follow-ups and
-        membership across the chapel.
-      </p>
-    </div>
+    <AppHeading
+      class="mb-8"
+      title="Data summaries"
+      subtitle="A snapshot of events, attendance, altar calls, follow-ups and membership across the chapel."
+    />
 
     <!-- KPI Row -->
     <div
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
     >
-      <div
+      <AppCard
         v-for="kpi in kpis"
         :key="kpi.label"
-        class="bg-white rounded-xl border border-gray-200 shadow-sm p-5"
+        body-class="p-5"
       >
         <div
-          class="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 mb-4"
+          class="h-10 w-10 rounded-control bg-subtle flex items-center justify-center text-muted mb-4"
         >
           <Icon :name="kpi.icon" class="h-5 w-5" />
         </div>
         <p
-          class="text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-1"
+          class="font-mono text-xs font-medium text-muted mb-1"
         >
           {{ kpi.label }}
         </p>
-        <h4 class="text-2xl font-black text-gray-900">{{ kpi.value }}</h4>
-      </div>
+        <h4 class="text-2xl font-semibold text-ink">{{ kpi.value }}</h4>
+      </AppCard>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Follow-ups by Status -->
-      <section
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-      >
-        <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-          <h3 class="text-sm font-jetbrains font-bold text-black">
+      <AppCard body-class="p-0">
+        <div class="bg-subtle/60 border-b border-line px-6 py-5">
+          <h3 class="text-sm font-semibold text-ink">
             Follow-ups by Status
           </h3>
         </div>
@@ -50,30 +44,28 @@
             <li
               v-for="row in followUpRows"
               :key="row.label"
-              class="flex items-center justify-between border-b border-gray-100 last:border-0 pb-3 last:pb-0"
+              class="flex items-center justify-between border-b border-line last:border-0 pb-3 last:pb-0"
             >
               <span
-                class="text-xs font-jetbrains font-bold uppercase tracking-wide text-gray-600"
+                class="font-mono text-xs font-medium text-muted"
               >
                 {{ row.label }}
               </span>
-              <span class="text-sm font-black text-gray-900">
+              <span class="text-sm font-semibold text-ink">
                 {{ row.value }}
               </span>
             </li>
           </ul>
-          <p v-else class="text-xs text-gray-500">
+          <p v-else class="text-xs text-muted">
             No follow-up records yet.
           </p>
         </div>
-      </section>
+      </AppCard>
 
       <!-- Altar Calls by Type -->
-      <section
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-      >
-        <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-          <h3 class="text-sm font-jetbrains font-bold text-black">
+      <AppCard body-class="p-0">
+        <div class="bg-subtle/60 border-b border-line px-6 py-5">
+          <h3 class="text-sm font-semibold text-ink">
             Altar Calls by Type
           </h3>
         </div>
@@ -82,29 +74,27 @@
             <li
               v-for="row in altarCallTypeTotals"
               :key="row.type"
-              class="flex items-center justify-between border-b border-gray-100 last:border-0 pb-3 last:pb-0"
+              class="flex items-center justify-between border-b border-line last:border-0 pb-3 last:pb-0"
             >
               <span
-                class="text-xs font-jetbrains font-bold uppercase tracking-wide text-gray-600"
+                class="font-mono text-xs font-medium text-muted"
               >
                 {{ row.type }}
               </span>
-              <span class="text-xs font-bold text-gray-900">
+              <span class="text-xs font-semibold text-ink">
                 {{ row.responders }} responders
-                <span class="text-gray-500">· {{ row.calls }} calls</span>
+                <span class="text-muted">· {{ row.calls }} calls</span>
               </span>
             </li>
           </ul>
-          <p v-else class="text-xs text-gray-500">No altar calls recorded yet.</p>
+          <p v-else class="text-xs text-muted">No altar calls recorded yet.</p>
         </div>
-      </section>
+      </AppCard>
 
       <!-- Events by Service -->
-      <section
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-      >
-        <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-          <h3 class="text-sm font-jetbrains font-bold text-black">
+      <AppCard body-class="p-0">
+        <div class="bg-subtle/60 border-b border-line px-6 py-5">
+          <h3 class="text-sm font-semibold text-ink">
             Events by Service
           </h3>
         </div>
@@ -113,28 +103,26 @@
             <li
               v-for="row in eventsByService"
               :key="row.service"
-              class="flex items-center justify-between border-b border-gray-100 last:border-0 pb-3 last:pb-0"
+              class="flex items-center justify-between border-b border-line last:border-0 pb-3 last:pb-0"
             >
               <span
-                class="text-xs font-jetbrains font-bold uppercase tracking-wide text-gray-600"
+                class="font-mono text-xs font-medium text-muted"
               >
                 {{ row.service }}
               </span>
-              <span class="text-sm font-black text-gray-900">
+              <span class="text-sm font-semibold text-ink">
                 {{ row.count }}
               </span>
             </li>
           </ul>
-          <p v-else class="text-xs text-gray-500">No events recorded yet.</p>
+          <p v-else class="text-xs text-muted">No events recorded yet.</p>
         </div>
-      </section>
+      </AppCard>
 
       <!-- Members by Unit -->
-      <section
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-      >
-        <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-          <h3 class="text-sm font-jetbrains font-bold text-black">
+      <AppCard body-class="p-0">
+        <div class="bg-subtle/60 border-b border-line px-6 py-5">
+          <h3 class="text-sm font-semibold text-ink">
             Members by Unit
           </h3>
         </div>
@@ -143,21 +131,21 @@
             <li
               v-for="row in membersByUnit"
               :key="row.unit"
-              class="flex items-center justify-between border-b border-gray-100 last:border-0 pb-3 last:pb-0"
+              class="flex items-center justify-between border-b border-line last:border-0 pb-3 last:pb-0"
             >
               <span
-                class="text-xs font-jetbrains font-bold uppercase tracking-wide text-gray-600"
+                class="font-mono text-xs font-medium text-muted"
               >
                 {{ row.unit }}
               </span>
-              <span class="text-sm font-black text-gray-900">
+              <span class="text-sm font-semibold text-ink">
                 {{ row.count }}
               </span>
             </li>
           </ul>
-          <p v-else class="text-xs text-gray-500">No members registered yet.</p>
+          <p v-else class="text-xs text-muted">No members registered yet.</p>
         </div>
-      </section>
+      </AppCard>
     </div>
   </div>
 </template>

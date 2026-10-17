@@ -1,26 +1,27 @@
 <template>
-  <div
-    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full"
+  <AppCard
+    class="flex h-full flex-col" body-class="flex min-h-0 flex-1 flex-col"
   >
     <div
-      class="px-6 py-5 border-b border-gray-200 flex items-start justify-between"
+      class="px-6 py-5 border-b border-line flex items-start justify-between"
     >
       <div>
-        <h3 class="text-base font-bold font-jetbrains text-black">
+        <h3 class="text-base font-semibold text-ink">
           Event Demographics
         </h3>
 
-        <p class="text-xs text-gray-500 mt-1">
+        <p class="text-xs text-muted mt-1">
           Attendance breakdown for this event.
         </p>
       </div>
 
       <button
         v-if="headcount && !isFetching"
-        class="inline-flex items-center text-xs font-jetbrains text-gray-500 hover:text-black transition-colors"
+        aria-label="Edit demographics"
+        class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
         @click="openDrawer"
       >
-        <Icon name="heroicons:pencil-square" class="mr-1.5 h-4 w-4" />
+        <Icon name="heroicons:pencil-square" class="h-4 w-4" />
       </button>
     </div>
 
@@ -30,10 +31,10 @@
     >
       <Icon
         name="heroicons:arrow-path"
-        class="h-8 w-8 text-gray-500 animate-spin mb-4"
+        class="h-8 w-8 text-muted animate-spin mb-4"
       />
 
-      <p class="text-xs font-bold font-jetbrains text-gray-500 animate-pulse">
+      <p class="font-mono text-xs font-medium text-muted animate-pulse">
         Loading demographics...
       </p>
     </div>
@@ -42,56 +43,51 @@
       v-else-if="!headcount"
       class="flex-1 flex flex-col items-center justify-center py-14 px-8 text-center"
     >
-      <Icon name="heroicons:users" class="h-10 w-10 text-gray-300 mb-4" />
+      <Icon name="heroicons:users" class="h-10 w-10 text-line mb-4" />
 
-      <h4 class="text-sm font-bold font-jetbrains text-black mb-2">
+      <h4 class="text-sm font-semibold text-ink mb-2">
         No Demographics Recorded
       </h4>
 
-      <p class="text-xs text-gray-500 mb-6 max-w-xs">
+      <p class="text-xs text-muted mb-6 max-w-xs">
         Record attendance demographics for this event.
       </p>
 
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs font-jetbrains text-white hover:bg-gray-800 transition-colors"
-        @click="openDrawer"
-      >
-        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-
-        Record Head Count
-      </button>
+      <AppButton icon="heroicons:plus" @click="openDrawer">
+        Record head count
+      </AppButton>
     </div>
 
     <div v-else class="p-6 flex-1 flex flex-col">
       <div class="grid grid-cols-2 gap-5">
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div class="bg-subtle border border-line rounded-control p-4">
           <p
-            class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500 mb-3"
+            class="font-mono text-xs font-medium text-muted mb-3"
           >
             Students
           </p>
           <div class="space-y-2">
-            <p class="text-xs text-gray-900">
-              <span class="font-bold">{{ headcount.maleStudents }}</span> Male
+            <p class="text-xs text-ink">
+              <span class="font-semibold">{{ headcount.maleStudents }}</span> Male
             </p>
-            <p class="text-xs text-gray-900">
-              <span class="font-bold">{{ headcount.femaleStudents }}</span>
+            <p class="text-xs text-ink">
+              <span class="font-semibold">{{ headcount.femaleStudents }}</span>
               Female
             </p>
           </div>
         </div>
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div class="bg-subtle border border-line rounded-control p-4">
           <p
-            class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500 mb-3"
+            class="font-mono text-xs font-medium text-muted mb-3"
           >
             Visitors
           </p>
           <div class="space-y-2">
-            <p class="text-xs text-gray-900">
-              <span class="font-bold">{{ headcount.maleVisitors }}</span> Male
+            <p class="text-xs text-ink">
+              <span class="font-semibold">{{ headcount.maleVisitors }}</span> Male
             </p>
-            <p class="text-xs text-gray-900">
-              <span class="font-bold">{{ headcount.femaleVisitors }}</span>
+            <p class="text-xs text-ink">
+              <span class="font-semibold">{{ headcount.femaleVisitors }}</span>
               Female
             </p>
           </div>
@@ -99,13 +95,13 @@
       </div>
 
       <div
-        class="bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center justify-between mt-3"
+        class="bg-subtle rounded-surface p-4 border border-line flex items-center justify-between mt-3"
       >
         <span
-          class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-700"
+          class="font-mono text-xs font-medium text-ink"
           >Total Attendance</span
         >
-        <span class="text-base font-black text-black">{{ totalCount }}</span>
+        <span class="text-base font-semibold text-ink">{{ totalCount }}</span>
       </div>
     </div>
 
@@ -120,7 +116,7 @@
         @submit="handleFormSubmit"
       />
     </SlideOver>
-  </div>
+  </AppCard>
 </template>
 
 <script setup>

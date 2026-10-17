@@ -1,9 +1,9 @@
 <template>
-  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
+  <form class="space-y-6 pt-2" @submit.prevent="handleSubmit">
     <div>
       <label
         for="altar-call-type"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >Altar Call Category</label
       >
       <div class="relative">
@@ -11,7 +11,7 @@
           id="altar-call-type"
           v-model="formData.callType"
           required
-          class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
+          class="w-full appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         >
           <option value="" disabled>Select Call Type</option>
           <option value="SALVATION">SALVATION</option>
@@ -24,7 +24,7 @@
         <div
           class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
         >
-          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+          <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
     <div>
       <label
         for="altar-call-responders"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >Number of Responders</label
       >
       <input
@@ -41,7 +41,7 @@
         type="number"
         min="1"
         required
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+        class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         placeholder="e.g. 25"
       >
     </div>
@@ -49,31 +49,27 @@
     <div>
       <label
         for="altar-call-comments"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >Additional Comments</label
       >
       <textarea
         id="altar-call-comments"
         v-model="formData.additionalComments"
         rows="3"
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+        class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
         placeholder="Any notes regarding this altar call..."
       />
     </div>
 
-    <div class="pt-6 border-t border-gray-200">
-      <button
+    <div class="pt-6 border-t border-line">
+      <AppButton
         type="submit"
-        :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        size="lg"
+        :loading="loading"
+        class="w-full"
       >
-        <Icon
-          v-if="loading"
-          name="heroicons:arrow-path"
-          class="mr-2 h-4 w-4 animate-spin"
-        />
-        Record Altar Call
-      </button>
+        Record altar call
+      </AppButton>
     </div>
   </form>
 </template>

@@ -1,22 +1,22 @@
 <template>
   <button
     type="button"
-    class="w-full pr-4 py-2 mt-4 mb-1 flex items-center justify-between cursor-pointer group selection:bg-transparent text-left"
+    class="group flex w-full items-center justify-between rounded-control px-3 pb-1.5 pt-5 text-left"
     :aria-expanded="modelValue ? 'true' : 'false'"
     @click="toggle"
   >
     <span
-      class="text-[11px] text-black font-bold uppercase tracking-widest font-jetbrains transition-colors duration-200"
+      class="font-mono text-xs font-medium text-muted transition-colors group-hover:text-ink"
     >
       {{ label }}
     </span>
 
     <Icon
-      name="heroicons:chevron-right-solid"
+      name="heroicons:chevron-right"
       aria-hidden="true"
       :class="[
-        'h-3.5 w-3.5 transition-transform duration-200 text-gray-500 group-hover:text-black',
-        modelValue ? 'rotate-90' : '',
+        'h-3.5 w-3.5 transition-transform duration-200 group-hover:text-ink',
+        modelValue ? 'rotate-90 text-ink' : 'text-muted',
       ]"
     />
   </button>

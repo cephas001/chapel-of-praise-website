@@ -1,9 +1,11 @@
 // frontend/nuxt.config.ts
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: process.env.NODE_ENV !== "production" },
 
-  modules: ["@nuxt/ui", "@pinia/nuxt", "@vite-pwa/nuxt", "@nuxt/eslint"],
+  modules: ["@nuxt/icon", "@pinia/nuxt", "@vite-pwa/nuxt", "@nuxt/eslint"],
 
   css: ["~/assets/css/main.css"],
 
@@ -11,9 +13,14 @@ export default defineNuxtConfig({
     "/": { redirect: "/dashboard" },
   },
 
-  colorMode: {
-    preference: "system",
-    fallback: "light",
+  // Light mode only (grayscale-first UI, no dark variant): there are no
+  // dark: utilities anywhere, so Tailwind's default dark behavior stays
+  // inert. The legacy tailwind.config.js bridge has been deleted.
+
+  vite: {
+    // Tailwind CSS v4 is wired directly through its Vite plugin now that
+    // @nuxt/ui (which used to provide this wiring) is fully removed.
+    plugins: [tailwindcss()],
   },
 
   pwa: {
@@ -22,8 +29,8 @@ export default defineNuxtConfig({
       name: "Chapel of Praise Admin",
       short_name: "COP Admin",
       description: "Administrative system for Chapel of Praise",
-      theme_color: "#000000",
-      background_color: "#ffffff",
+      theme_color: "#101319",
+      background_color: "#f6f7f9",
       display: "standalone", // This hides the browser URL bar to make it look like a native app
       orientation: "portrait",
       icons: [

@@ -2,22 +2,22 @@
   <Teleport to="body">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
+      class="fixed inset-0 z-overlay flex items-center justify-center p-4 sm:p-6"
     >
       <div
-        class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+        class="absolute inset-0 bg-ink/40 backdrop-blur-sm transition-opacity"
         aria-hidden="true"
         @click="closeModal"
       />
 
       <div
-        class="relative w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white p-6 sm:p-8 text-center shadow-2xl transform transition-all animate-fade-in-up"
+        class="relative w-full max-w-md overflow-hidden rounded-surface border border-line bg-surface p-6 text-center shadow-overlay transform transition animate-fade-in-up sm:p-8"
       >
         <div
-          class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-50 mb-6"
+          class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-danger-surface mb-6"
         >
           <svg
-            class="h-8 w-8 text-red-500"
+            class="h-8 w-8 text-danger-text"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -31,19 +31,16 @@
           </svg>
         </div>
 
-        <h3 class="mb-2 text-sm font-bold text-gray-900 font-jetbrains">
+        <h3 class="mb-2 text-base font-semibold text-ink">
           {{ errorTitle }}
         </h3>
-        <p class="mb-8 text-xs md:text-sm text-gray-500 leading-relaxed">
+        <p class="mb-8 text-sm text-muted leading-relaxed">
           {{ errorMessage }}
         </p>
 
-        <button
-          class="w-full inline-flex justify-center rounded-xl border border-transparent bg-black px-4 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-colors font-jetbrains"
-          @click="closeModal"
-        >
+        <AppButton class="w-full" size="lg" @click="closeModal">
           Understood
-        </button>
+        </AppButton>
       </div>
     </div>
   </Teleport>

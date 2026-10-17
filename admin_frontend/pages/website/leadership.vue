@@ -1,67 +1,64 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Page Header -->
-    <div class="mb-8">
-      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-        Leadership Management
-      </h2>
-      <p class="text-gray-500 text-xs md:text-sm">
-        Manage text and sections on the Leadership page.
-      </p>
-    </div>
+    <AppHeading
+      class="mb-8"
+      title="Leadership management"
+      subtitle="Manage text and sections on the Leadership page."
+    />
 
     <!-- Main Form -->
     <form
-      class="space-y-13 border-t border-gray-200 pt-7"
+      class="space-y-13 border-t border-line pt-7"
       @submit.prevent="saveSettings"
     >
       <!-- Hero Section -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Hero Section
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Configure the top banner of the leadership page.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 for="leadership-hero-kicker"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
                 >Hero Kicker</label
               >
               <input
                 id="leadership-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="e.g. Our Leaders"
               >
             </div>
             <div>
               <label
                 for="leadership-hero-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
                 >Hero Headline</label
               >
               <input
                 id="leadership-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div class="md:col-span-2">
               <label
                 for="leadership-hero-image"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
                 >Hero Background Image URL</label
               >
               <MediaPickerInput
@@ -76,49 +73,49 @@
               @click="handleSaveSection('heroSection', heroSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Team Section -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Team Section Overview
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Provide a general introduction to the leadership team.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 for="leadership-team-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
                 >Headline</label
               >
               <input
                 id="leadership-team-headline"
                 v-model="teamSection.teamHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div class="md:col-span-2">
               <label
                 for="leadership-team-description"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
                 >Description</label
               >
               <textarea
                 id="leadership-team-description"
                 v-model="teamSection.teamDescription"
                 rows="3"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
               />
             </div>
           </div>
@@ -128,50 +125,46 @@
               @click="handleSaveSection('teamSection', teamSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Chaplaincy List -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Chaplaincy List
           </h3>
-          <p class="text-xs md:text-sm text-gray-500 mb-5">
+          <p class="text-xs md:text-sm text-muted mb-5">
             Manage the pastoral and spiritual leadership team.
           </p>
-          <button
-            type="button"
-            class="inline-flex items-center px-4 py-2 text-[11px] text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
-            @click="addChaplain"
-          >
+          <AppButton variant="secondary" size="sm" @click="addChaplain">
             + Add Chaplain
-          </button>
+          </AppButton>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 space-y-6">
             <div
               v-if="chaplaincySection.chaplaincyList.length === 0"
-              class="text-xs text-gray-500 text-center py-4"
+              class="text-xs text-muted text-center py-4"
             >
               No chaplains added yet.
             </div>
             <div
               v-for="(chaplain, index) in chaplaincySection.chaplaincyList"
               :key="'chaplain' + index"
-              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
+              class="bg-subtle/60 rounded-surface p-5 border border-line relative pt-12"
             >
               <span
-                class="absolute top-5 left-5 text-[11px] font-bold text-gray-500 uppercase font-jetbrains"
+                class="absolute top-5 left-5 text-xs font-semibold text-muted font-mono"
                 >Chaplain {{ index + 1 }}</span
               >
               <button
                 type="button"
-                class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1 flex items-center"
+                class="absolute top-4 right-4 text-danger-text transition-colors p-1 flex items-center"
                 title="Remove Chaplain"
                 @click="removeChaplain(index)"
               >
@@ -181,33 +174,33 @@
                 <div>
                   <label
                     :for="`chaplain-name-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Name</label
                   >
                   <input
                     :id="`chaplain-name-${index}`"
                     v-model="chaplain.name"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`chaplain-title-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Title</label
                   >
                   <input
                     :id="`chaplain-title-${index}`"
                     v-model="chaplain.title"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div class="md:col-span-2">
                   <label
                     :for="`chaplain-image-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Image URL</label
                   >
                   <MediaPickerInput
@@ -218,14 +211,14 @@
                 <div class="md:col-span-2">
                   <label
                     :for="`chaplain-bio-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Bio</label
                   >
                   <textarea
                     :id="`chaplain-bio-${index}`"
                     v-model="chaplain.bio"
                     rows="3"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
                   />
                 </div>
               </div>
@@ -237,35 +230,31 @@
               @click="handleSaveSection('chaplaincySection', chaplaincySection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Student Executives List -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Student Executives
           </h3>
-          <p class="text-xs md:text-sm text-gray-500 mb-5">
+          <p class="text-xs md:text-sm text-muted mb-5">
             Manage the student leadership council.
           </p>
-          <button
-            type="button"
-            class="inline-flex items-center px-4 py-2 text-[11px] text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
-            @click="addExecutive"
-          >
+          <AppButton variant="secondary" size="sm" @click="addExecutive">
             + Add Executive
-          </button>
+          </AppButton>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 space-y-6">
             <div
               v-if="studentExecutivesSection.studentExecutivesList.length === 0"
-              class="text-xs text-gray-500 text-center py-4"
+              class="text-xs text-muted text-center py-4"
             >
               No student executives added yet.
             </div>
@@ -274,15 +263,15 @@
                 exec, index
               ) in studentExecutivesSection.studentExecutivesList"
               :key="'exec' + index"
-              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative pt-12"
+              class="bg-subtle/60 rounded-surface p-5 border border-line relative pt-12"
             >
               <span
-                class="absolute top-5 left-5 text-[11px] font-bold text-gray-500 uppercase font-jetbrains"
+                class="absolute top-5 left-5 text-xs font-semibold text-muted font-mono"
                 >Executive {{ index + 1 }}</span
               >
               <button
                 type="button"
-                class="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors p-1"
+                class="absolute top-4 right-4 text-danger-text transition-colors p-1"
                 title="Remove Executive"
                 @click="removeExecutive(index)"
               >
@@ -292,33 +281,33 @@
                 <div>
                   <label
                     :for="`exec-name-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Name</label
                   >
                   <input
                     :id="`exec-name-${index}`"
                     v-model="exec.name"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`exec-title-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Title</label
                   >
                   <input
                     :id="`exec-title-${index}`"
                     v-model="exec.title"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div class="md:col-span-2">
                   <label
                     :for="`exec-image-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Image URL</label
                   >
                   <MediaPickerInput
@@ -329,14 +318,14 @@
                 <div class="md:col-span-2">
                   <label
                     :for="`exec-bio-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                     >Bio</label
                   >
                   <textarea
                     :id="`exec-bio-${index}`"
                     v-model="exec.bio"
                     rows="3"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
                   />
                 </div>
               </div>
@@ -353,33 +342,27 @@
               "
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
-      <!-- Sticky Footer -->
+      <!-- Sticky save bar: stays in flow at the end of the form and pins to
+           the viewport bottom while the form is in view. Negative margins
+           mirror main's padding (layout/default.vue) so the bar bleeds to
+           the column edges without width calculations. -->
       <div
-        class="fixed bottom-0 right-0 w-full md:w-[calc(100%-18rem)] bg-white/80 backdrop-blur-md border-t border-gray-200 p-4 flex justify-end space-x-4 z-30"
+        class="sticky bottom-0 z-sticky -mx-4 -mb-5 mt-6 flex items-center justify-end gap-3 border-t border-line bg-surface/90 px-4 py-3 backdrop-blur-md md:-mx-6 md:-mb-6 md:px-6 lg:-mx-8 lg:-mb-8 lg:px-8"
       >
-        <button
-          type="button"
-          class="px-5 py-2.5 text-xs md:text-sm text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-jetbrains"
+        <AppButton
+          variant="secondary"
+          size="lg"
           :disabled="isSaving"
           @click="loadSettings"
         >
           Discard
-        </button>
-        <button
-          type="submit"
-          :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
-        >
-          <Icon
-            v-if="isSaving"
-            name="heroicons:arrow-path"
-            class="mr-2 h-5 w-5 animate-spin"
-          />
-          {{ isSaving ? "Saving..." : "Save Changes" }}
-        </button>
+        </AppButton>
+        <AppButton type="submit" size="lg" :loading="isSaving">
+          {{ isSaving ? "Saving…" : "Save changes" }}
+        </AppButton>
       </div>
     </form>
   </div>

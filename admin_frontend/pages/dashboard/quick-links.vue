@@ -1,47 +1,41 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- INVISIBLE OVERLAY: Closes dropdowns when clicking outside -->
     <div
       v-if="activeDropdown"
-      class="fixed inset-0 z-40"
+      class="fixed inset-0 z-scrim"
       aria-hidden="true"
       @click="closeDropdown"
     />
 
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    <AppHeading
+      class="mb-8"
+      title="Dashboard quick links"
+      subtitle="Access external services and operational tools."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Dashboard Quick Links
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Access external services and operational tools.
-        </p>
-      </div>
-
-      <button
-        v-if="isSuperAdmin"
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        @click="openAddCategoryDrawer"
-      >
-        <Icon name="heroicons:folder-plus" class="mr-2 h-4 w-4" />
-        Add Category
-      </button>
-    </div>
+      <template #actions>
+        <AppButton
+          v-if="isSuperAdmin"
+          icon="heroicons:folder-plus"
+          @click="openAddCategoryDrawer"
+        >
+          Add category
+        </AppButton>
+      </template>
+    </AppHeading>
 
     <div
       v-if="!isSuperAdmin"
-      class="mt-6 flex items-start gap-2.5 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3"
+      class="mt-6 flex items-start gap-2.5 rounded-control border border-line bg-subtle px-4 py-3"
     >
       <Icon
         name="heroicons:eye"
-        class="h-4 w-4 shrink-0 text-blue-600 mt-0.5"
+        class="mt-0.5 h-4 w-4 shrink-0 text-muted"
       />
-      <p class="text-xs font-medium leading-relaxed text-blue-800">
-        You have view-only access to Quick Links. Contact a Super Admin to add
+      <p class="text-xs font-medium leading-relaxed text-ink">
+        You have view-only access to Quick Links. Contact a super admin to add
         or edit links.
       </p>
     </div>
@@ -49,22 +43,23 @@
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 items-start"
     >
-      <div
+      <AppCard
         v-for="section in dashboardSections"
         :key="section.id"
-        class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all duration-200"
+        body-class="p-0"
+        class="flex flex-col"
       >
         <div
-          class="bg-gray-50/50 border-b border-gray-100 px-5 py-4 flex justify-between items-center"
+          class="flex items-center justify-between border-b border-line bg-subtle/50 px-5 py-4"
         >
-          <h3 class="text-sm font-jetbrains font-bold text-black">
+          <h3 class="text-sm font-semibold text-ink">
             {{ section.title }}
           </h3>
 
           <div class="flex items-center gap-1">
             <!-- Collapse Button (Visible to everyone) -->
             <button
-              class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
+              class="rounded-control p-1.5 text-muted transition-colors hover:bg-subtle hover:text-ink"
               :title="
                 collapsedSections[section.id]
                   ? 'Expand section'
@@ -80,9 +75,9 @@
             </button>
 
             <!-- Super Admin Dropdown -->
-            <div v-if="isSuperAdmin" class="relative z-50">
+            <div v-if="isSuperAdmin" class="relative z-panel">
               <button
-                class="p-1.5 rounded-md hover:bg-gray-200/50 transition-colors text-gray-500"
+                class="rounded-control p-1.5 text-muted transition-colors hover:bg-subtle hover:text-ink"
                 @click="toggleDropdown('category_' + section.id)"
               >
                 <Icon name="heroicons:ellipsis-vertical" class="h-5 w-5" />
@@ -91,35 +86,35 @@
               <!-- Native Vue Dropdown Menu -->
               <div
                 v-if="activeDropdown === 'category_' + section.id"
-                class="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-col"
+                class="absolute right-0 mt-2 flex w-40 flex-col rounded-surface border border-line bg-surface p-2 shadow-overlay"
               >
                 <button
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+                  class="w-full rounded-control px-3 py-2 text-left text-xs text-ink transition-colors hover:bg-subtle"
                   @click="
                     openEditCategoryDrawer(section);
                     closeDropdown();
                   "
                 >
-                  Edit Category
+                  Edit category
                 </button>
                 <button
-                  class="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-gray-50 text-black"
+                  class="w-full rounded-control px-3 py-2 text-left text-xs text-ink transition-colors hover:bg-subtle"
                   @click="
                     openAddLinkDrawer(section.id);
                     closeDropdown();
                   "
                 >
-                  Add Link
+                  Add link
                 </button>
-                <div class="my-1 border-t border-gray-100"/>
+                <div class="my-1 border-t border-line" />
                 <button
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-lg hover:bg-red-50"
+                  class="w-full rounded-control px-3 py-2 text-left text-xs text-danger-text transition-colors hover:bg-danger-surface"
                   @click="
                     handleDeleteCategory(section.id);
                     closeDropdown();
                   "
                 >
-                  Delete Category
+                  Delete category
                 </button>
               </div>
             </div>
@@ -135,9 +130,7 @@
             v-if="!section.links || section.links.length === 0"
             class="text-center py-5"
           >
-            <p
-              class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
-            >
+            <p class="font-mono text-xs text-muted">
               No links available
             </p>
           </div>
@@ -145,39 +138,39 @@
           <div
             v-for="link in section.links"
             :key="link.id"
-            class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
+            class="group flex items-center justify-between rounded-control border border-transparent p-3 transition-colors hover:border-line hover:bg-subtle/60"
           >
             <a
               :href="link.url"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex-1 min-w-0 text-xs md:text-sm text-black tracking-wide transition-colors truncate pr-4 font-jetbrains"
+              class="min-w-0 flex-1 truncate pr-4 font-mono text-xs text-ink transition-colors md:text-sm"
             >
               {{ link.label }}
             </a>
 
             <div
               v-if="isSuperAdmin"
-              class="shrink-0 relative z-50"
+              class="shrink-0 relative z-panel"
             >
               <button
-                class="p-1 rounded hover:bg-gray-200 transition-colors"
+                class="rounded-control p-1 text-muted transition-colors hover:bg-subtle hover:text-ink"
                 aria-label="Link actions"
                 @click="toggleDropdown('link_' + link.id)"
               >
                 <Icon
                   name="heroicons:ellipsis-vertical"
-                  class="h-4 w-4 text-gray-500 group-hover:text-black"
+                  class="h-4 w-4 text-muted group-hover:text-ink"
                 />
               </button>
 
               <!-- Native Vue Dropdown Menu -->
               <div
                 v-if="activeDropdown === 'link_' + link.id"
-                class="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-lg shadow-xl p-1 flex flex-col"
+                class="absolute right-0 mt-2 flex w-32 flex-col rounded-surface border border-line bg-surface p-1 shadow-overlay"
               >
                 <button
-                  class="w-full text-left px-3 py-2 text-xs rounded-md hover:bg-gray-50 text-black"
+                  class="w-full rounded-control px-3 py-2 text-left text-xs text-ink transition-colors hover:bg-subtle"
                   @click="
                     openEditLinkDrawer(section.id, link);
                     closeDropdown();
@@ -186,7 +179,7 @@
                   Edit
                 </button>
                 <button
-                  class="w-full text-left px-3 py-2 text-xs text-red-600 rounded-md hover:bg-red-50"
+                  class="w-full rounded-control px-3 py-2 text-left text-xs text-danger-text transition-colors hover:bg-danger-surface"
                   @click="
                     handleDeleteLink(section.id, link.id);
                     closeDropdown();
@@ -198,19 +191,19 @@
             </div>
           </div>
         </div>
-      </div>
+      </AppCard>
     </div>
 
     <SlideOver
       :is-open="isDrawerOpen"
-      :title="editingLinkId ? 'Edit Link' : 'Add New Link'"
+      :title="editingLinkId ? 'Edit link' : 'Add new link'"
       @close="closeDrawer"
     >
-      <form class="p-1 font-poppins space-y-6" @submit.prevent="submitNewLink">
+      <form class="space-y-6 p-1" @submit.prevent="submitNewLink">
         <div>
           <label
             for="quicklink-label"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Link Label
           </label>
@@ -219,7 +212,7 @@
             v-model="newLinkData.label"
             type="text"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             placeholder="e.g. Staff Directory"
           >
         </div>
@@ -227,7 +220,7 @@
         <div>
           <label
             for="quicklink-url"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             URL
           </label>
@@ -236,7 +229,7 @@
             v-model="newLinkData.url"
             type="url"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             placeholder="https://..."
           >
         </div>
@@ -244,7 +237,7 @@
         <div>
           <label
             for="quicklink-category"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Category
           </label>
@@ -253,9 +246,9 @@
               id="quicklink-category"
               v-model="newLinkData.sectionId"
               required
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm cursor-pointer"
             >
-              <option value="" disabled>Select Category...</option>
+              <option value="" disabled>Select category…</option>
               <option
                 v-for="section in dashboardSections"
                 :key="section.id"
@@ -269,48 +262,44 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-500"
+                class="h-4 w-4 text-muted"
               />
             </div>
           </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-200">
-          <button
+        <div class="border-t border-line pt-6">
+          <AppButton
             type="submit"
-            :disabled="isSubmitting"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            size="lg"
+            class="w-full"
+            :loading="isSubmitting"
           >
-            <Icon
-              v-if="isSubmitting"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
             {{
               isSubmitting
-                ? "Saving..."
+                ? "Saving…"
                 : editingLinkId
-                  ? "Update Link"
-                  : "Save Link"
+                  ? "Update link"
+                  : "Save link"
             }}
-          </button>
+          </AppButton>
         </div>
       </form>
     </SlideOver>
 
     <SlideOver
       :is-open="isCategoryDrawerOpen"
-      :title="editingCategoryId ? 'Edit Category' : 'Add New Category'"
+      :title="editingCategoryId ? 'Edit category' : 'Add new category'"
       @close="closeCategoryDrawer"
     >
       <form
-        class="p-1 font-poppins space-y-6"
+        class="space-y-6 p-1"
         @submit.prevent="submitNewCategory"
       >
         <div>
           <label
             for="quicklink-category-title"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Category Title
           </label>
@@ -319,30 +308,26 @@
             v-model="newCategoryData.title"
             type="text"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             placeholder="e.g. Media & Assets"
           >
         </div>
 
-        <div class="pt-6 border-t border-gray-200">
-          <button
+        <div class="border-t border-line pt-6">
+          <AppButton
             type="submit"
-            :disabled="isSubmittingCategory"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            size="lg"
+            class="w-full"
+            :loading="isSubmittingCategory"
           >
-            <Icon
-              v-if="isSubmittingCategory"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
             {{
               isSubmittingCategory
-                ? "Saving..."
+                ? "Saving…"
                 : editingCategoryId
-                  ? "Update Category"
-                  : "Create Category"
+                  ? "Update category"
+                  : "Create category"
             }}
-          </button>
+          </AppButton>
         </div>
       </form>
     </SlideOver>
@@ -438,7 +423,7 @@ const closeDrawer = () => {
 const handleDeleteLink = async (sectionId, linkId) => {
   if (!isSuperAdmin.value) return;
   const answer = await confirm.ask({
-    title: "Remove Link",
+    title: "Remove link",
     message: "Are you sure you want to remove this link?",
     confirmText: "Remove",
     cancelText: "Cancel",
@@ -524,7 +509,7 @@ const submitNewCategory = async () => {
 const handleDeleteCategory = async (categoryId) => {
   if (!isSuperAdmin.value) return;
   const answer = await confirm.ask({
-    title: "Delete Category",
+    title: "Delete category",
     message:
       "Are you sure you want to delete this entire category and all its links?",
     confirmText: "Delete",

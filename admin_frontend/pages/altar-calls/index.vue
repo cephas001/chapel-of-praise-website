@@ -2,36 +2,25 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Header -->
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    <AppHeading
+      class="mb-8"
+      title="Altar calls"
+      subtitle="Review altar call responses and categories across all events."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Altar Calls
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Review altar call responses and categories across all events.
-        </p>
-      </div>
-
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        @click="openCreateDrawer"
-      >
-        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-        Record Altar Call
-      </button>
-    </div>
+      <template #actions>
+        <AppButton icon="heroicons:plus" @click="openCreateDrawer">
+          Record altar call
+        </AppButton>
+      </template>
+    </AppHeading>
 
     <!-- Data Table Container -->
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-    >
+    <AppCard body-class="p-0">
       <!-- List Controls -->
       <div
-        class="border-b border-gray-100 p-4 flex flex-col lg:flex-row gap-3 lg:items-center"
+        class="flex flex-col gap-3 border-b border-line p-4 lg:flex-row lg:items-center"
       >
         <div class="relative flex-1 min-w-0">
           <label for="altar-calls-search" class="sr-only">
@@ -39,14 +28,14 @@
           </label>
           <Icon
             name="heroicons:magnifying-glass"
-            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
           />
           <input
             id="altar-calls-search"
             v-model="search"
             type="search"
             placeholder="Search by event, program or call type..."
-            class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white"
+            class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
         </div>
 
@@ -58,7 +47,7 @@
             <select
               id="altar-calls-type-filter"
               v-model="filters.callType"
-              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
             >
               <option value="ALL">All call types</option>
               <option value="SALVATION">Salvation</option>
@@ -77,7 +66,7 @@
             <select
               id="altar-calls-sort"
               v-model="sortOption"
-              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
             >
               <option value="date:desc">Newest first</option>
               <option value="date:asc">Oldest first</option>
@@ -88,39 +77,39 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">Altar call records</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap w-1/3"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted w-1/3"
               >
-                Event Details
+                Event details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Call Type
+                Call type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-center font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Responders
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <template v-for="record in paged" :key="record.id">
               <tr
-                class="hover:bg-gray-50/50 transition-colors group"
+                class="hover:bg-subtle/60 transition-colors group"
               >
               <!-- Event Column -->
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-xs md:text-sm font-bold text-gray-900">
+                <div class="text-xs md:text-sm font-semibold text-ink">
                   <!-- Condition 1: If it's a Special Program, show the Program Name and Day -->
                   <template
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
@@ -130,7 +119,7 @@
                     }}
                     <span
                       v-if="record.eventDetails?.programDay"
-                      class="font-semibold text-gray-900"
+                      class="font-semibold text-ink"
                     >
                       - {{ record.eventDetails.programDay }}
                     </span>
@@ -142,7 +131,7 @@
                 </div>
 
                 <div
-                  class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-600"
+                  class="mt-1 font-mono text-xs text-muted"
                 >
                   {{ formatDate(record.eventDetails?.eventDate) }}
                   <span
@@ -156,7 +145,7 @@
               <!-- Category Column -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100"
+                  class="inline-flex items-center rounded-badge border border-line bg-subtle px-2.5 py-1 font-mono text-xs font-medium text-muted"
                 >
                   {{ record.callType }}
                 </span>
@@ -165,7 +154,7 @@
               <!-- Responders Column -->
               <td class="px-6 py-4 whitespace-nowrap text-center">
                 <button
-                  class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs md:text-sm font-black text-black transition-colors hover:bg-gray-100"
+                  class="inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-3 py-1.5 font-mono text-xs font-medium text-ink transition-colors hover:bg-subtle md:text-sm"
                   :aria-expanded="expandedId === record.id ? 'true' : 'false'"
                   :aria-controls="`responders-${record.id}`"
                   @click="toggleResponders(record)"
@@ -177,7 +166,7 @@
                         ? 'heroicons:chevron-up'
                         : 'heroicons:chevron-down'
                     "
-                    class="h-3.5 w-3.5 text-gray-500"
+                    class="h-3.5 w-3.5 text-muted"
                   />
                 </button>
               </td>
@@ -185,17 +174,17 @@
 
               <!-- Responders Drill-Down -->
               <tr v-if="expandedId === record.id" :id="`responders-${record.id}`">
-                <td colspan="3" class="bg-gray-50/60 px-6 py-5 border-t border-gray-100">
+                <td colspan="3" class="bg-subtle/50 px-6 py-5 border-t border-line">
                   <div
                     v-if="responsesState[record.id] === 'loading'"
                     class="flex items-center justify-center gap-2 py-6"
                   >
                     <Icon
                       name="heroicons:arrow-path"
-                      class="h-4 w-4 text-gray-500 animate-spin"
+                      class="h-4 w-4 text-muted animate-spin"
                     />
                     <span
-                      class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
+                      class="text-xs font-mono font-medium text-muted"
                     >
                       Loading responders...
                     </span>
@@ -205,15 +194,16 @@
                     v-else-if="responsesState[record.id] === 'error'"
                     class="py-6 text-center"
                   >
-                    <p class="text-xs text-gray-600 mb-3">
+                    <p class="text-xs text-muted mb-3">
                       Could not load the responders for this call.
                     </p>
-                    <button
-                      class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+                    <AppButton
+                      variant="secondary"
+                      size="sm"
                       @click="loadResponders(record, true)"
                     >
                       Retry
-                    </button>
+                    </AppButton>
                   </div>
 
                   <table
@@ -221,7 +211,7 @@
                       responsesState[record.id] === 'loaded' &&
                       responsesByCall[record.id]?.length
                     "
-                    class="min-w-full divide-y divide-gray-200"
+                    class="min-w-full divide-y divide-line"
                   >
                     <caption class="sr-only">
                       Individual responders for this altar call
@@ -230,72 +220,72 @@
                       <tr>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
                           Responder
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
                           Gender
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
                           Phone
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
-                          Hostel / Room
+                          Hostel / room
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
-                          Assigned To
+                          Assigned to
                         </th>
                         <th
                           scope="col"
-                          class="px-4 py-2.5 text-left text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                          class="px-4 py-2.5 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                         >
-                          Follow-Up
+                          Follow-up
                         </th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody class="divide-y divide-line">
                       <tr
                         v-for="response in responsesByCall[record.id]"
                         :key="response.id"
                       >
-                        <td class="px-4 py-3 whitespace-nowrap text-xs font-bold text-gray-800">
+                        <td class="px-4 py-3 whitespace-nowrap text-xs font-semibold text-ink">
                           {{ response.fullName || "Unnamed responder" }}
                         </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600 capitalize">
+                        <td class="px-4 py-3 whitespace-nowrap text-xs text-muted capitalize">
                           {{ response.gender || "—" }}
                         </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600 font-jetbrains">
+                        <td class="px-4 py-3 whitespace-nowrap text-xs text-muted font-mono">
                           {{ response.phoneNumber || "—" }}
                         </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600">
+                        <td class="px-4 py-3 whitespace-nowrap text-xs text-muted">
                           {{ response.hostel || "—"
                           }}<span v-if="response.roomNumber">
                             · {{ response.roomNumber }}</span
                           >
                         </td>
-                        <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600">
+                        <td class="px-4 py-3 whitespace-nowrap text-xs text-muted">
                           {{ response.assignedTo || "Unassigned" }}
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap">
                           <span
-                            class="inline-flex items-center rounded-md px-2 py-1 text-[10px] font-jetbrains font-bold uppercase tracking-wider"
+                            class="inline-flex items-center rounded-badge px-2.5 py-1 font-mono text-xs font-medium"
                             :class="
                               response.followUpStatus === 'DONE'
-                                ? 'bg-green-50 text-green-700'
-                                : 'bg-amber-50 text-amber-700'
+                                ? 'border border-success-line bg-success-surface text-success-text'
+                                : 'border border-warning-line bg-warning-surface text-warning-text'
                             "
                           >
                             {{
@@ -311,7 +301,7 @@
 
                   <p
                     v-else
-                    class="py-6 text-center text-xs text-gray-500 italic"
+                    class="py-6 text-center text-xs text-muted italic"
                   >
                     No individual responders were captured for this call.
                   </p>
@@ -324,36 +314,33 @@
         <!-- No matches -->
         <div
           v-if="!isFetching && altarCalls.length > 0 && filtered.length === 0"
-          class="py-16 text-center border-t border-gray-100"
+          class="border-t border-line py-16 text-center"
         >
           <Icon
             name="heroicons:magnifying-glass"
-            class="mx-auto h-10 w-10 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-10 w-10 text-line"
           />
-          <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+          <h3 class="mb-1 text-sm font-semibold text-ink">
             No altar calls match your filters
           </h3>
-          <button
-            class="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
-            @click="reset"
-          >
+          <AppButton variant="secondary" size="sm" class="mt-4" @click="reset">
             Clear filters
-          </button>
+          </AppButton>
         </div>
 
         <!-- Empty State -->
         <div
           v-if="!isFetching && altarCalls.length === 0"
-          class="py-20 text-center border-t border-gray-100"
+          class="border-t border-line py-20 text-center"
         >
           <Icon
             name="heroicons:megaphone"
-            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-12 w-12 text-line"
           />
-          <h3 class="text-sm font-bold text-gray-900 mb-1">
+          <h3 class="mb-1 text-sm font-semibold text-ink">
             No altar calls recorded
           </h3>
-          <p class="text-gray-500 text-xs px-5">
+          <p class="px-5 text-xs text-muted">
             Get started by logging a response for a recent event.
           </p>
         </div>
@@ -362,9 +349,9 @@
       <!-- Pagination -->
       <div
         v-if="totalPages > 1"
-        class="flex items-center justify-between gap-4 border-t border-gray-100 px-6 py-4"
+        class="flex items-center justify-between gap-4 border-t border-line px-6 py-4"
       >
-        <p class="text-[11px] font-jetbrains text-gray-500">
+        <p class="font-mono text-xs text-muted">
           Showing {{ (page - 1) * pageSize + 1 }}–{{
             Math.min(page * pageSize, total)
           }}
@@ -374,41 +361,41 @@
           <button
             :disabled="page === 1"
             aria-label="Previous page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="prevPage"
           >
             <Icon name="heroicons:chevron-left" class="h-4 w-4" />
           </button>
-          <span class="text-[11px] font-jetbrains text-gray-600 font-bold">
+          <span class="font-mono text-xs font-medium text-ink">
             Page {{ page }} / {{ totalPages }}
           </span>
           <button
             :disabled="page === totalPages"
             aria-label="Next page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="nextPage"
           >
             <Icon name="heroicons:chevron-right" class="h-4 w-4" />
           </button>
         </div>
       </div>
-    </div>
+    </AppCard>
 
     <!-- Slide-over Drawer for Creating Altar Call -->
     <SlideOver
       :is-open="isDrawerOpen"
-      title="Record Altar Call Response"
+      title="Record altar call response"
       :before-close="confirmDiscardDraft"
       @close="closeDrawer"
     >
-      <div class="p-1 font-poppins">
+      <div class="p-1">
         <!-- Step 1: Select Event using our reusable component -->
-        <div class="mb-6 pb-6 border-b border-gray-100">
+        <div class="mb-6 pb-6 border-b border-line">
           <label
             for="altar-calls-event"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
-            Select Target Event
+            Select target event
           </label>
           <SearchableSelect
             v-model="selectedEventId"
@@ -423,9 +410,9 @@
         <!-- Step 2: Form Component -->
         <div v-if="selectedEventId">
           <h4
-            class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-4"
+            class="text-xs font-medium text-ink mb-4"
           >
-            Response Details
+            Response details
           </h4>
           <!-- We reuse the form component built for the individual event view -->
           <EventAltarCallForm
@@ -438,15 +425,13 @@
         <!-- Awaiting Selection State -->
         <div
           v-else
-          class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200"
+          class="rounded-surface border border-dashed border-line bg-surface py-12 text-center"
         >
           <Icon
             name="heroicons:calendar"
-            class="h-8 w-8 text-gray-300 mx-auto mb-3"
+            class="mx-auto mb-3 h-8 w-8 text-line"
           />
-          <p
-            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest"
-          >
+          <p class="text-xs font-medium text-muted">
             Please select an event above first.
           </p>
         </div>
@@ -562,7 +547,7 @@ const toggleResponders = (record) => {
 const confirmDiscardDraft = async () => {
   if (!altarCallFormRef.value?.isDirty?.()) return true;
   return await confirm.ask({
-    title: "Discard Altar Call?",
+    title: "Discard altar call?",
     message: "You have unsaved details in this form. Close and discard them?",
     confirmText: "Discard",
     cancelText: "Keep Editing",

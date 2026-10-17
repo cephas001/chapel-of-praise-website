@@ -1,50 +1,38 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Page Header -->
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    <AppHeading
+      class="mb-8"
+      title="My profile"
+      subtitle="Manage your account settings, security preferences, and administrative access."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          My Profile
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Manage your account settings, security preferences, and administrative
-          access.
-        </p>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <button
-          class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-          @click="openEditDrawer"
-        >
-          <Icon name="heroicons:pencil-square" class="mr-2 h-4 w-4" />
-          Edit Profile
-        </button>
-      </div>
-    </div>
+      <template #actions>
+        <AppButton icon="heroicons:pencil-square" @click="openEditDrawer">
+          Edit profile
+        </AppButton>
+      </template>
+    </AppHeading>
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Left Column: Identity Card -->
       <div class="lg:col-span-1 space-y-6">
-        <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col items-center px-8 pt-8 pb-12 text-center relative"
+        <AppCard
+          body-class="relative flex flex-col items-center px-8 pt-8 pb-12 text-center"
         >
           <!-- Verification Badge (Absolute Top Right) -->
           <div class="absolute top-4 right-4">
             <span
               v-if="currentUser.email_verified"
-              class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-green-50 text-green-700 border border-green-100"
+              class="inline-flex items-center rounded-badge border border-success-line bg-success-surface px-2.5 py-1 font-mono text-xs font-medium text-success-text"
             >
               Verified
             </span>
             <span
               v-else
-              class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-100"
+              class="inline-flex items-center rounded-badge border border-warning-line bg-warning-surface px-2.5 py-1 font-mono text-xs font-medium text-warning-text"
             >
               Unverified
             </span>
@@ -52,19 +40,19 @@
 
           <!-- Avatar -->
           <div
-            class="h-24 w-24 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 mb-4 shadow-inner mt-6"
+            class="mb-4 mt-6 flex h-24 w-24 items-center justify-center rounded-full border border-line bg-subtle text-muted"
           >
-            <span class="text-2xl font-black font-jetbrains text-black p-3">
+            <span class="p-3 font-mono text-2xl font-semibold text-ink">
               {{ getInitials(currentUser.name) }}
             </span>
           </div>
 
           <!-- User Details -->
-          <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">
+          <h3 class="mb-2 text-base font-semibold text-ink md:text-lg">
             {{ currentUser.name }}
           </h3>
           <p
-            class="text-xs md:text-sm font-medium text-gray-500 mb-4 flex items-center justify-center gap-1.5"
+            class="mb-4 flex items-center justify-center gap-1.5 text-xs font-medium text-muted md:text-sm"
           >
             {{ currentUser.email }}
           </p>
@@ -73,60 +61,58 @@
           <div class="flex flex-wrap items-center justify-center gap-2">
             <!-- Role Badge -->
             <span
-              class="inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-jetbrains uppercase tracking-widest bg-black text-white shadow-sm"
+              class="inline-flex items-center rounded-badge bg-ink px-3 py-1.5 font-mono text-xs font-medium text-white md:text-xs"
             >
               <Icon
                 name="heroicons:shield-check"
-                class="h-4 w-4 mr-1.5 text-gray-300"
+                class="mr-1.5 h-4 w-4 text-white/60"
               />
               {{ formatRole(currentUser.role) }}
             </span>
 
             <!-- Access Type Badge -->
             <span
-              class="inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-jetbrains uppercase tracking-widest bg-white text-black border border-blue-100 shadow-sm font-semibold"
+              class="inline-flex items-center rounded-badge border border-line bg-surface px-3 py-1.5 font-mono text-xs font-medium text-ink md:text-xs"
             >
               <Icon
                 name="heroicons:server-stack"
-                class="h-4 w-4 mr-1.5 text-gray-900"
+                class="mr-1.5 h-4 w-4 text-muted"
               />
-              {{ formatType(currentUser.type) }} Access
+              {{ formatType(currentUser.type) }} access
             </span>
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Right Column: Details & Security -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Account Details Section -->
-        <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-        >
-          <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-            <h3 class="text-sm font-jetbrains font-bold text-black">
-              Security & Authentication
+        <AppCard body-class="p-0">
+          <template #header>
+            <h3 class="text-base font-semibold text-ink">
+              Security & authentication
             </h3>
-          </div>
+          </template>
 
           <div class="p-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <!-- User ID (Masked/Read-Only) -->
               <div>
                 <span
-                  class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
+                  class="block text-xs font-medium text-muted mb-2"
                 >
                   Account ID (UID)
                 </span>
                 <div
-                  class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5"
+                  class="flex items-center justify-between bg-subtle border border-line rounded-control px-4 py-2.5"
                 >
                   <span
-                    class="text-xs font-jetbrains text-gray-700 truncate mr-3"
+                    class="text-xs font-mono text-ink truncate mr-3"
                   >
                     {{ maskUID(currentUser.uid) }}
                   </span>
                   <button
-                    class="text-gray-500 hover:text-black transition-colors"
+                    class="text-muted hover:text-ink transition-colors"
                     title="Copy UID"
                     aria-label="Copy account ID"
                     @click="copyToClipboard(currentUser.uid)"
@@ -139,108 +125,102 @@
               <!-- Sign In Provider -->
               <div>
                 <span
-                  class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
+                  class="block text-xs font-medium text-muted mb-2"
                 >
-                  Sign-In Provider
+                  Sign-in provider
                 </span>
                 <div
-                  class="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5"
+                  class="flex items-center bg-subtle border border-line rounded-control px-4 py-2.5"
                 >
                   <Icon
                     :name="
                       getProviderIcon(currentUser.firebase.sign_in_provider)
                     "
-                    class="h-4 w-4 text-gray-500 mr-2"
+                    class="h-4 w-4 text-muted mr-2"
                   />
-                  <span class="text-xs text-gray-700 capitalize">
+                  <span class="text-xs text-ink capitalize">
                     {{ currentUser.firebase.sign_in_provider }}
                   </span>
                 </div>
               </div>
 
-              <!-- Last Authenticated -->
+              <!-- Last authenticated -->
               <div>
                 <span
-                  class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
+                  class="block text-xs font-medium text-muted mb-2"
                 >
-                  Last Authenticated
+                  Last authenticated
                 </span>
-                <p class="text-xs md:text-sm font-jetbrains text-gray-900 mt-1">
+                <p class="text-xs md:text-sm font-mono text-ink mt-1">
                   {{ formatUnixTime(currentUser.auth_time) }}
                 </p>
               </div>
 
-              <!-- Session Expiry -->
+              <!-- Session expiry -->
               <div>
                 <span
-                  class="block text-[11px] font-jetbrains font-bold text-gray-600 uppercase tracking-widest mb-2"
+                  class="block text-xs font-medium text-muted mb-2"
                 >
-                  Session Expiry
+                  Session expiry
                 </span>
-                <p class="text-xs md:text-sm font-jetbrains text-gray-900 mt-1">
+                <p class="text-xs md:text-sm font-mono text-ink mt-1">
                   {{ formatUnixTime(currentUser.exp) }}
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </AppCard>
 
         <!-- Quick Actions Section -->
-        <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-        >
-          <div class="bg-gray-50/50 border-b border-gray-100 px-6 py-5">
-            <h3 class="text-sm font-jetbrains font-bold text-black">
-              Account Actions
+        <AppCard body-class="p-0">
+          <template #header>
+            <h3 class="text-base font-semibold text-ink">
+              Account actions
             </h3>
-          </div>
+          </template>
 
           <div class="p-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <!-- Password Reset -->
               <button
-                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
+                class="group flex flex-col items-start rounded-surface border border-line bg-surface p-4 text-left transition-colors hover:border-ink"
                 @click="initiatePasswordReset"
               >
                 <div
-                  class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-black group-hover:text-white transition-colors text-gray-600"
+                  class="mb-3 flex h-8 w-8 items-center justify-center rounded-control bg-subtle text-muted transition-colors group-hover:bg-ink group-hover:text-white"
                 >
                   <Icon name="heroicons:key" class="h-4 w-4" />
                 </div>
-                <h4
-                  class="text-xs font-jetbrains font-bold text-gray-900 uppercase tracking-wide mb-2"
-                >
-                  Change Password
+                <h4 class="mb-2 text-sm font-semibold text-ink">
+                  Change password
                 </h4>
-                <p class="text-xs text-gray-500 font-medium leading-relaxed">
+                <p class="text-xs leading-relaxed text-muted">
                   Receive a secure link to update your current account password.
                 </p>
               </button>
 
-              <!-- Verifiy Email -->
+              <!-- Verify email -->
               <button
                 v-if="!currentUser.email_verified"
-                class="flex flex-col items-start p-4 rounded-xl border border-gray-200 hover:border-black hover:shadow-sm transition-all group text-left bg-white"
+                class="group flex flex-col items-start rounded-surface border border-line bg-surface p-4 text-left transition-colors hover:border-ink"
                 @click="initiateEmailVerification"
               >
                 <div
-                  class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-black group-hover:text-white transition-colors text-gray-600"
+                  class="mb-3 flex h-8 w-8 items-center justify-center rounded-control bg-subtle text-muted transition-colors group-hover:bg-ink group-hover:text-white"
                 >
                   <Icon name="heroicons:envelope" class="h-4 w-4" />
                 </div>
-                <h4
-                  class="text-xs font-jetbrains font-bold text-gray-900 uppercase tracking-wide mb-2"
-                >
-                  Verify Email Address
+                <h4 class="mb-2 text-sm font-semibold text-ink">
+                  Verify email address
                 </h4>
-                <p class="text-xs text-gray-500 font-medium leading-relaxed">
+                <p class="text-xs leading-relaxed text-muted">
                   Send a verification link to your email to confirm your account
                   ownership.
                 </p>
               </button>
             </div>
           </div>
-        </div>
+        </AppCard>
       </div>
     </div>
 
@@ -251,13 +231,13 @@
       @close="closeEditDrawer"
     >
       <form
-        class="p-1 font-poppins space-y-6"
+        class="space-y-6 p-1"
         @submit.prevent="submitProfileUpdate"
       >
         <div>
           <label
             for="profile-name"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Full Name
           </label>
@@ -266,14 +246,14 @@
             v-model="editFormData.name"
             type="text"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
         </div>
 
         <div>
           <label
             for="profile-email"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Email Address
           </label>
@@ -283,26 +263,22 @@
             type="email"
             required
             disabled
-            class="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2.5 text-gray-500 cursor-not-allowed outline-none text-xs md:text-sm"
+            class="w-full cursor-not-allowed rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-muted outline-none md:text-sm"
           >
-          <p class="text-[10px] text-gray-500 mt-1.5 font-jetbrains">
+          <p class="mt-1.5 text-xs font-mono text-muted">
             Email cannot be changed directly. Contact support for assistance.
           </p>
         </div>
 
-        <div class="pt-6 border-t border-gray-200">
-          <button
+        <div class="border-t border-line pt-6">
+          <AppButton
             type="submit"
-            :disabled="isSubmittingUpdate"
-            class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+            size="lg"
+            class="w-full"
+            :loading="isSubmittingUpdate"
           >
-            <Icon
-              v-if="isSubmittingUpdate"
-              name="heroicons:arrow-path"
-              class="mr-2 h-4 w-4 animate-spin"
-            />
-            {{ isSubmittingUpdate ? "Saving Changes..." : "Save Profile" }}
-          </button>
+            {{ isSubmittingUpdate ? "Saving…" : "Save profile" }}
+          </AppButton>
         </div>
       </form>
     </SlideOver>

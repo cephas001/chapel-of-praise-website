@@ -2,14 +2,14 @@
   <div
     aria-live="polite"
     aria-label="Notifications"
-    class="fixed bottom-10 right-0 z-9999 flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"
+    class="fixed bottom-10 right-0 z-overlay flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"
   >
     <TransitionGroup name="toast">
       <div
         v-for="toast in toasts"
         :key="toast.id"
         :role="toast.type === 'error' ? 'alert' : 'status'"
-        class="pointer-events-auto overflow-hidden rounded-xl shadow-xl border bg-white flex items-stretch"
+        class="pointer-events-auto overflow-hidden rounded-surface border bg-surface shadow-overlay flex items-stretch"
         :class="borderColors[toast.type]"
       >
         <div
@@ -24,19 +24,17 @@
         </div>
 
         <div class="py-3 px-4 flex-grow flex flex-col justify-center">
-          <h4
-            class="text-xs md:text-sm font-black text-gray-900 leading-tight font-jetbrains"
-          >
+          <h4 class="text-sm font-semibold text-ink leading-tight">
             {{ toast.title }}
           </h4>
-          <p class="text-xs text-gray-500 font-medium mt-0.5 leading-snug">
+          <p class="text-xs text-muted mt-0.5 leading-snug">
             {{ toast.message }}
           </p>
         </div>
 
         <button
           aria-label="Dismiss notification"
-          class="px-4 text-gray-500 hover:text-black transition-colors focus:outline-none"
+          class="px-4 text-muted hover:text-ink transition-colors focus:outline-none"
           @click="remove(toast.id)"
         >
           <Icon name="material-symbols:close" class="text-lg" />
@@ -53,28 +51,28 @@ const { toasts, remove } = useAppToast();
 
 // Dictionaries to map the toast 'type' to specific Tailwind classes
 const borderColors = {
-  success: "border-green-200",
-  error: "border-red-200",
-  info: "border-blue-200",
-  warning: "border-orange-300", // NEW
+  success: "border-success-line",
+  error: "border-danger-line",
+  info: "border-line",
+  warning: "border-warning-line",
 };
 const bgColors = {
-  success: "bg-green-50",
-  error: "bg-red-50",
-  info: "bg-blue-50",
-  warning: "bg-orange-50", // NEW
+  success: "bg-success-surface",
+  error: "bg-danger-surface",
+  info: "bg-subtle",
+  warning: "bg-warning-surface",
 };
 const iconColors = {
-  success: "text-green-600",
-  error: "text-red-600",
-  info: "text-blue-600",
-  warning: "text-orange-600", // NEW
+  success: "text-success-text",
+  error: "text-danger-text",
+  info: "text-ink",
+  warning: "text-warning-text",
 };
 const icons = {
   success: "material-symbols:check-circle",
   error: "material-symbols:error",
   info: "material-symbols:info",
-  warning: "material-symbols:notifications-active", // NEW: Rings a bell for broadcasts
+  warning: "material-symbols:notifications-active",
 };
 </script>
 

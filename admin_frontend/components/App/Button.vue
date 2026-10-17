@@ -1,6 +1,6 @@
 <template>
   <NuxtLink v-if="to" :to="to" :class="classes">
-    <Icon v-if="icon" :name="icon" class="mr-2 h-4 w-4" />
+    <Icon v-if="icon" :name="icon" :class="iconClasses" />
     <slot />
   </NuxtLink>
 
@@ -8,15 +8,16 @@
     v-else
     :type="type"
     :disabled="disabled || loading"
+    :aria-busy="loading ? 'true' : undefined"
     :class="classes"
     @click="$emit('click', $event)"
   >
     <Icon
       v-if="loading"
       name="heroicons:arrow-path"
-      class="mr-2 h-4 w-4 animate-spin"
+      :class="[iconClasses, 'animate-spin']"
     />
-    <Icon v-else-if="icon" :name="icon" class="mr-2 h-4 w-4" />
+    <Icon v-else-if="icon" :name="icon" :class="iconClasses" />
     <slot />
   </button>
 </template>
@@ -25,9 +26,9 @@
 import { computed } from "vue";
 
 const props = defineProps({
-  // primary | secondary | danger | ghost
+  // primary | secondary | ghost | danger (solid, destructive confirms only)
   variant: { type: String, default: "primary" },
-  // sm | md | lg
+  // sm (36px) | md (40px) | lg (48px — touch-first actions on mobile PWA)
   size: { type: String, default: "md" },
   type: { type: String, default: "button" },
   to: { type: String, default: "" },
@@ -39,22 +40,33 @@ const props = defineProps({
 defineEmits(["click"]);
 
 const variantClasses = {
-  primary: "bg-black text-white shadow-sm hover:bg-gray-800",
+  primary: "bg-ink text-white hover:bg-ink/85 active:bg-ink",
   secondary:
-    "border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50",
-  danger: "bg-red-600 text-white shadow-sm hover:bg-red-700",
-  ghost: "text-gray-600 hover:bg-gray-100 hover:text-black",
+    "border border-line bg-surface text-ink hover:border-ink hover:bg-subtle",
+  ghost: "text-muted hover:bg-subtle hover:text-ink",
+  danger: "bg-danger-text text-white hover:bg-danger-text/85 active:bg-danger-text",
 };
 
 const sizeClasses = {
-  sm: "px-4 py-2 text-xs",
-  md: "px-5 py-2.5 text-xs md:text-sm",
-  lg: "px-8 py-3.5 text-xs md:text-sm",
+  sm: "h-9 gap-1.5 px-3.5 text-sm",
+  md: "h-10 gap-2 px-4 text-sm",
+  lg: "h-12 gap-2 px-6 text-base",
+};
+
+const iconSizeClasses = {
+  sm: "h-4 w-4",
+  md: "h-4 w-4",
+  lg: "h-5 w-5",
 };
 
 const classes = computed(() => [
-  "inline-flex items-center justify-center rounded-xl font-jetbrains transition-all disabled:opacity-70 disabled:cursor-not-allowed",
+  "inline-flex shrink-0 select-none items-center justify-center rounded-control font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
   variantClasses[props.variant] || variantClasses.primary,
   sizeClasses[props.size] || sizeClasses.md,
+]);
+
+const iconClasses = computed(() => [
+  "shrink-0",
+  iconSizeClasses[props.size] || iconSizeClasses.md,
 ]);
 </script>

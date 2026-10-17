@@ -1,9 +1,9 @@
 <template>
-  <form class="space-y-6 pt-2 font-poppins" @submit.prevent="handleSubmit">
+  <form class="space-y-6 pt-2" @submit.prevent="handleSubmit">
     <div>
       <label
         for="executive-name"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >Full Name</label
       >
       <input
@@ -11,7 +11,7 @@
         v-model="formData.name"
         type="text"
         required
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+        class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         placeholder="e.g. John Doe"
       >
     </div>
@@ -20,7 +20,7 @@
       <div>
         <label
           for="executive-gender"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Gender</label
         >
         <div class="relative">
@@ -28,7 +28,7 @@
             id="executive-gender"
             v-model="formData.gender"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
+            class="w-full appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
             <option value="" disabled>Select</option>
             <option value="MALE">MALE</option>
@@ -37,14 +37,14 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
           </div>
         </div>
       </div>
       <div>
         <label
           for="executive-dob"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Date of Birth</label
         >
         <input
@@ -52,7 +52,7 @@
           v-model="formData.dateOfBirth"
           type="date"
           required
-          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+          class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         >
       </div>
     </div>
@@ -61,7 +61,7 @@
       <div>
         <label
           for="executive-phone"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Phone Number</label
         >
         <input
@@ -69,14 +69,14 @@
           v-model="formData.phoneNumber"
           type="tel"
           required
-          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+          class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           placeholder="090..."
         >
       </div>
       <div>
         <label
           for="executive-whatsapp"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >WhatsApp Number</label
         >
         <input
@@ -84,7 +84,7 @@
           v-model="formData.whatsappPhoneNumber"
           type="tel"
           required
-          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+          class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           placeholder="090..."
         >
       </div>
@@ -93,7 +93,7 @@
     <div>
       <label
         for="executive-email"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >Email Address</label
       >
       <input
@@ -101,16 +101,16 @@
         v-model="formData.emailAddress"
         type="email"
         required
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+        class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         placeholder="executive@example.com"
       >
     </div>
 
-    <div class="grid grid-cols-2 gap-4 border-t border-gray-200 pt-5 mt-2">
+    <div class="grid grid-cols-2 gap-4 border-t border-line pt-5 mt-2">
       <div>
         <label
           for="executive-matric"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Matric Number</label
         >
         <input
@@ -118,14 +118,14 @@
           v-model="formData.matricNumber"
           type="text"
           required
-          class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+          class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           placeholder="e.g. 21010101"
         >
       </div>
       <div>
         <label
           for="executive-level"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Level</label
         >
         <div class="relative">
@@ -133,7 +133,7 @@
             id="executive-level"
             v-model="formData.level"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
+            class="w-full appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
             <option value="" disabled>Select Level</option>
             <option value="100">100 Level</option>
@@ -145,7 +145,7 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@
     <div>
       <label
         for="executive-department"
-        class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+        class="block text-xs font-medium text-ink mb-2"
         >School Department</label
       >
       <input
@@ -162,7 +162,7 @@
         v-model="formData.schoolDepartment"
         type="text"
         required
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+        class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         placeholder="e.g. Computer Science"
       >
     </div>
@@ -171,7 +171,7 @@
       <div>
         <label
           for="executive-chapel-unit"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Chapel Unit</label
         >
         <div class="relative">
@@ -179,7 +179,7 @@
             id="executive-chapel-unit"
             v-model="formData.chapelUnit"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
+            class="w-full appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
             <option value="" disabled>Select Unit</option>
             <option v-for="unit in availableUnits" :key="unit" :value="unit">
@@ -189,14 +189,14 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
           </div>
         </div>
       </div>
       <div>
         <label
           for="executive-relationship"
-          class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+          class="block text-xs font-medium text-ink mb-2"
           >Relationship Status</label
         >
         <div class="relative">
@@ -204,7 +204,7 @@
             id="executive-relationship"
             v-model="formData.relationshipStatus"
             required
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none"
+            class="w-full appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
             <option value="" disabled>Select Status</option>
             <option value="SINGLE">SINGLE</option>
@@ -215,25 +215,21 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
           </div>
         </div>
       </div>
     </div>
 
     <div class="pt-4">
-      <button
+      <AppButton
         type="submit"
-        :disabled="loading"
-        class="w-full inline-flex items-center justify-center rounded-xl bg-black px-8 py-3.5 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
+        size="lg"
+        :loading="loading"
+        class="w-full"
       >
-        <Icon
-          v-if="loading"
-          name="heroicons:arrow-path"
-          class="mr-2 h-4 w-4 animate-spin"
-        />
-        {{ isEditing ? "Save Changes" : "Register Executive" }}
-      </button>
+        {{ isEditing ? "Save changes" : "Register executive" }}
+      </AppButton>
     </div>
   </form>
 </template>

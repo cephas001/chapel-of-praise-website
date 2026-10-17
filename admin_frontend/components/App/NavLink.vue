@@ -2,29 +2,27 @@
   <NuxtLink
     :to="url"
     :class="[
-      'flex items-center px-2 py-2 text-xs md:text-sm font-jetbrains transition-colors duration-200 border-l-[3px] group tracking-wide',
-      checkActiveRoute(url)
-        ? 'border-black text-black tracking-wider'
-        : 'border-transparent text-black  hover:bg-gray-50 hover:border-gray-200',
+      'group relative flex items-center gap-2.5 rounded-control px-3 py-2 text-sm font-medium transition-colors',
+      isActive
+        ? 'bg-subtle text-ink before:absolute before:bottom-1.5 before:left-0 before:top-1.5 before:w-0.5 before:rounded-full before:bg-ink'
+        : 'text-muted hover:bg-subtle hover:text-ink',
     ]"
     @click="emit('click')"
   >
     <Icon
       :name="iconName"
-      :class="[
-        'mr-3 h-4 w-4 transition-colors duration-200',
-        checkActiveRoute(url) ? 'text-black' : 'text-gray-800',
-      ]"
+      class="h-4 w-4 shrink-0 transition-colors"
+      :class="isActive ? 'text-ink' : 'text-muted group-hover:text-ink'"
     />
     {{ text }}
   </NuxtLink>
 </template>
 
 <script setup>
+import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
-const route = useRoute();
 
-defineProps({
+const props = defineProps({
   text: {
     type: String,
     required: true,
@@ -39,12 +37,17 @@ defineProps({
   },
 });
 
-const checkActiveRoute = (url) => {
-  if (route.path == url) {
-    emit("open-tab", true);
-  }
-  return route.path == url;
-};
-
 const emit = defineEmits(["click", "open-tab"]);
+const route = useRoute();
+
+const isActive = computed(() => route.path === props.url);
+
+// Keep the owning accordion group open whenever this link is the active route.
+watch(
+  isActive,
+  (active) => {
+    if (active) emit("open-tab", true);
+  },
+  { immediate: true },
+);
 </script>

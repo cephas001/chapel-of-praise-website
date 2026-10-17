@@ -2,28 +2,21 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-    >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Event Unit Attendance
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Record or review unit attendance across all events.
-        </p>
-      </div>
-    </div>
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="Event unit attendance"
+      subtitle="Record or review unit attendance across all events."
+    />
 
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-6"
+    <AppCard
+      body-class="p-6"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div>
           <label
             for="attendance-event"
-            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             1. Select Event
           </label>
@@ -31,7 +24,7 @@
             <select
               id="attendance-event"
               :value="selectedEventId"
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer font-jetbrains"
+              class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 font-mono text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               @change="onEventChange"
             >
               <option value="" disabled>Choose Event...</option>
@@ -44,7 +37,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-500"
+                class="h-4 w-4 text-muted"
               />
             </div>
           </div>
@@ -53,7 +46,7 @@
         <div>
           <label
             for="attendance-unit"
-            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             2. Select Unit
           </label>
@@ -62,7 +55,7 @@
               id="attendance-unit"
               :value="selectedUnit"
               :disabled="!selectedEventId"
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer font-jetbrains"
+              class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 font-mono text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface disabled:cursor-not-allowed disabled:bg-subtle disabled:text-muted md:text-sm"
               @change="onUnitChange"
             >
               <option value="" disabled>Choose Unit...</option>
@@ -75,14 +68,14 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-500"
+                class="h-4 w-4 text-muted"
               />
             </div>
           </div>
         </div>
       </div>
 
-      <div class="border-t border-gray-100 -mx-6 pt-4 px-2">
+      <div class="border-t border-line -mx-6 pt-4 px-2">
         <EventAttendanceTable
           v-if="selectedEventId && selectedUnit"
           ref="attendanceRef"
@@ -93,18 +86,18 @@
         <div v-else class="py-14 text-center">
           <Icon
             name="heroicons:clipboard-document-check"
-            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+            class="mx-auto h-12 w-12 text-line mb-4"
           />
-          <h3 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-sm font-semibold text-ink mb-1">
             Awaiting Selection
           </h3>
-          <p class="text-xs text-gray-500 max-w-xs mx-auto px-3">
+          <p class="text-xs text-muted max-w-xs mx-auto px-3">
             Please select an Event and a Unit above to load the attendance
             roster.
           </p>
         </div>
       </div>
-    </div>
+    </AppCard>
   </div>
 </template>
 

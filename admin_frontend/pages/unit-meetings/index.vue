@@ -1,68 +1,60 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5"
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="Unit meeting attendance"
+      subtitle="Record attendance by unit for each meeting. Every unit member is expected to attend unless excused."
     >
-      <!-- Left: Title & Description -->
-      <div class="flex-1">
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Unit Meeting Attendance
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm max-w-2xl leading-relaxed">
-          Record attendance by unit for each meeting. Every unit member is
-          expected to attend unless excused.
-        </p>
-      </div>
+      <template #actions>
+        <div class="flex shrink-0 rounded-control bg-subtle p-1">
+          <button
+            :class="
+              activeView === 'attendance'
+                ? 'bg-surface text-ink'
+                : 'text-muted hover:text-ink'
+            "
+            class="rounded-control px-4 py-2 text-xs font-medium transition-colors"
+            @click="activeView = 'attendance'"
+          >
+            Take attendance
+          </button>
+          <button
+            :class="
+              activeView === 'records'
+                ? 'bg-surface text-ink'
+                : 'text-muted hover:text-ink'
+            "
+            class="rounded-control px-4 py-2 text-xs font-medium transition-colors"
+            @click="switchToRecords"
+          >
+            Manage records
+          </button>
+        </div>
+      </template>
+    </AppHeading>
 
-      <!-- View Toggle -->
-      <div class="flex bg-gray-100 p-1 rounded-xl shrink-0">
-        <button
-          :class="
-            activeView === 'attendance'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
-          "
-          class="px-4 py-2 text-xs font-jetbrains rounded-lg transition-all"
-          @click="activeView = 'attendance'"
-        >
-          Take Attendance
-        </button>
-        <button
-          :class="
-            activeView === 'records'
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
-          "
-          class="px-4 py-2 text-xs font-jetbrains rounded-lg transition-all"
-          @click="switchToRecords"
-        >
-          Manage Records
-        </button>
-      </div>
-    </div>
-
-    <div
+    <AppCard
       v-show="activeView === 'attendance'"
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden px-4 md:px-6 py-10 md:py-12"
+      body-class="px-4 py-10 md:px-6 md:py-12"
     >
       <!-- Select Unit & Date -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div>
           <label
             for="unit-meeting-unit"
-            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+            class="mb-2 block text-xs font-medium text-ink"
           >
-            1. Select Unit
+            1. Select unit
           </label>
           <div class="relative">
             <select
               id="unit-meeting-unit"
               v-model="selectedUnit"
-              class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer font-jetbrains"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
             >
-              <option value="" disabled>Choose Unit...</option>
+              <option value="" disabled>Choose unit…</option>
               <option v-for="unit in availableUnits" :key="unit" :value="unit">
                 {{ unit }}
               </option>
@@ -72,7 +64,7 @@
             >
               <Icon
                 name="heroicons:chevron-down"
-                class="h-4 w-4 text-gray-500"
+                class="h-4 w-4 text-muted"
               />
             </div>
           </div>
@@ -81,15 +73,15 @@
         <div>
           <label
             for="unit-meeting-date"
-            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-2"
+            class="mb-2 block text-xs font-medium text-ink"
           >
-            2. Meeting Date
+            2. Meeting date
           </label>
           <input
             id="unit-meeting-date"
             v-model="meetingDate"
             type="date"
-            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm font-jetbrains"
+            class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 font-mono text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
         </div>
       </div>
@@ -97,127 +89,78 @@
       <!-- Load failure: persistent error + retry; saving stays blocked meanwhile -->
       <div
         v-if="recordLoadState === 'failed'"
-        class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3"
+        class="mb-8 flex flex-col gap-3 rounded-surface border border-danger-line bg-danger-surface px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
         role="alert"
       >
         <div class="flex items-start gap-3">
           <Icon
             name="heroicons:exclamation-triangle"
-            class="h-5 w-5 text-red-600 shrink-0 mt-0.5"
+            class="mt-0.5 h-5 w-5 shrink-0 text-danger-text"
           />
-          <p class="text-xs md:text-sm text-red-800 font-jetbrains">
+          <p class="text-xs text-danger-text md:text-sm">
             Could not load the saved attendance for this date. Saving is blocked
             to avoid overwriting existing records.
           </p>
         </div>
-        <button
-          type="button"
-          class="inline-flex items-center justify-center rounded-lg border border-red-300 bg-white px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 transition-colors font-jetbrains shrink-0"
+        <AppButton
+          variant="secondary"
+          size="sm"
+          class="shrink-0"
           @click="loadMeetingRecord"
         >
           Retry
-        </button>
+        </AppButton>
       </div>
-
-      <!-- Stats -->
-      <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="rounded-xl border border-gray-200 bg-gray-50/60 p-4">
-          <p
-            class="text-[10px] md:text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500 mb-2"
-          >
-            Members Loaded
-          </p>
-          <p class="text-xl md:text-2xl font-black text-black font-jetbrains">
-            {{ members.length }}
-          </p>
-        </div>
-        <div class="rounded-xl border border-green-100 bg-green-50/70 p-4">
-          <p
-            class="text-[10px] md:text-[11px] font-jetbrains font-bold uppercase tracking-wide text-green-700 mb-2"
-          >
-            Present
-          </p>
-          <p
-            class="text-xl md:text-2xl font-black text-green-700 font-jetbrains"
-          >
-            {{ presentCount }}
-          </p>
-        </div>
-        <div class="rounded-xl border border-amber-100 bg-amber-50/70 p-4">
-          <p
-            class="text-[10px] md:text-[11px] font-jetbrains font-bold uppercase tracking-wide text-amber-700 mb-2"
-          >
-            Pardoned
-          </p>
-          <p
-            class="text-xl md:text-2xl font-black text-amber-700 font-jetbrains"
-          >
-            {{ pardonedCount }}
-          </p>
-        </div>
-        <div class="rounded-xl border border-red-100 bg-red-50/70 p-4">
-          <p
-            class="text-[10px] md:text-[11px] font-jetbrains font-bold uppercase tracking-wide text-red-700 mb-2"
-          >
-            Absent
-          </p>
-          <p class="text-xl md:text-2xl font-black text-red-700 font-jetbrains">
-            {{ absentCount }}
-          </p>
-        </div>
-      </div> -->
 
       <!-- Onboarding Tip & Legend -->
       <!-- Option 2: Refined Stack -->
       <div
         v-if="selectedUnit && members.length > 0"
-        class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-6 flex items-start gap-3"
+        class="mb-6 flex items-start gap-3 rounded-surface border border-line bg-subtle p-4"
       >
         <Icon
           name="heroicons:light-bulb"
-          class="h-5 w-5 text-blue-500 shrink-0"
+          class="h-5 w-5 shrink-0 text-muted"
         />
         <div class="flex flex-col gap-3">
           <p
-            class="text-xs md:text-sm font-medium text-blue-900 leading-relaxed"
+            class="text-xs font-medium leading-relaxed text-ink md:text-sm"
           >
             Tap a row to quickly cycle status. Long-press a row for quick
             actions. Use the Bulk Menu to mark many members at once.
           </p>
 
-          <div class="flex flex-wrap items-center gap-2 mt-1">
-            <span
-              class="text-[10px] font-bold uppercase tracking-wider text-blue-500 mr-2"
-            >
-              Status Guide
+          <div class="mt-1 flex flex-wrap items-center gap-2">
+            <span class="mr-2 font-mono text-xs text-muted">
+              Status guide
             </span>
 
             <span
-              class="flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-100/60 px-2 py-1 rounded border border-green-200"
+              class="flex items-center gap-1.5 rounded-badge border border-success-line bg-success-surface px-2 py-1 text-xs font-medium text-success-text"
             >
               <Icon
                 name="heroicons:check-circle"
-                class="h-4 w-4 text-green-600"
+                class="h-4 w-4 text-success-text"
               />
               Present
             </span>
 
             <span
-              class="flex items-center gap-1.5 text-xs font-medium text-amber-700 bg-amber-100/60 px-2 py-1 rounded border border-amber-200"
+              class="flex items-center gap-1.5 rounded-badge border border-warning-line bg-warning-surface px-2 py-1 text-xs font-medium text-warning-text"
             >
               <Icon
                 name="heroicons:shield-check"
-                class="h-4 w-4 text-amber-600"
+                class="h-4 w-4 text-warning-text"
               />
               Excused
             </span>
 
             <span
-              class="flex items-center gap-1.5 text-xs font-medium text-red-700 bg-red-100/60 px-2 py-1 rounded border border-red-200"
+              class="flex items-center gap-1.5 rounded-badge border border-danger-line bg-danger-surface px-2 py-1 text-xs font-medium text-danger-text"
             >
               <Icon
                 name="heroicons:minus-circle"
-                class="h-4 w-4 text-red-500"
+                class="h-4 w-4 text-danger-text"
               />
               Absent
             </span>
@@ -226,16 +169,16 @@
       </div>
 
       <!-- Main Data Area -->
-      <div class="border-t border-gray-100 -mx-4 md:-mx-6 px-2 md:px-4 mt-6">
+      <div class="mt-6 -mx-4 border-t border-line px-2 md:-mx-6 md:px-4">
         <div v-if="!selectedUnit" class="py-14 text-center">
           <Icon
             name="heroicons:clipboard-document-check"
-            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-12 w-12 text-line"
           />
-          <h3 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
-            Select a Unit
+          <h3 class="mb-1 text-sm font-semibold text-ink">
+            Select a unit
           </h3>
-          <p class="text-xs text-gray-500 max-w-sm mx-auto px-3">
+          <p class="mx-auto max-w-sm px-3 text-xs text-muted">
             Choose a unit above to load the attendance roster for the selected
             meeting date.
           </p>
@@ -244,37 +187,35 @@
         <div v-else-if="members.length === 0" class="py-16 text-center">
           <Icon
             name="heroicons:users"
-            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-12 w-12 text-line"
           />
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
-            No Members Found
+          <h3 class="mb-1 text-base font-semibold text-ink">
+            No members found
           </h3>
-          <p class="text-xs md:text-sm text-gray-500 max-w-sm mx-auto px-3">
+          <p class="mx-auto max-w-sm px-3 text-xs text-muted md:text-sm">
             There are no registered members in the
-            <span class="font-bold text-black">{{ selectedUnit }}</span> unit.
+            <span class="font-semibold text-ink">{{ selectedUnit }}</span> unit.
           </p>
         </div>
 
         <div v-else class="flex flex-col">
           <!-- Bulk Actions Header -->
           <div
-            class="flex flex-wrap items-center justify-between bg-gray-50 border-b border-gray-200 p-3 rounded-t-xl gap-4"
+            class="flex flex-wrap items-center justify-between gap-4 rounded-t-surface border-b border-line bg-subtle p-3"
           >
             <div class="flex items-center gap-3">
               <input
                 type="checkbox"
                 :checked="selectAllChecked"
                 aria-label="Select all members"
-                class="h-3 w-3 text-black focus:ring-black border-gray-300 rounded cursor-pointer"
+                class="h-4 w-4 cursor-pointer rounded-badge border-line accent-ink"
                 @change="toggleSelectAll"
               >
-              <span
-                class="text-[11px] md:text-xs font-bold text-gray-700 font-jetbrains uppercase tracking-wide"
-              >
+              <span class="font-mono text-xs font-medium text-ink">
                 {{
                   selectedMembers.length > 0
-                    ? `${selectedMembers.length} Selected`
-                    : "Select All"
+                    ? `${selectedMembers.length} selected`
+                    : "Select all"
                 }}
               </span>
             </div>
@@ -282,34 +223,34 @@
             <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
               <button
                 :disabled="selectedMembers.length === 0"
-                class="px-3 py-1.5 text-[10px] md:text-xs font-jetbrains bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
+                class="shrink-0 whitespace-nowrap rounded-control border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:bg-subtle disabled:opacity-50"
                 @click="bulkMarkSelected('present')"
               >
-                Mark Selected Present
+                Mark selected present
               </button>
               <button
                 :disabled="selectedMembers.length === 0"
-                class="px-3 py-1.5 text-[10px] md:text-xs font-jetbrains bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
+                class="shrink-0 whitespace-nowrap rounded-control border border-line bg-surface px-3 py-1.5 text-xs text-ink transition hover:bg-subtle disabled:opacity-50"
                 @click="bulkMarkSelected('pardoned')"
               >
-                Mark Selected Excused
+                Mark selected excused
               </button>
               <button
-                class="px-3 py-1.5 text-[10px] md:text-xs font-jetbrains text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition-colors whitespace-nowrap shrink-0"
+                class="shrink-0 whitespace-nowrap rounded-control border border-success-line bg-success-surface px-3 py-1.5 text-xs font-medium text-success-text transition-colors hover:border-success-text"
                 @click="confirmMarkAllPresent"
               >
-                Mark All Present
+                Mark all present
               </button>
               <button
                 :disabled="selectedMembers.length === 0"
-                class="px-3 py-1.5 text-[10px] md:text-xs font-jetbrains bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
+                class="shrink-0 whitespace-nowrap rounded-control border border-danger-line bg-surface px-3 py-1.5 text-xs text-danger-text transition hover:bg-danger-surface disabled:opacity-50"
                 @click="bulkMarkSelected('absent')"
               >
-                Mark Selected Absent
+                Mark selected absent
               </button>
               <button
                 v-if="selectedMembers.length > 0"
-                class="px-2 py-1.5 text-[10px] md:text-xs font-jetbrains text-red-500 hover:bg-red-50 rounded-lg transition-colors whitespace-nowrap shrink-0"
+                class="shrink-0 whitespace-nowrap rounded-control px-2 py-1.5 text-xs text-danger-text transition-colors hover:bg-danger-surface"
                 @click="selectedMembers = []"
               >
                 Clear
@@ -318,14 +259,14 @@
           </div>
 
           <!-- Roster List -->
-          <div class="divide-y divide-gray-100 pt-3">
+          <div class="divide-y divide-line pt-3">
             <div
               v-for="member in members"
               :key="member.id"
               role="button"
               tabindex="0"
               :aria-label="`Cycle attendance status for ${member.name}`"
-              class="group flex flex-col md:flex-row md:items-center justify-between p-4 transition-colors hover:bg-gray-50/80 cursor-pointer"
+              class="group flex cursor-pointer flex-col justify-between p-4 transition-colors hover:bg-subtle/60 md:flex-row md:items-center"
               @click="cycleStatus(member.id)"
               @keydown.enter.self.prevent="cycleStatus(member.id)"
               @keydown.space.self.prevent="cycleStatus(member.id)"
@@ -338,15 +279,15 @@
                   type="checkbox"
                   :value="member.id"
                   :aria-label="`Select ${member.name}`"
-                  class="h-3 w-3 text-black focus:ring-black border-gray-300 rounded cursor-pointer"
+                  class="h-4 w-4 cursor-pointer rounded-badge border-line accent-ink"
                   @click.stop
                 >
                 <div>
-                  <div class="text-[13px] md:text-sm text-black font-jetbrains">
+                  <div class="text-sm text-ink">
                     {{ member.name }}
                   </div>
                   <div
-                    class="text-[11px] font-jetbrains text-gray-500 mt-0.5 tracking-wide uppercase"
+                    class="mt-0.5 font-mono text-xs text-muted"
                   >
                     {{
                       member.memberType === "EXECUTIVE" ? "Executive" : "Member"
@@ -363,10 +304,10 @@
                 <button
                   aria-label="Mark present"
                   :class="[
-                    'border rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-all text-[10px] md:text-xs font-jetbrains tracking-wide uppercase shrink-0',
+                    'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors',
                     getStatus(member.id) === 'present'
-                      ? 'bg-green-100 text-green-800 border-green-200 shadow-sm'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-green-300 hover:text-green-600',
+                      ? 'border-success-line bg-success-surface text-success-text'
+                      : 'border-line bg-surface text-muted hover:border-ink hover:text-ink',
                   ]"
                   @click.stop="setStatus(member.id, 'present')"
                 >
@@ -377,10 +318,10 @@
                 <button
                   aria-label="Mark excused"
                   :class="[
-                    'border rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-all text-[10px] md:text-xs font-jetbrains tracking-wide uppercase shrink-0',
+                    'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors',
                     getStatus(member.id) === 'pardoned'
-                      ? 'bg-amber-100 text-amber-800 border-amber-200 shadow-sm'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-amber-300 hover:text-amber-600',
+                      ? 'border-warning-line bg-warning-surface text-warning-text'
+                      : 'border-line bg-surface text-muted hover:border-ink hover:text-ink',
                   ]"
                   @click.stop="setStatus(member.id, 'pardoned')"
                 >
@@ -391,10 +332,10 @@
                 <button
                   aria-label="Mark absent"
                   :class="[
-                    'border rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-all text-[10px] md:text-xs font-jetbrains tracking-wide uppercase shrink-0',
+                    'flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors',
                     getStatus(member.id) === 'absent'
-                      ? 'bg-red-100 text-red-800 border-red-300 shadow-sm'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-red-300 hover:text-red-500',
+                      ? 'border-danger-line bg-danger-surface text-danger-text'
+                      : 'border-line bg-surface text-muted hover:border-ink hover:text-ink',
                   ]"
                   @click.stop="setStatus(member.id, 'absent')"
                 >
@@ -407,159 +348,156 @@
       </div>
 
       <div
-        class="border-t border-gray-200 bg-gray-50/50 mt-8 -mx-4 md:-mx-6 -mb-8 md:-mb-12 px-4 md:px-6 py-10 flex flex-col gap-4"
+        class="mt-8 -mx-4 -mb-8 flex flex-col gap-4 border-t border-line bg-subtle/50 px-4 py-10 md:-mx-6 md:-mb-12 md:px-6"
       >
         <div>
           <label
             for="unit-meeting-comments"
-            class="block text-[11px] font-jetbrains font-bold text-black uppercase tracking-wide mb-3"
+            class="mb-3 block text-xs font-medium text-ink"
           >
-            Additional Comments
+            Additional comments
           </label>
           <textarea
             id="unit-meeting-comments"
             v-model="additionalComments"
-            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm resize-none"
-            placeholder="Meeting notes, follow-up items, or special instructions..."
+            class="w-full resize-none rounded-control border border-line bg-surface px-4 py-3 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+            placeholder="Meeting notes, follow-up items, or special instructions…"
             rows="9"
             @input="triggerAutosave"
           />
         </div>
-        <div class="flex justify-end items-center gap-4">
+        <div class="flex items-center justify-end gap-4">
           <div
             v-if="lastSavedAt"
-            class="text-[11px] font-jetbrains font-medium text-gray-500"
+            class="font-mono text-xs font-medium text-muted"
           >
             Last saved: {{ formatDateTime(lastSavedAt) }}
           </div>
         </div>
       </div>
-    </div>
+    </AppCard>
 
     <!-- Manage Records View -->
-    <div
-      v-if="activeView === 'records'"
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-    >
-      <div
-        class="bg-gray-50/50 border-b border-gray-100 px-4 md:px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-      >
-        <div>
-          <h3 class="text-sm font-jetbrains font-bold text-black">
-            Saved Meeting Records
-          </h3>
-          <p class="text-[11px] text-gray-500 mt-1">
-            Remove records that were saved for the wrong unit or date.
-          </p>
-        </div>
-        <button
-          :disabled="isLoadingRecords"
-          class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 disabled:opacity-60 transition-colors font-jetbrains shrink-0"
-          @click="fetchAllRecords"
+    <AppCard v-if="activeView === 'records'" body-class="p-0">
+      <template #header>
+        <div
+          class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
         >
-          <Icon
-            name="heroicons:arrow-path"
-            class="mr-2 h-3.5 w-3.5"
-            :class="{ 'animate-spin': isLoadingRecords }"
-          />
-          Refresh
-        </button>
-      </div>
+          <div>
+            <h3 class="text-base font-semibold text-ink">
+              Saved meeting records
+            </h3>
+            <p class="mt-1 text-xs text-muted">
+              Remove records that were saved for the wrong unit or date.
+            </p>
+          </div>
+          <AppButton
+            variant="secondary"
+            size="sm"
+            icon="heroicons:arrow-path"
+            :loading="isLoadingRecords"
+            class="shrink-0"
+            @click="fetchAllRecords"
+          >
+            Refresh
+          </AppButton>
+        </div>
+      </template>
 
       <div v-if="isLoadingRecords" class="py-16 text-center">
         <Icon
           name="heroicons:arrow-path"
-          class="mx-auto h-8 w-8 text-gray-300 animate-spin mb-3"
+          class="mx-auto mb-3 h-8 w-8 animate-spin text-line"
         />
-        <p class="text-xs text-gray-500">Loading records...</p>
+        <p class="text-xs text-muted">Loading records…</p>
       </div>
 
       <div v-else-if="allRecords.length === 0" class="py-16 text-center">
         <Icon
           name="heroicons:clipboard-document-list"
-          class="mx-auto h-12 w-12 text-gray-300 mb-4"
+          class="mx-auto mb-4 h-12 w-12 text-line"
         />
-        <h3 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
+        <h3 class="mb-1 text-sm font-semibold text-ink">
           No meeting records found
         </h3>
-        <p class="text-xs text-gray-500">
+        <p class="text-xs text-muted">
           Saved unit meeting attendance will appear here.
         </p>
       </div>
 
       <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">Saved unit meeting records</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Unit
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Meeting Date
+                Meeting date
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Attendance
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Last Saved
+                Last saved
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <tr
               v-for="record in allRecords"
               :key="record.id"
-              class="hover:bg-gray-50 transition-colors"
+              class="transition-colors hover:bg-subtle/40"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-gray-100 text-gray-700"
+                  class="inline-flex items-center rounded-badge border border-line bg-subtle px-2.5 py-1 font-mono text-xs font-medium text-muted"
                 >
                   {{ record.unitName }}
                 </span>
               </td>
               <td
-                class="px-6 py-4 whitespace-nowrap text-xs md:text-sm font-jetbrains text-gray-900"
+                class="px-6 py-4 whitespace-nowrap font-mono text-xs text-ink md:text-sm"
               >
                 {{ formatMeetingDate(record.meetingDate) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-3 text-xs font-jetbrains">
-                  <span class="text-green-700 font-bold">
+                <div class="flex items-center gap-3 font-mono text-xs">
+                  <span class="font-semibold text-success-text">
                     {{ record.presentIds?.length || 0 }} present
                   </span>
-                  <span class="text-amber-700 font-bold">
+                  <span class="font-semibold text-warning-text">
                     {{ record.pardonedIds?.length || 0 }} excused
                   </span>
                 </div>
               </td>
               <td
-                class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-jetbrains"
+                class="px-6 py-4 whitespace-nowrap font-mono text-xs text-muted"
               >
                 {{ record.updatedAt ? formatDateTime(record.updatedAt) : "—" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <button
-                  class="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                  class="rounded-control p-2 text-muted transition-colors hover:bg-danger-surface hover:text-danger-text"
                   title="Delete record"
                   aria-label="Delete record"
                   @click="deleteRecord(record)"
@@ -571,24 +509,24 @@
           </tbody>
         </table>
       </div>
-    </div>
+    </AppCard>
 
     <!-- Undo Toast/Banner -->
     <Transition name="fade-up">
       <div
         v-if="undoHistory"
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4 bg-black/90 backdrop-blur-md px-5 py-3 rounded-full shadow-2xl border border-gray-800"
+        class="fixed bottom-6 left-1/2 z-overlay flex -translate-x-1/2 items-center gap-4 rounded-full border border-line bg-surface px-5 py-3 shadow-overlay"
       >
-        <span class="text-xs text-white font-medium">Bulk action applied.</span>
+        <span class="text-xs font-medium text-ink">Bulk action applied.</span>
         <button
-          class="text-xs text-[#e94e4e] hover:text-white transition-colors uppercase tracking-widest font-jetbrains"
+          class="text-xs font-medium text-danger-text transition-colors hover:text-ink"
           @click="performUndo"
         >
           Undo
         </button>
         <button
           aria-label="Dismiss undo banner"
-          class="text-gray-400 hover:text-white p-1"
+          class="p-1 text-muted transition-colors hover:text-ink"
           @click="undoHistory = null"
         >
           <Icon name="heroicons:x-mark" class="h-4 w-4" />
@@ -599,9 +537,12 @@
     <!-- Fixed Save Button & Sync Status Badge -->
     <div
       v-if="activeView === 'attendance' && selectedUnit && members.length > 0"
-      class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2"
+      class="fixed bottom-6 right-6 z-chrome flex flex-col items-end gap-2"
     >
-      <button
+      <AppButton
+        size="lg"
+        icon="heroicons:cloud-arrow-up"
+        :loading="syncState === 'saving'"
         :disabled="
           !selectedUnit ||
           isFetching ||
@@ -609,31 +550,23 @@
           members.length === 0 ||
           recordLoadState === 'failed'
         "
-        class="flex items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 shadow-lg border border-gray-800 text-white hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
-        title="Save Changes"
+        class="shadow-overlay"
+        title="Save changes"
         @click="saveAttendance"
       >
-        <Icon
-          v-if="syncState === 'saving'"
-          name="heroicons:cloud-arrow-up"
-          class="h-5 w-5 animate-spin"
-        />
-        <Icon v-else name="heroicons:cloud-arrow-up" class="h-5 w-5" />
-        <span class="text-xs font-jetbrains font-bold">
-          {{ syncState === "saving" ? "Saving..." : "Save Changes" }}
-        </span>
-      </button>
+        {{ syncState === "saving" ? "Saving…" : "Save changes" }}
+      </AppButton>
 
       <div
-          class="flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-sm transition-all duration-300"
+          class="flex items-center gap-3 rounded-surface border px-4 py-3 shadow-overlay backdrop-blur-sm transition-colors"
           :class="[
             syncState === 'synced'
-              ? 'bg-green-50 border-green-200 text-green-700'
+              ? 'border-success-line bg-success-surface text-success-text'
               : syncState === 'modified'
-                ? 'bg-amber-50 border-amber-200 text-amber-700'
+                ? 'border-warning-line bg-warning-surface text-warning-text'
                 : syncState === 'saving'
-                  ? 'bg-blue-50 border-blue-200 text-blue-700'
-                  : 'bg-red-50 border-red-200 text-red-700',
+                  ? 'border-line bg-surface text-ink'
+                  : 'border-danger-line bg-danger-surface text-danger-text',
           ]"
         >
           <Icon
@@ -650,18 +583,18 @@
             :class="{ 'animate-spin': syncState === 'saving' }"
           />
           <div class="flex flex-col">
-            <span class="text-xs font-jetbrains leading-tight">
+            <span class="text-xs font-medium leading-tight">
               {{
                 syncState === "synced"
                   ? "Saved"
                   : syncState === "modified"
                     ? "Unsaved"
                     : syncState === "saving"
-                      ? "Saving..."
+                      ? "Saving…"
                       : "Save failed"
               }}
             </span>
-            <span class="text-[10px] opacity-70 leading-tight mt-0.5">
+            <span class="mt-0.5 text-xs leading-tight opacity-70">
               {{
                 syncState === "synced"
                   ? "All changes synced"
@@ -679,44 +612,44 @@
     <!-- Quick Actions Modal (Long Press) -->
     <div
       v-if="quickActionMember"
-      class="fixed inset-0 z-50 flex items-center justify-center"
+      class="fixed inset-0 z-overlay flex items-center justify-center"
     >
       <div
-        class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        class="absolute inset-0 bg-ink/40 backdrop-blur-sm"
         aria-hidden="true"
         @click="quickActionMember = null"
       />
       <div
-        class="relative bg-white rounded-xl shadow-xl w-full max-w-sm m-4 p-5"
+        class="relative m-4 w-full max-w-sm rounded-surface border border-line bg-surface p-5 shadow-overlay"
       >
-        <h3 class="text-sm font-bold text-black mb-1">
+        <h3 class="mb-1 text-sm font-semibold text-ink">
           {{ quickActionMember.name }}
         </h3>
-        <p class="text-xs text-gray-500 mb-5">Quick Actions</p>
+        <p class="mb-5 text-xs text-muted">Quick actions</p>
 
         <div class="flex flex-col gap-2">
           <button
-            class="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-green-50 text-left border border-gray-100 transition-colors"
+            class="flex w-full items-center gap-3 rounded-control border border-line p-3 text-left transition-colors hover:bg-success-surface"
             @click="applyQuickAction('present')"
           >
             <Icon
               name="heroicons:check-circle"
-              class="h-5 w-5 text-green-600"
+              class="h-5 w-5 text-success-text"
             />
-            <span class="text-sm font-bold text-gray-800">Mark Present</span>
+            <span class="text-sm font-medium text-ink">Mark present</span>
           </button>
           <button
-            class="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-amber-50 text-left border border-gray-100 transition-colors"
+            class="flex w-full items-center gap-3 rounded-control border border-line p-3 text-left transition-colors hover:bg-warning-surface"
             @click="applyQuickAction('pardoned')"
           >
             <Icon
               name="heroicons:shield-check"
-              class="h-5 w-5 text-amber-600"
+              class="h-5 w-5 text-warning-text"
             />
-            <span class="text-sm font-bold text-gray-800">Mark Excused</span>
+            <span class="text-sm font-medium text-ink">Mark excused</span>
           </button>
           <button
-            class="mt-2 text-center text-xs text-gray-500 hover:text-black py-2"
+            class="mt-2 py-2 text-center text-xs text-muted transition-colors hover:text-ink"
             @click="quickActionMember = null"
           >
             Cancel
@@ -873,9 +806,9 @@ function performUndo() {
 
 async function confirmMarkAllPresent() {
   const answer = await confirm.ask({
-    title: "Mark All Present",
-    message: "Are you sure you want to mark ALL members as present?",
-    confirmText: "Yes, Mark All",
+    title: "Mark all present",
+    message: "Are you sure you want to mark all members as present?",
+    confirmText: "Yes, mark all",
     cancelText: "Cancel",
   });
   if (answer) {
@@ -1049,9 +982,9 @@ function switchToRecords() {
 
 async function deleteRecord(record) {
   const answer = await confirm.ask({
-    title: "Delete Meeting Record",
+    title: "Delete meeting record",
     message: `Delete the ${record.unitName} meeting record for ${formatMeetingDate(record.meetingDate)}? This cannot be undone.`,
-    confirmText: "Yes, Delete",
+    confirmText: "Yes, delete",
     cancelText: "Cancel",
   });
   if (!answer) return;
@@ -1118,10 +1051,10 @@ watch(selectedUnit, async (unit, previousUnit) => {
   }
   if (previousUnit && isDirty.value) {
     const switchAnyway = await confirm.ask({
-      title: "Unsaved Changes",
+      title: "Unsaved changes",
       message:
         "You have unsaved attendance changes for this meeting. Switch units and discard them?",
-      confirmText: "Discard & Switch",
+      confirmText: "Discard & switch",
       cancelText: "Stay",
       isDestructive: true,
     });
@@ -1154,10 +1087,10 @@ watch(meetingDate, async (date, previousDate) => {
   }
   if (previousDate && isDirty.value) {
     const switchAnyway = await confirm.ask({
-      title: "Unsaved Changes",
+      title: "Unsaved changes",
       message:
         "You have unsaved attendance changes for this date. Switch dates and discard them?",
-      confirmText: "Discard & Switch",
+      confirmText: "Discard & switch",
       cancelText: "Stay",
       isDestructive: true,
     });

@@ -1,26 +1,27 @@
 <template>
-  <div
-    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full font-poppins"
+  <AppCard
+    class="flex h-full flex-col" body-class="flex min-h-0 flex-1 flex-col"
   >
     <div
-      class="px-6 py-5 border-b border-gray-200 flex items-start justify-between bg-white"
+      class="px-6 py-5 border-b border-line flex items-start justify-between"
     >
       <div>
-        <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+        <h3 class="text-base font-semibold text-ink mb-1">
           Altar Calls
         </h3>
-        <p class="text-xs text-gray-500">
+        <p class="text-xs text-muted">
           Manage response categories for this event.
         </p>
       </div>
 
-      <button
-        class="inline-flex items-center px-4 py-2 text-[11px] text-black bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-jetbrains shadow-sm"
+      <AppButton
+        variant="secondary"
+        size="sm"
+        icon="heroicons:plus"
         @click="openDrawer"
       >
-        <Icon name="heroicons:plus" class="mr-1.5 h-4 w-4" />
         Record
-      </button>
+      </AppButton>
     </div>
 
     <div
@@ -29,10 +30,10 @@
     >
       <Icon
         name="heroicons:arrow-path"
-        class="h-8 w-8 text-gray-500 animate-spin mb-4"
+        class="h-8 w-8 text-muted animate-spin mb-4"
       />
       <p
-        class="text-[11px] font-bold font-jetbrains text-gray-500 uppercase tracking-widest animate-pulse"
+        class="font-mono text-xs font-medium text-muted animate-pulse"
       >
         Loading altar calls...
       </p>
@@ -42,61 +43,57 @@
       v-else-if="altarCalls.length === 0"
       class="flex-1 flex flex-col justify-center items-center text-center py-14 px-8"
     >
-      <Icon name="heroicons:megaphone" class="h-10 w-10 text-gray-300 mb-4" />
-      <h4 class="text-sm font-jetbrains font-bold text-gray-900 mb-1">
+      <Icon name="heroicons:megaphone" class="h-10 w-10 text-line mb-4" />
+      <h4 class="text-sm font-semibold text-ink mb-1">
         No Altar Calls
       </h4>
-      <p class="text-xs text-gray-500 mb-6 max-w-xs">
+      <p class="text-xs text-muted mb-6 max-w-xs">
         Start recording altar call responses for this event.
       </p>
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains"
-        @click="openDrawer"
-      >
-        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-        Record Call
-      </button>
+      <AppButton icon="heroicons:plus" @click="openDrawer">
+        Record call
+      </AppButton>
     </div>
 
     <div
       v-else
-      class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200"
+      class="flex-1 overflow-y-auto"
     >
-      <ul class="divide-y divide-gray-100">
+      <ul class="divide-y divide-line">
         <li
           v-for="call in altarCalls"
           :key="call.id"
           role="button"
           tabindex="0"
           :aria-label="`View details for ${call.callType} altar call`"
-          class="group cursor-pointer px-6 py-5 hover:bg-gray-50/50 transition-colors"
-          :class="selectedCall?.id === call.id ? 'bg-gray-50/80' : ''"
+          class="group cursor-pointer px-6 py-5 hover:bg-subtle/60 transition-colors"
+          :class="selectedCall?.id === call.id ? 'bg-subtle' : ''"
           @click="$emit('select-call', call)"
           @keydown.enter.self.prevent="$emit('select-call', call)"
           @keydown.space.self.prevent="$emit('select-call', call)"
         >
           <div>
             <p
-              class="text-[11px] font-jetbrains font-bold uppercase tracking-widest text-gray-500 mb-2"
+              class="font-mono text-xs font-medium text-muted mb-2"
             >
               {{ call.callType }}
             </p>
-            <p class="text-xs text-gray-500 truncate max-w-[250px] font-medium">
+            <p class="text-xs text-muted truncate max-w-[250px] font-medium">
               {{ call.additionalComments || "No additional comments" }}
             </p>
           </div>
 
           <div
-            class="inline-flex items-center justify-between rounded-md bg-white border border-gray-200 px-2.5 py-1.5 mt-3 shadow-sm"
+            class="inline-flex items-center justify-between rounded-badge bg-surface border border-line px-2.5 py-1.5 mt-3"
           >
             <span
-              class="text-[10px] font-bold font-jetbrains uppercase tracking-wider text-gray-600"
+              class="font-mono text-xs font-medium text-muted"
             >
               {{ call.totalResponders }} Responders
             </span>
             <Icon
               name="heroicons:chevron-right"
-              class="ml-2 h-3.5 w-3.5 text-gray-300 group-hover:text-black transition-colors"
+              class="ml-2 h-3.5 w-3.5 text-line group-hover:text-ink transition-colors"
             />
           </div>
         </li>
@@ -115,7 +112,7 @@
         @submit="handleFormSubmit"
       />
     </SlideOver>
-  </div>
+  </AppCard>
 </template>
 
 <script setup>

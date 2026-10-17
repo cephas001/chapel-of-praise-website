@@ -1,49 +1,38 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Page Header -->
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+    <AppHeading
+      class="mb-8"
+      title="Event management"
+      subtitle="Manage all upcoming and past chapel events."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Event Management
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Manage all upcoming and past chapel events.
-        </p>
-      </div>
-
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        @click="openCreateDrawer"
-      >
-        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-        New Event
-      </button>
-    </div>
+      <template #actions>
+        <AppButton icon="heroicons:plus" @click="openCreateDrawer">
+          New event
+        </AppButton>
+      </template>
+    </AppHeading>
 
     <!-- Main Container -->
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-    >
+    <AppCard body-class="p-0">
       <!-- List Controls -->
       <div
-        class="border-b border-gray-100 p-4 flex flex-col lg:flex-row gap-3 lg:items-center"
+        class="flex flex-col gap-3 border-b border-line p-4 lg:flex-row lg:items-center"
       >
         <div class="relative flex-1 min-w-0">
           <label for="events-search" class="sr-only">Search events</label>
           <Icon
             name="heroicons:magnifying-glass"
-            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
           />
           <input
             id="events-search"
             v-model="search"
             type="search"
             placeholder="Search by service, description or program day..."
-            class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white"
+            class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
         </div>
 
@@ -55,7 +44,7 @@
             <select
               id="events-service-filter"
               v-model="filters.service"
-              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
             >
               <option value="ALL">All service types</option>
               <option value="SUNDAY SERVICE">Sunday Service</option>
@@ -72,7 +61,7 @@
             <select
               id="events-time-filter"
               v-model="filters.time"
-              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
             >
               <option value="all">All time</option>
               <option value="upcoming">Upcoming</option>
@@ -85,7 +74,7 @@
             <select
               id="events-sort"
               v-model="sortOption"
-              class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+              class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
             >
               <option value="date:desc">Newest first</option>
               <option value="date:asc">Oldest first</option>
@@ -97,47 +86,47 @@
       </div>
 
       <!-- Data Table -->
-      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">All events</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Event Details
+                Event details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Service Type
+                Service type
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Date & Time
+                Date & time
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <tr
               v-for="event in paged"
               :key="event.id"
-              class="group hover:bg-gray-50 transition-colors"
+              class="group transition-colors hover:bg-subtle/40"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div>
-                  <div class="text-xs md:text-sm text-black font-bold">
+                  <div class="text-xs font-medium text-ink md:text-sm">
                     {{
                       event.service === "SPECIAL PROGRAM"
                         ? event.specialProgram
@@ -145,7 +134,7 @@
                     }}
                   </div>
                   <div
-                    class="text-[11px] font-jetbrains text-gray-500 mt-0.5 max-w-[250px] truncate font-medium"
+                    class="mt-0.5 max-w-[250px] truncate text-xs text-muted"
                   >
                     {{ event.eventDescription || "No description provided" }}
                   </div>
@@ -154,14 +143,14 @@
 
               <td class="px-6 py-4 whitespace-nowrap flex gap-2 flex-col">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider w-fit"
+                  class="inline-flex w-fit items-center rounded-badge border px-2.5 py-1 font-mono text-xs font-medium"
                   :class="getBadgeColor(event.service)"
                 >
                   {{ event.service }}
                 </span>
                 <div
                   v-if="event.programDay"
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider w-fit"
+                  class="inline-flex w-fit items-center rounded-badge border px-2.5 py-1 font-mono text-xs font-medium"
                   :class="getBadgeColor(event.service)"
                 >
                   {{ event.programDay }}
@@ -169,13 +158,13 @@
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-xs md:text-sm text-black">
+                <div class="font-mono text-xs text-ink md:text-sm">
                   {{ formatDate(event.eventDate) }}
                 </div>
                 <div
-                  class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide"
+                  class="mt-0.5 font-mono text-xs text-muted"
                 >
-                  {{ event.startTime }} - {{ event.endTime }}
+                  {{ event.startTime }} – {{ event.endTime }}
                 </div>
               </td>
 
@@ -184,7 +173,7 @@
               >
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="Open Event"
                     aria-label="Open event"
                     @click="navigateTo(`/events/${event.id}`)"
@@ -192,7 +181,7 @@
                     <Icon name="heroicons:eye" class="h-4 w-4" />
                   </button>
                   <button
-                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="Edit Event"
                     aria-label="Edit event"
                     @click="openEditDrawer(event)"
@@ -200,7 +189,7 @@
                     <Icon name="heroicons:pencil-square" class="h-4 w-4" />
                   </button>
                   <button
-                    class="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-danger-surface hover:text-danger-text"
                     title="Delete Event"
                     aria-label="Delete event"
                     @click="handleDeleteEvent(event.id)"
@@ -216,30 +205,32 @@
         <!-- No matches -->
         <div
           v-if="!isFetching && events.length > 0 && filtered.length === 0"
-          class="py-16 text-center border-t border-gray-100"
+          class="border-t border-line py-16 text-center"
         >
           <Icon
             name="heroicons:magnifying-glass"
-            class="mx-auto h-10 w-10 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-10 w-10 text-line"
           />
-          <h3 class="text-sm font-bold text-black mb-1 font-jetbrains">
+          <h3 class="mb-1 text-sm font-semibold text-ink">
             No events match your filters
           </h3>
-          <button
-            class="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+          <AppButton
+            variant="secondary"
+            size="sm"
+            class="mt-4"
             @click="reset"
           >
             Clear filters
-          </button>
+          </AppButton>
         </div>
       </div>
 
       <!-- Pagination -->
       <div
         v-if="totalPages > 1"
-        class="flex items-center justify-between gap-4 border-t border-gray-100 px-6 py-4"
+        class="flex items-center justify-between gap-4 border-t border-line px-6 py-4"
       >
-        <p class="text-[11px] font-jetbrains text-gray-500">
+        <p class="font-mono text-xs text-muted">
           Showing {{ (page - 1) * pageSize + 1 }}–{{
             Math.min(page * pageSize, total)
           }}
@@ -249,18 +240,18 @@
           <button
             :disabled="page === 1"
             aria-label="Previous page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="prevPage"
           >
             <Icon name="heroicons:chevron-left" class="h-4 w-4" />
           </button>
-          <span class="text-[11px] font-jetbrains text-gray-600 font-bold">
+          <span class="font-mono text-xs font-medium text-ink">
             Page {{ page }} / {{ totalPages }}
           </span>
           <button
             :disabled="page === totalPages"
             aria-label="Next page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="nextPage"
           >
             <Icon name="heroicons:chevron-right" class="h-4 w-4" />
@@ -272,19 +263,19 @@
       <div v-if="!isFetching && events.length === 0" class="py-20 text-center">
         <Icon
           name="heroicons:calendar"
-          class="mx-auto h-12 w-12 text-gray-300 mb-4"
+          class="mx-auto mb-4 h-12 w-12 text-line"
         />
-        <h3 class="text-sm font-bold text-black mb-2">No events found</h3>
-        <p class="text-gray-500 text-xs px-5 font-mono">
+        <h3 class="mb-2 text-sm font-semibold text-ink">No events found</h3>
+        <p class="px-5 text-xs text-muted">
           Get started by creating a new event for the chapel.
         </p>
       </div>
-    </div>
+    </AppCard>
 
     <!-- SlideOver Drawer -->
     <SlideOver
       :is-open="isDrawerOpen"
-      :title="selectedEvent ? 'Edit Event' : 'Create New Event'"
+      :title="selectedEvent ? 'Edit event' : 'Create new event'"
       @close="closeDrawer"
     >
       <EventForm
@@ -463,7 +454,7 @@ const handleFormSubmit = async (formData) => {
 // Delete Event Handler
 const handleDeleteEvent = async (id) => {
   const answer = await confirm.ask({
-    title: "Delete Event",
+    title: "Delete event",
     message:
       "Are you sure you want to delete this event? This action cannot be undone.",
     confirmText: "Delete",
@@ -504,15 +495,15 @@ const formatDate = (dateString) => {
 const getBadgeColor = (serviceType) => {
   switch (serviceType) {
     case "SUNDAY SERVICE":
-      return "bg-blue-50 text-blue-700";
+      return "border-line bg-subtle text-ink";
     case "BIBLE STUDY":
-      return "bg-green-50 text-green-700";
+      return "border-line bg-subtle text-muted";
     case "PRAYER MEETING":
-      return "bg-purple-50 text-purple-700";
+      return "border-line bg-subtle text-muted";
     case "SPECIAL PROGRAM":
-      return "bg-orange-50 text-orange-700";
+      return "border-ink bg-ink text-white";
     default:
-      return "bg-gray-100 text-gray-700";
+      return "border-line bg-subtle text-muted";
   }
 };
 </script>

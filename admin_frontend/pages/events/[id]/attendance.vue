@@ -1,20 +1,18 @@
 <!-- pages/events/[id]/attendance.vue -->
 <template>
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <div
       class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
     >
       <div>
         <NuxtLink
           :to="`/events/${eventId}`"
-          class="inline-flex items-center text-[11px] font-jetbrains font-bold text-gray-500 hover:text-black transition-colors mb-3 uppercase tracking-widest"
+          class="inline-flex items-center text-xs font-medium text-muted transition-colors hover:text-ink mb-3"
         >
           <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" /> Back to
           Event
         </NuxtLink>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Event Unit Attendance
-        </h2>
+        <AppHeading title="Event unit attendance" />
       </div>
 
       <div class="w-full sm:w-72">
@@ -22,7 +20,7 @@
           <select
             :value="selectedUnit"
             aria-label="Select chapel unit"
-            class="w-full bg-white border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm font-semibold appearance-none shadow-sm cursor-pointer"
+            class="w-full appearance-none cursor-pointer rounded-control border border-line bg-surface py-2.5 pl-4 pr-10 text-xs font-semibold text-ink outline-none transition-colors focus:border-ink md:text-sm"
             @change="onUnitChange"
           >
             <option value="" disabled>Select Chapel Unit...</option>
@@ -33,7 +31,7 @@
           <div
             class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
           >
-            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-gray-500" />
+            <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
           </div>
         </div>
       </div>
@@ -46,22 +44,22 @@
       :unit-name="selectedUnit"
     />
 
-    <div
+    <AppCard
       v-else
-      class="bg-white rounded-xl border border-gray-200 border-dashed p-16 text-center shadow-sm mt-8"
+      class="mt-8 border-dashed" body-class="p-16 text-center"
     >
       <Icon
         name="heroicons:cursor-arrow-rays"
-        class="mx-auto h-10 w-10 text-gray-300 mb-4"
+        class="mx-auto h-10 w-10 text-line mb-4"
       />
-      <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+      <h3 class="text-base font-semibold text-ink mb-1">
         Select a Unit
       </h3>
-      <p class="text-xs md:text-sm text-gray-500">
+      <p class="text-xs md:text-sm text-muted">
         Choose a chapel unit from the dropdown above to load and manage the
         attendance roster.
       </p>
-    </div>
+    </AppCard>
   </div>
 </template>
 

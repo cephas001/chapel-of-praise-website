@@ -1,25 +1,25 @@
 <!-- components/ui/MemberCard.vue -->
 <template>
-  <div
-    class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col h-full font-poppins hover:shadow-md transition-shadow"
+  <AppCard
+    class="flex h-full flex-col" body-class="p-5 flex flex-1 flex-col"
   >
     <!-- Header -->
     <div class="flex items-start gap-4 mb-4">
       <div
-        class="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-base shrink-0"
+        class="h-12 w-12 rounded-full bg-subtle flex items-center justify-center text-muted font-semibold text-base shrink-0"
       >
         {{ initials }}
       </div>
       <div>
-        <h3 class="text-sm md:text-base font-bold text-gray-900 line-clamp-1">
+        <h3 class="text-sm md:text-base font-semibold text-ink line-clamp-1">
           {{ member.name }}
         </h3>
         <p
-          class="text-[11px] font-bold mt-0.5 uppercase tracking-wider font-jetbrains"
+          class="font-mono text-xs font-medium mt-0.5"
           :class="
             member.memberType === 'EXECUTIVE'
-              ? 'text-blue-600'
-              : 'text-gray-500'
+              ? 'text-muted'
+              : 'text-muted'
           "
         >
           {{ member.memberType === "EXECUTIVE" ? "Executive" : "Worker" }} •
@@ -32,7 +32,7 @@
     <div v-if="member.phone" class="mt-auto flex gap-2">
       <a
         :href="`tel:${member.phone}`"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs transition-colors"
+        class="flex-1 inline-flex items-center justify-center rounded-surface border border-line bg-surface px-3 py-2 text-xs text-ink transition-colors hover:bg-subtle"
         title="Call"
       >
         <Icon name="heroicons:phone" class="h-4 w-4 mr-1.5" /> Call
@@ -40,7 +40,7 @@
       <a
         :href="`https://wa.me/${cleanPhone(member.phone)}`"
         target="_blank"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs transition-colors"
+        class="flex-1 inline-flex items-center justify-center rounded-surface bg-success-surface px-3 py-2 text-xs text-success-text transition-colors hover:bg-success-line"
         title="WhatsApp"
       >
         <Icon
@@ -52,11 +52,11 @@
     </div>
     <div
       v-else
-      class="mt-auto py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-500 text-center italic"
+      class="mt-auto rounded-surface bg-subtle px-3 py-2 text-center text-xs italic text-muted"
     >
       No phone number
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <script setup>

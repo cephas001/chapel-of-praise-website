@@ -1,82 +1,78 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Executive Management
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Manage the roster of chapel executives across all units.
-        </p>
-      </div>
+      <AppHeading
+        title="Executive management"
+        subtitle="Manage the roster of chapel executives across all units."
+      />
 
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
+      <AppButton
+        icon="heroicons:user-plus"
+        class="shrink-0"
         @click="openCreateDrawer"
       >
-        <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
-        New Executive
-      </button>
+        New executive
+      </AppButton>
     </div>
 
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+    <AppCard
+      body-class="p-0"
     >
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">Executives</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle/60">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Executive
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Chapel Unit
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Academic Details
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Actions
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <tr
               v-for="exec in executives"
               :key="exec.id"
-              class="group cursor-pointer px-6 py-5 hover:bg-gray-50 transition-colors"
+              class="group cursor-pointer px-6 py-5 hover:bg-subtle transition-colors"
             >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
                   <div
-                    class="h-10 w-10 rounded-full bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm shrink-0"
+                    class="h-10 w-10 rounded-full bg-subtle text-ink flex items-center justify-center font-semibold text-sm shrink-0"
                   >
                     {{ exec.name.charAt(0).toUpperCase() }}
                   </div>
                   <div>
-                    <div class="text-xs md:text-sm font-bold text-gray-900">
+                    <div class="text-xs md:text-sm font-semibold text-ink">
                       {{ exec.name }}
                     </div>
                     <div
-                      class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide flex items-center gap-1"
+                      class="text-xs text-muted mt-0.5 font-mono font-medium flex items-center gap-1"
                     >
                       <Icon name="heroicons:envelope" class="h-3 w-3" />
                       {{ exec.emailAddress }}
@@ -87,18 +83,18 @@
 
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider bg-gray-100 text-gray-700"
+                  class="inline-flex items-center px-2.5 py-1 rounded-badge text-xs font-mono font-semibold bg-subtle text-ink"
                 >
                   {{ exec.chapelUnit }}
                 </span>
               </td>
 
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-xs md:text-sm font-bold text-gray-900">
+                <div class="text-xs md:text-sm font-semibold text-ink">
                   {{ exec.schoolDepartment }}
                 </div>
                 <div
-                  class="text-xs text-gray-500 mt-0.5 font-jetbrains font-medium tracking-wide"
+                  class="text-xs text-muted mt-0.5 font-mono font-medium"
                 >
                   Level {{ exec.level }} • {{ exec.matricNumber }}
                 </div>
@@ -109,7 +105,7 @@
               >
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="View / Edit Details"
                     aria-label="View or edit executive"
                     @click="openEditDrawer(exec)"
@@ -118,7 +114,7 @@
                   </button>
                   <button
                     :disabled="deletingId === exec.id"
-                    class="text-gray-500 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-danger-surface hover:text-danger-text disabled:cursor-not-allowed disabled:opacity-50"
                     title="Delete Executive"
                     aria-label="Delete executive"
                     @click="handleDeleteExecutive(exec)"
@@ -139,20 +135,20 @@
 
       <div
         v-if="!isFetching && executives.length === 0"
-        class="py-20 text-center border-t border-gray-100"
+        class="py-20 text-center border-t border-line"
       >
         <Icon
           name="heroicons:users"
-          class="mx-auto h-12 w-12 text-gray-300 mb-4"
+          class="mx-auto h-12 w-12 text-line mb-4"
         />
-        <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+        <h3 class="text-sm font-semibold text-ink mb-1">
           No executives found
         </h3>
-        <p class="text-gray-500 text-xs md:text-sm">
+        <p class="text-muted text-xs md:text-sm">
           Get started by registering a new executive.
         </p>
       </div>
-    </div>
+    </AppCard>
 
     <SlideOver
       :is-open="isDrawerOpen"

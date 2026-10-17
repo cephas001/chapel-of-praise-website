@@ -1,16 +1,16 @@
 <!-- components/ui/ActionCard.vue -->
 <template>
-  <div
-    class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col h-full font-poppins hover:shadow-md transition-shadow"
+  <AppCard
+    class="flex h-full flex-col" body-class="p-5 flex flex-1 flex-col"
   >
     <!-- Top Section: Header & Badges -->
     <div class="flex justify-between items-start mb-3">
       <div>
-        <h3 class="text-sm md:text-base font-bold text-gray-900 line-clamp-1">
+        <h3 class="text-sm md:text-base font-semibold text-ink line-clamp-1">
           {{ record.fullName }}
         </h3>
         <p
-          class="text-[11px] font-semibold text-gray-500 mt-0.5 font-jetbrains uppercase tracking-wider"
+          class="font-mono text-xs font-medium text-muted mt-0.5"
         >
           {{ record.category }}
         </p>
@@ -18,11 +18,11 @@
 
       <!-- Status Badge -->
       <span
-        class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains font-bold uppercase tracking-wider"
+        class="inline-flex items-center px-2.5 py-1 rounded-badge text-xs font-mono font-semibold"
         :class="{
-          'bg-amber-50 text-amber-700': record.status === 'Pending',
-          'bg-blue-50 text-blue-700': record.status === 'Contacted',
-          'bg-green-50 text-green-700': record.status === 'Completed',
+          'bg-warning-surface text-warning-text': record.status === 'Pending',
+          'bg-subtle text-muted': record.status === 'Contacted',
+          'bg-success-surface text-success-text': record.status === 'Completed',
         }"
       >
         {{ record.status }}
@@ -33,7 +33,7 @@
     <div class="mb-4 flex items-center gap-2">
       <label
         :for="`status-${record.id}`"
-        class="text-[10px] font-jetbrains font-bold uppercase tracking-wider text-gray-500 shrink-0"
+        class="font-mono text-xs font-medium text-muted shrink-0"
       >
         Status
       </label>
@@ -42,7 +42,7 @@
           :id="`status-${record.id}`"
           :value="record.status"
           :disabled="isUpdatingStatus"
-          class="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg pl-3 pr-8 py-1.5 text-[11px] font-jetbrains font-bold uppercase tracking-wider text-gray-700 focus:bg-white focus:border-black outline-none transition-all cursor-pointer disabled:opacity-60"
+          class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-1.5 pl-3 pr-8 font-mono text-xs font-semibold text-ink outline-none transition-colors focus:border-ink focus:bg-surface disabled:opacity-60"
           @change="submitStatusChange"
         >
           <option value="Pending">Pending</option>
@@ -51,24 +51,24 @@
         </select>
         <Icon
           name="heroicons:chevron-down"
-          class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500"
+          class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted"
         />
       </div>
       <Icon
         v-if="isUpdatingStatus"
         name="heroicons:arrow-path"
-        class="h-3.5 w-3.5 text-gray-500 animate-spin shrink-0"
+        class="h-3.5 w-3.5 text-muted animate-spin shrink-0"
       />
     </div>
 
     <!-- Event Link (If applicable) -->
     <div
       v-if="record.eventDetails"
-      class="mb-4 text-xs font-medium text-gray-500 flex items-center font-jetbrains"
+      class="mb-4 flex items-center font-mono text-xs font-medium text-muted"
     >
       <Icon
         name="heroicons:calendar"
-        class="h-3.5 w-3.5 mr-1.5 text-gray-500"
+        class="h-3.5 w-3.5 mr-1.5 text-muted"
       />
       <span class="line-clamp-1">{{
         formatEventDisplay(record.eventDetails)
@@ -79,7 +79,7 @@
     <div v-if="record.phoneNumber" class="flex gap-2 mb-6">
       <a
         :href="`tel:${record.phoneNumber}`"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl text-xs transition-colors"
+        class="flex-1 inline-flex items-center justify-center rounded-surface border border-line bg-surface px-3 py-2 text-xs text-ink transition-colors hover:bg-subtle"
         title="Call"
       >
         <Icon name="heroicons:phone" class="h-4 w-4 mr-1.5" /> Call
@@ -87,7 +87,7 @@
       <a
         :href="`https://wa.me/${cleanPhone(record.phoneNumber)}`"
         target="_blank"
-        class="flex-1 inline-flex justify-center items-center py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl text-xs transition-colors"
+        class="flex-1 inline-flex items-center justify-center rounded-surface bg-success-surface px-3 py-2 text-xs text-success-text transition-colors hover:bg-success-line"
         title="WhatsApp"
       >
         <Icon
@@ -99,33 +99,33 @@
     </div>
     <div
       v-else
-      class="mb-6 py-2 px-3 bg-gray-50 rounded-xl text-xs text-gray-500 text-center italic"
+      class="mb-6 rounded-surface bg-subtle px-3 py-2 text-center text-xs italic text-muted"
     >
       No phone number provided
     </div>
 
     <!-- Divider -->
-    <div class="h-px bg-gray-100 w-full mb-4"/>
+    <div class="w-full h-px bg-subtle mb-4"/>
 
     <!-- Threading Section -->
     <div class="flex-1 flex flex-col min-h-[150px]">
       <h4
-        class="text-[11px] font-bold text-gray-900 uppercase tracking-widest mb-3 flex items-center justify-between font-jetbrains"
+        class="text-xs font-semibold text-ink mb-3 flex items-center justify-between"
       >
         Notes Thread
         <span
-          class="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-[10px] font-jetbrains"
+          class="rounded-full bg-subtle px-2 py-0.5 font-mono text-xs text-muted"
           >{{ record.notesThread?.length || 0 }}</span
         >
       </h4>
 
       <!-- The Notes -->
       <div
-        class="flex-1 overflow-y-auto pr-2 space-y-3 mb-4 max-h-[200px] scrollbar-thin scrollbar-thumb-gray-200"
+        class="flex-1 overflow-y-auto pr-2 space-y-3 mb-4 max-h-[200px]"
       >
         <div
           v-if="!record.notesThread || record.notesThread.length === 0"
-          class="text-xs text-gray-500 italic text-center py-4"
+          class="text-xs text-muted italic text-center py-4"
         >
           No notes added yet.
         </div>
@@ -134,13 +134,13 @@
           v-for="(note, index) in record.notesThread"
           v-else
           :key="index"
-          class="bg-gray-50 p-3 rounded-xl border border-gray-200"
+          class="bg-subtle p-3 rounded-surface border border-line"
         >
-          <div class="text-xs text-gray-800 font-medium mb-1.5 leading-relaxed">
+          <div class="text-xs text-ink font-medium mb-1.5 leading-relaxed">
             {{ note.text }}
           </div>
           <div
-            class="flex justify-between items-center text-[10px] text-gray-500 font-semibold font-jetbrains"
+            class="flex justify-between items-center text-xs text-muted font-semibold font-mono"
           >
             <span>{{ note.authorName }}</span>
             <span>{{ formatTime(note.timestamp) }}</span>
@@ -155,14 +155,14 @@
           type="text"
           aria-label="Add a comment"
           placeholder="Add a comment..."
-          class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white outline-none rounded-xl py-2 pl-3 pr-10 text-xs font-medium transition-all"
+          class="w-full rounded-surface border border-line bg-subtle py-2 pl-3 pr-10 text-xs font-medium text-ink outline-none transition-colors focus:border-ink focus:bg-surface"
           :disabled="isSubmitting"
           @keyup.enter="submitNote"
         >
         <button
           aria-label="Add note"
           :disabled="!newNote.trim() || isSubmitting"
-          class="absolute right-1.5 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+          class="absolute right-1.5 rounded-control p-1.5 text-muted transition-colors hover:bg-subtle disabled:opacity-50 disabled:hover:bg-transparent"
           @click="submitNote"
         >
           <Icon
@@ -178,7 +178,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <script setup>

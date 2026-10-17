@@ -2,7 +2,7 @@
   <Transition name="fade">
     <div
       v-if="isLoading"
-      class="fixed inset-0 bg-white/95 backdrop-blur-md z-[9999] flex flex-col items-center justify-center font-poppins"
+      class="fixed inset-0 z-overlay bg-surface/95 backdrop-blur-md flex flex-col items-center justify-center"
     >
       <!-- Static Logo with subtle pulse -->
       <div class="relative w-40 sm:w-48 h-auto mb-10">
@@ -17,15 +17,13 @@
       <!-- Minimalist Loading Indicator -->
       <div class="flex flex-col items-center gap-4">
         <!-- Sleek progress track -->
-        <div class="h-[2px] w-32 bg-gray-200 overflow-hidden rounded-full">
-          <div class="h-full bg-black rounded-full animate-progress"/>
+        <div class="h-[2px] w-32 bg-line overflow-hidden rounded-full">
+          <div class="h-full bg-ink rounded-full animate-progress"/>
         </div>
 
         <!-- Technical micro-copy -->
-        <p
-          class="text-[10px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest animate-pulse"
-        >
-          Loading Environment...
+        <p class="text-xs font-mono font-medium text-muted animate-pulse">
+          Loading environment…
         </p>
       </div>
     </div>

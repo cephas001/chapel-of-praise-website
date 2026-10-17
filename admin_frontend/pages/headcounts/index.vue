@@ -2,47 +2,36 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="Event headcounts"
+      subtitle="Review attendance totals across all events and services."
     >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Event Headcounts
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          Review attendance totals across all events and services.
-        </p>
-      </div>
+      <template #actions>
+        <AppButton icon="heroicons:plus" @click="openCreateDrawer">
+          Record headcount
+        </AppButton>
+      </template>
+    </AppHeading>
 
-      <button
-        class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains shrink-0"
-        @click="openCreateDrawer"
-      >
-        <Icon name="heroicons:plus" class="mr-2 h-4 w-4" />
-        Record New Headcount
-      </button>
-    </div>
-
-    <div
-      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-    >
+    <AppCard body-class="p-0">
       <!-- List Controls -->
       <div
-        class="border-b border-gray-100 p-4 flex flex-col lg:flex-row gap-3 lg:items-center"
+        class="flex flex-col gap-3 border-b border-line p-4 lg:flex-row lg:items-center"
       >
         <div class="relative flex-1 min-w-0">
           <label for="headcounts-search" class="sr-only">Search headcounts</label>
           <Icon
             name="heroicons:magnifying-glass"
-            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
           />
           <input
             id="headcounts-search"
             v-model="search"
             type="search"
             placeholder="Search by event, program or date..."
-            class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white"
+            class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
           >
         </div>
 
@@ -51,7 +40,7 @@
           <select
             id="headcounts-sort"
             v-model="sortOption"
-            class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            class="w-full cursor-pointer appearance-none rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
           >
             <option value="date:desc">Newest first</option>
             <option value="date:asc">Oldest first</option>
@@ -61,51 +50,51 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-line">
           <caption class="sr-only">Service headcount records</caption>
-          <thead class="bg-gray-50/50">
+          <thead class="bg-subtle">
             <tr>
               <th
                 scope="col"
-                class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
-                Event Name & Date
+                Event name & date
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-center font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Male
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-center font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Female
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-center text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-center font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Total
               </th>
               <th
                 scope="col"
-                class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
               >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-100">
+          <tbody class="bg-surface divide-y divide-line">
             <tr
               v-for="record in paged"
               :key="record.id"
-              class="hover:bg-gray-50/50 transition-colors group"
+              class="hover:bg-subtle/40 transition-colors group"
             >
-              <td class="px-6 py-4 whitespace-nowrap font-jetbrains">
-                <div class="text-xs md:text-sm font-bold text-gray-800">
+              <td class="px-6 py-4 whitespace-nowrap font-mono">
+                <div class="text-xs md:text-sm font-semibold text-ink">
                   <template
                     v-if="record.eventDetails?.service === 'SPECIAL PROGRAM'"
                   >
@@ -114,7 +103,7 @@
                     }}
                     <span
                       v-if="record.eventDetails?.programDay"
-                      class="font-semibold text-gray-800"
+                      class="font-semibold text-ink"
                     >
                       - {{ record.eventDetails.programDay }}
                     </span>
@@ -125,7 +114,7 @@
                 </div>
 
                 <div
-                  class="text-[11px] font-jetbrains font-semibold tracking-wide uppercase mt-1 text-gray-500"
+                  class="mt-1 font-mono text-xs text-muted"
                 >
                   {{ formatDate(record.eventDetails?.eventDate) }}
                   <span
@@ -137,25 +126,25 @@
               </td>
 
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
+                class="px-6 py-4 whitespace-nowrap text-center font-mono text-xs text-muted md:text-sm"
               >
                 {{ (record.maleStudents || 0) + (record.maleVisitors || 0) }}
               </td>
 
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
+                class="px-6 py-4 whitespace-nowrap text-center font-mono text-xs text-muted md:text-sm"
               >
                 {{ (record.femaleStudents || 0) + (record.femaleVisitors || 0) }}
               </td>
 
               <!-- <td
-                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm text-gray-600 font-medium"
+                class="px-6 py-4 whitespace-nowrap text-center font-mono text-xs text-muted md:text-sm"
               >
                 {{ (record.maleVisitors || 0) + (record.femaleVisitors || 0) }}
               </td> -->
 
               <td
-                class="px-6 py-4 whitespace-nowrap text-center text-xs md:text-sm font-black text-black"
+                class="px-6 py-4 whitespace-nowrap text-center font-mono text-xs font-semibold text-ink md:text-sm"
               >
                 {{
                   (record.maleStudents || 0) +
@@ -170,7 +159,7 @@
               >
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="Open event"
                     aria-label="Open event"
                     @click="navigateTo(`/events/${record.eventId}`)"
@@ -178,7 +167,7 @@
                     <Icon name="heroicons:eye" class="h-4 w-4" />
                   </button>
                   <button
-                    class="text-gray-500 hover:text-black transition-colors p-2 rounded-lg hover:bg-gray-100"
+                    class="rounded-control p-2 text-muted transition-colors hover:bg-subtle hover:text-ink"
                     title="Update counts"
                     aria-label="Update counts"
                     @click="openEditDrawer(record)"
@@ -194,35 +183,32 @@
         <!-- No matches -->
         <div
           v-if="!isFetching && headcounts.length > 0 && filtered.length === 0"
-          class="py-16 text-center border-t border-gray-100"
+          class="border-t border-line py-16 text-center"
         >
           <Icon
             name="heroicons:magnifying-glass"
-            class="mx-auto h-10 w-10 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-10 w-10 text-line"
           />
-          <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+          <h3 class="mb-1 text-sm font-semibold text-ink">
             No headcounts match your search
           </h3>
-          <button
-            class="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
-            @click="reset"
-          >
+          <AppButton variant="secondary" size="sm" class="mt-4" @click="reset">
             Clear search
-          </button>
+          </AppButton>
         </div>
 
         <div
           v-if="!isFetching && headcounts.length === 0"
-          class="py-20 text-center border-t border-gray-100"
+          class="border-t border-line py-20 text-center"
         >
           <Icon
             name="heroicons:users"
-            class="mx-auto h-12 w-12 text-gray-300 mb-4"
+            class="mx-auto mb-4 h-12 w-12 text-line"
           />
-          <h3 class="text-sm font-bold text-gray-900 mb-1">
+          <h3 class="mb-1 text-sm font-semibold text-ink">
             No headcounts found
           </h3>
-          <p class="text-gray-500 text-xs px-5">
+          <p class="px-5 text-xs text-muted">
             Get started by recording attendance for a recent event.
           </p>
         </div>
@@ -231,9 +217,9 @@
       <!-- Pagination -->
       <div
         v-if="totalPages > 1"
-        class="flex items-center justify-between gap-4 border-t border-gray-100 px-6 py-4"
+        class="flex items-center justify-between gap-4 border-t border-line px-6 py-4"
       >
-        <p class="text-[11px] font-jetbrains text-gray-500">
+        <p class="font-mono text-xs text-muted">
           Showing {{ (page - 1) * pageSize + 1 }}–{{
             Math.min(page * pageSize, total)
           }}
@@ -243,44 +229,44 @@
           <button
             :disabled="page === 1"
             aria-label="Previous page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="prevPage"
           >
             <Icon name="heroicons:chevron-left" class="h-4 w-4" />
           </button>
-          <span class="text-[11px] font-jetbrains text-gray-600 font-bold">
+          <span class="font-mono text-xs font-medium text-ink">
             Page {{ page }} / {{ totalPages }}
           </span>
           <button
             :disabled="page === totalPages"
             aria-label="Next page"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
             @click="nextPage"
           >
             <Icon name="heroicons:chevron-right" class="h-4 w-4" />
           </button>
         </div>
       </div>
-    </div>
+    </AppCard>
 
     <SlideOver
       :is-open="isDrawerOpen"
       :title="
-        editingRecord ? 'Update Event Headcount' : 'Record Event Headcount'
+        editingRecord ? 'Update event headcount' : 'Record event headcount'
       "
       @close="closeDrawer"
     >
-      <div class="p-1 font-poppins">
+      <div class="p-1">
         <div
           v-if="editingRecord"
-          class="mb-6 pb-6 border-b border-gray-100"
+          class="mb-6 pb-6 border-b border-line"
         >
           <p
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
             Editing headcount for
           </p>
-          <p class="text-xs md:text-sm font-bold text-black">
+          <p class="text-xs font-semibold text-ink md:text-sm">
             {{
               formatEventDisplay(editingRecord.eventDetails) ||
               editingRecord.eventId
@@ -288,12 +274,12 @@
           </p>
         </div>
 
-        <div v-else class="mb-6 pb-6 border-b border-gray-100">
+        <div v-else class="mb-6 pb-6 border-b border-line">
           <label
             for="headcounts-event"
-            class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+            class="block text-xs font-medium text-ink mb-2"
           >
-            Select Target Event
+            Select target event
           </label>
           <SearchableSelect
             v-model="selectedEventId"
@@ -309,22 +295,22 @@
           <div
             v-if="!editingRecord && existingRecord"
             role="status"
-            class="mb-6 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3"
+            class="mb-6 flex items-start gap-2.5 rounded-control border border-warning-line bg-warning-surface px-4 py-3"
           >
             <Icon
               name="heroicons:information-circle"
-              class="h-4 w-4 text-amber-600 shrink-0 mt-0.5"
+              class="mt-0.5 h-4 w-4 shrink-0 text-warning-text"
             />
-            <p class="text-[11px] md:text-xs text-amber-800 leading-relaxed">
+            <p class="text-xs leading-relaxed text-warning-text">
               A headcount for this event was already recorded. Submitting will
               update the existing counts.
             </p>
           </div>
 
           <h4
-            class="text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-4"
+            class="text-xs font-medium text-ink mb-4"
           >
-            Enter Counts
+            Enter counts
           </h4>
           <EventHeadCountForm
             :initial-data="editingRecord"
@@ -335,15 +321,13 @@
 
         <div
           v-else
-          class="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200"
+          class="rounded-surface border border-dashed border-line bg-surface py-12 text-center"
         >
           <Icon
             name="heroicons:calendar"
-            class="h-8 w-8 text-gray-300 mx-auto mb-3"
+            class="mx-auto mb-3 h-8 w-8 text-line"
           />
-          <p
-            class="text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest px-5"
-          >
+          <p class="px-5 text-xs font-medium text-muted">
             Please select an event above first.
           </p>
         </div>

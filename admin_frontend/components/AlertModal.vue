@@ -2,16 +2,16 @@
   <Teleport to="body">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
+      class="fixed inset-0 z-overlay flex items-center justify-center p-4 sm:p-6"
     >
       <div
-        class="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+        class="absolute inset-0 bg-ink/40 backdrop-blur-sm transition-opacity"
         aria-hidden="true"
         @click="closeAlert"
       />
 
       <div
-        class="relative w-full max-w-sm overflow-hidden rounded-xl border border-gray-200 bg-white p-6 text-center shadow-2xl transform transition-all animate-fade-in-up"
+        class="relative w-full max-w-sm overflow-hidden rounded-surface border border-line bg-surface p-6 text-center shadow-overlay transform transition animate-fade-in-up"
       >
         <div
           class="mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-5"
@@ -19,7 +19,7 @@
         >
           <svg
             v-if="type === 'success'"
-            class="h-7 w-7 text-green-600"
+            class="h-7 w-7 text-success-text"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -34,7 +34,7 @@
 
           <svg
             v-else-if="type === 'error'"
-            class="h-7 w-7 text-red-600"
+            class="h-7 w-7 text-danger-text"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -49,7 +49,7 @@
 
           <svg
             v-else
-            class="h-7 w-7 text-amber-600"
+            class="h-7 w-7 text-warning-text"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -63,20 +63,16 @@
           </svg>
         </div>
 
-        <h3 class="mb-2 text-sm font-bold text-gray-900 font-jetbrains">
+        <h3 class="mb-2 text-base font-semibold text-ink">
           {{ title }}
         </h3>
-        <p class="mb-6 text-xs md:text-sm leading-relaxed text-gray-500">
+        <p class="mb-6 text-sm leading-relaxed text-muted">
           {{ message }}
         </p>
 
-        <button
-          class="w-full inline-flex justify-center rounded-xl border border-transparent px-4 py-2.5 text-xs md:text-sm text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors font-jetbrains"
-          :class="theme.btnClass"
-          @click="closeAlert"
-        >
+        <AppButton class="w-full" size="lg" @click="closeAlert">
           Okay
-        </button>
+        </AppButton>
       </div>
     </div>
   </Teleport>
@@ -92,22 +88,13 @@ const { isOpen, title, message, type, closeAlert } = useAlertModal();
 const theme = computed(() => {
   switch (type.value) {
     case "success":
-      return {
-        bgClass: "bg-green-100",
-        btnClass: "bg-green-600 hover:bg-green-700 focus:ring-green-600",
-      };
+      return { bgClass: "bg-success-surface" };
     case "error":
-      return {
-        bgClass: "bg-red-100",
-        btnClass: "bg-red-600 hover:bg-red-700 focus:ring-red-600",
-      };
+      return { bgClass: "bg-danger-surface" };
     case "warning":
     case "info":
     default:
-      return {
-        bgClass: "bg-amber-100",
-        btnClass: "bg-amber-600 hover:bg-amber-700 focus:ring-amber-600",
-      };
+      return { bgClass: "bg-warning-surface" };
   }
 });
 </script>

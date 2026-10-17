@@ -2,33 +2,29 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <!-- Page Header -->
-    <div class="mb-8">
-      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-        Chapel Workforce
-      </h2>
-      <p class="text-gray-500 text-xs md:text-sm">
-        View the complete directory of workers and executives grouped by unit.
-      </p>
-    </div>
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="Chapel workforce"
+      subtitle="View the complete directory of workers and executives grouped by unit."
+    />
 
     <!-- Directory Controls -->
-    <div
-      class="mb-8 rounded-xl border border-gray-200 bg-white p-4 flex flex-col lg:flex-row gap-3 lg:items-center shadow-sm"
+    <AppCard
+      class="mb-8" body-class="p-4 flex flex-col gap-3 lg:flex-row lg:items-center"
     >
       <div class="relative flex-1 min-w-0">
         <label for="members-search" class="sr-only">Search members</label>
         <Icon
           name="heroicons:magnifying-glass"
-          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
         />
         <input
           id="members-search"
           v-model="search"
           type="search"
           placeholder="Search by name, email, phone or unit..."
-          class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white"
+          class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         >
       </div>
 
@@ -40,7 +36,7 @@
           <select
             id="members-type-filter"
             v-model="filters.memberType"
-            class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
           >
             <option value="ALL">All member types</option>
             <option value="WORKER">Workers only</option>
@@ -55,7 +51,7 @@
           <select
             id="members-gender-filter"
             v-model="filters.gender"
-            class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
           >
             <option value="ALL">All genders</option>
             <option value="MALE">Male</option>
@@ -68,81 +64,82 @@
           <select
             id="members-sort"
             v-model="sortOption"
-            class="w-full sm:w-auto rounded-lg border border-gray-200 bg-gray-50 pl-3 pr-8 py-2.5 text-xs md:text-sm text-black outline-none transition-all focus:border-black focus:bg-white appearance-none cursor-pointer"
+            class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle py-2.5 pl-3 pr-8 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface sm:w-auto md:text-sm"
           >
             <option value="name:asc">Name A–Z</option>
             <option value="name:desc">Name Z–A</option>
           </select>
         </div>
       </div>
-    </div>
+    </AppCard>
 
     <!-- Loading State -->
     <div v-if="isFetching" class="py-20 text-center">
       <Icon
         name="heroicons:arrow-path"
-        class="mx-auto h-10 w-10 text-gray-500 animate-spin mb-4"
+        class="mx-auto h-10 w-10 text-muted animate-spin mb-4"
       />
       <h3
-        class="text-xs md:text-sm font-bold text-gray-900 font-jetbrains animate-pulse"
+        class="text-xs md:text-sm font-semibold text-ink animate-pulse"
       >
         Loading workforce directory...
       </h3>
     </div>
 
     <!-- Empty State -->
-    <div
+    <AppCard
       v-else-if="members.length === 0"
-      class="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center"
+      body-class="p-12 text-center"
     >
       <Icon
         name="heroicons:user-group"
-        class="mx-auto h-12 w-12 text-gray-300 mb-4"
+        class="mx-auto h-12 w-12 text-line mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+      <h3 class="text-sm font-semibold text-ink mb-1">
         No members found
       </h3>
-      <p class="text-gray-500 text-xs md:text-sm mb-6">
+      <p class="text-muted text-xs md:text-sm mb-6">
         Register workers to see them appear in the directory.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <NuxtLink
+        <AppButton
           v-if="isSuperAdmin"
           to="/executives"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-5 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains"
+          icon="heroicons:user-plus"
         >
-          <Icon name="heroicons:user-plus" class="mr-2 h-4 w-4" />
-          Add an Executive
-        </NuxtLink>
-        <NuxtLink
+          Add an executive
+        </AppButton>
+        <AppButton
           to="/dashboard/help"
-          class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-xs text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
+          variant="secondary"
+          icon="heroicons:question-mark-circle"
         >
-          <Icon name="heroicons:question-mark-circle" class="mr-2 h-4 w-4" />
           How workers get registered
-        </NuxtLink>
+        </AppButton>
       </div>
-    </div>
+    </AppCard>
 
     <!-- No Filter Matches -->
-    <div
+    <AppCard
       v-else-if="filtered.length === 0"
-      class="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center"
+      body-class="p-12 text-center"
     >
       <Icon
         name="heroicons:magnifying-glass"
-        class="mx-auto h-12 w-12 text-gray-300 mb-4"
+        class="mx-auto h-12 w-12 text-line mb-4"
       />
-      <h3 class="text-sm font-bold text-gray-900 mb-1 font-jetbrains">
+      <h3 class="text-sm font-semibold text-ink mb-1">
         No members match your filters
       </h3>
-      <button
-        class="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-700 font-jetbrains hover:bg-gray-50 transition-colors"
+      <AppButton
+        variant="secondary"
+        size="sm"
+        class="mt-4"
         @click="reset"
       >
         Clear filters
-      </button>
-    </div>
+      </AppButton>
+    </AppCard>
 
     <!-- Grouped Sections -->
     <div v-else class="space-y-10">
@@ -158,15 +155,15 @@
           @keydown.space.self.prevent="toggleUnit(unitName)"
         >
           <h2
-            class="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest font-jetbrains"
+            class="text-sm font-semibold text-ink"
           >
             {{ unitName }}
           </h2>
           <div class="flex items-center gap-2">
             <span
-              class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-600 font-jetbrains uppercase tracking-wider"
+              class="inline-flex items-center rounded-full bg-subtle px-3 py-1 font-mono text-xs font-medium text-muted"
             >
-              {{ group.length }} Members
+              {{ group.length }} members
             </span>
             <Icon
               :name="
@@ -174,62 +171,62 @@
                   ? 'heroicons:chevron-down'
                   : 'heroicons:chevron-up'
               "
-              class="h-4 w-4 text-gray-500"
+              class="h-4 w-4 text-muted"
             />
           </div>
         </div>
 
         <!-- Section Table -->
-        <div
+        <AppCard
           v-show="!collapsedUnits[unitName]"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+          body-class="p-0"
         >
-          <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200">
-            <table class="min-w-full divide-y divide-gray-200">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-line">
               <caption class="sr-only">
                 Members of the {{ unitName }} unit
               </caption>
-              <thead class="bg-gray-50/50">
+              <thead class="bg-subtle/60">
                 <tr>
                   <th
-                    class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                    class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                   >
                     Member Profile
                   </th>
                   <th
-                    class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                    class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                   >
                     Contact Info
                   </th>
                   <th
-                    class="px-6 py-4 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                    class="px-6 py-4 text-left font-mono text-xs font-medium whitespace-nowrap text-muted"
                   >
                     Gender
                   </th>
                   <th
-                    class="px-6 py-4 text-right text-[11px] font-jetbrains font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap"
+                    class="px-6 py-4 text-right font-mono text-xs font-medium whitespace-nowrap text-muted"
                   >
                     Status
                   </th>
                 </tr>
               </thead>
 
-              <tbody class="bg-white divide-y divide-gray-100">
+              <tbody class="bg-surface divide-y divide-line">
                 <tr
                   v-for="member in visibleMembers(unitName, group)"
                   :key="member.id"
-                  class="group hover:bg-gray-50 transition-colors"
+                  class="group hover:bg-subtle transition-colors"
                 >
                   <!-- Profile / Avatar -->
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                       <div>
-                        <div class="text-xs md:text-sm text-black">
+                        <div class="text-xs md:text-sm text-ink">
                           {{ member.name }}
                         </div>
                         <div
                           v-if="member.emailAddress"
-                          class="text-[11px] text-gray-500 mt-0.5 font-medium"
+                          class="text-xs text-muted mt-0.5 font-medium"
                         >
                           {{ member.emailAddress }}
                         </div>
@@ -240,12 +237,12 @@
                   <!-- Contact / Phone -->
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div
-                      class="flex items-center gap-2 text-xs text-gray-700 font-medium font-jetbrains"
+                      class="flex items-center gap-2 text-xs text-ink font-medium font-mono"
                     >
                       <Icon
                         v-if="member.phoneNumber"
                         name="heroicons:phone"
-                        class="h-3 w-3 text-gray-500"
+                        class="h-3 w-3 text-muted"
                       />
                       {{ member.phoneNumber || "—" }}
                     </div>
@@ -253,7 +250,7 @@
 
                   <!-- Gender -->
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-xs text-black font-medium capitalize">
+                    <span class="text-xs text-ink font-medium capitalize">
                       {{ member.gender ? member.gender.toLowerCase() : "—" }}
                     </span>
                   </td>
@@ -261,17 +258,17 @@
                   <!-- Status / Member Type -->
                   <td class="px-6 py-4 whitespace-nowrap text-right">
                     <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-jetbrains uppercase tracking-wider"
+                      class="inline-flex items-center px-2.5 py-1 rounded-badge text-xs font-mono"
                       :class="
                         member.memberType === 'EXECUTIVE'
-                          ? 'bg-black text-white shadow-sm'
-                          : 'bg-gray-100 text-black'
+                          ? 'bg-ink text-white'
+                          : 'bg-subtle text-ink'
                       "
                     >
                       <Icon
                         v-if="member.memberType === 'EXECUTIVE'"
                         name="heroicons:star"
-                        class="mr-1 h-3 w-3 text-yellow-400"
+                        class="mr-1 h-3 w-3 text-warning-text"
                       />
                       {{ member.memberType || "WORKER" }}
                     </span>
@@ -284,9 +281,9 @@
           <!-- Per-unit pagination -->
           <div
             v-if="groupTotalPages(group) > 1"
-            class="flex items-center justify-between gap-4 border-t border-gray-100 px-6 py-3"
+            class="flex items-center justify-between gap-4 border-t border-line px-6 py-3"
           >
-            <p class="text-[11px] font-jetbrains text-gray-500">
+            <p class="text-xs font-mono text-muted">
               Showing {{ (groupPage(unitName) - 1) * groupPageSize + 1 }}–{{
                 Math.min(groupPage(unitName) * groupPageSize, group.length)
               }}
@@ -296,25 +293,25 @@
               <button
                 :disabled="groupPage(unitName) === 1"
                 :aria-label="`Previous page of ${unitName}`"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
                 @click="setGroupPage(unitName, groupPage(unitName) - 1, group)"
               >
                 <Icon name="heroicons:chevron-left" class="h-4 w-4" />
               </button>
-              <span class="text-[11px] font-jetbrains text-gray-600 font-bold">
+              <span class="font-mono text-xs font-medium text-muted">
                 Page {{ groupPage(unitName) }} / {{ groupTotalPages(group) }}
               </span>
               <button
                 :disabled="groupPage(unitName) === groupTotalPages(group)"
                 :aria-label="`Next page of ${unitName}`"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-control border border-line text-ink transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-40"
                 @click="setGroupPage(unitName, groupPage(unitName) + 1, group)"
               >
                 <Icon name="heroicons:chevron-right" class="h-4 w-4" />
               </button>
             </div>
           </div>
-        </div>
+        </AppCard>
       </div>
     </div>
   </div>

@@ -1,41 +1,124 @@
-/* Legacy JS config: without this directive tailwind.config.js is inert under
-   Tailwind CSS v4 (which prefers CSS-first @theme tokens — see below). */
-@config "../../tailwind.config.js";
+/* ===========================================================================
+   Chapel of Praise Admin — design tokens (Quiet Register)
+   Source of truth: this file (Tailwind CSS v4, CSS-first @theme).
+   =========================================================================== */
 
-@import "@fontsource/poppins";
-@import "@fontsource/jetbrains-mono";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
 @import "tailwindcss";
-@import "@nuxt/ui";
+/* @nuxt/ui is fully removed (Phase 3). Tailwind is wired through
+   @tailwindcss/vite and icons come from @nuxt/icon — both direct
+   dependencies. The @nuxt/ui CSS package stays unimported: it shipped
+   semantic utilities that collided with our tokens (its own .text-muted
+   silently overrode ours with var(--ui-text-muted)). */
 
-html,
-body {
-  background-color: #f8fafc;
-  font-family: "Poppins", sans-serif, system-ui, sans-serif;
+@theme {
+  /* Base palette — cool grayscale, one line color, one ink.
+     Retires Tailwind gray-* / black / hex literals across the app. */
+  --color-canvas: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-subtle: #eff1f4;
+  --color-line: #e2e5ea;
+  --color-muted: #5b6472;
+  --color-ink: #101319;
+
+  /* Semantic state — pastels for badges, alerts, and row states only.
+     Never buttons (primary is ink; destructive is solid danger below). */
+  --color-success-surface: #ebf7f0;
+  --color-success-text: #15663a;
+  --color-success-line: #cdebda;
+  --color-warning-surface: #fcf5e6;
+  --color-warning-text: #8a5b0b;
+  --color-warning-line: #f0e2be;
+  --color-danger-surface: #fceeed;
+  --color-danger-text: #b42318;
+  --color-danger-line: #f5d5d2;
+
+  /* Typeface roles — Poppins is the voice, JetBrains Mono is the record. */
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Radius scale — role-named. Controls never share a surface's radius. */
+  --radius-badge: 0.375rem; /* 6px  — badges, chips            */
+  --radius-control: 0.5rem; /* 8px  — buttons, inputs, nav     */
+  --radius-surface: 0.75rem; /* 12px — cards, drawers, modals  */
+
+  /* Elevation — true overlays only (drawers, modals, toasts). */
+  --shadow-overlay:
+    0 12px 32px rgb(16 19 25 / 0.14), 0 2px 8px rgb(16 19 25 / 0.08);
 }
 
-:root {
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+html {
   color-scheme: light;
 }
 
-.dark {
-  color-scheme: dark;
-}
-
 body {
-  background:
-    radial-gradient(circle at top, rgba(14, 165, 233, 0.08), transparent 28%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-.dark body {
-  background:
-    radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 26%),
-    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+/* Bare `border` utilities resolve to the line token, not currentColor. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-line);
+  }
 }
 
-@theme {
-  --font-poppins: "Poppins", sans-serif;
-  --font-jetbrains: "JetBrains Mono", monospace;
+/* ---------------------------------------------------------------------------
+   Z-index ladder — six rungs, 0 to 50. Nothing above 50, ever.
+   0  base flow               page content, desktop sidebar (in-flow)
+   10 z-sticky                table headers, sticky save bars
+   20 z-chrome                mobile top bar
+   30 z-scrim                 drawer scrims (one at a time)
+   40 z-panel                 off-canvas drawer, slide-over editors
+   50 z-overlay               dialogs and toasts (ceiling)
+--------------------------------------------------------------------------- */
+@utility z-sticky {
+  z-index: 10;
+}
+
+@utility z-chrome {
+  z-index: 20;
+}
+
+@utility z-scrim {
+  z-index: 30;
+}
+
+@utility z-panel {
+  z-index: 40;
+}
+
+@utility z-overlay {
+  z-index: 50;
+}
+
+/* Thin, unobtrusive scrollbars for scrollable panels */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+    border-radius: 9999px;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -44,7 +127,7 @@ body {
    while remaining invisible for mouse/touch interaction (:focus-visible).
 --------------------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid #000;
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }
 

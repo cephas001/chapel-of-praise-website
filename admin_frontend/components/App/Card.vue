@@ -1,22 +1,22 @@
 <template>
-  <div
-    class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-  >
-    <div
-      v-if="$slots.header"
-      class="bg-gray-50/50 border-b border-gray-100 px-6 py-5"
-    >
+  <div class="overflow-hidden rounded-surface border border-line bg-surface">
+    <div v-if="$slots.header" class="border-b border-line px-5 py-4">
       <slot name="header" />
     </div>
+
     <div :class="bodyClass">
       <slot />
+    </div>
+
+    <div v-if="$slots.footer" class="border-t border-line px-5 py-4">
+      <slot name="footer" />
     </div>
   </div>
 </template>
 
 <script setup>
 defineProps({
-  // Override the default body padding when a section needs edge-to-edge content
-  bodyClass: { type: String, default: "p-6" },
+  // Escape hatch for edge-to-edge bodies (e.g. tables): body-class="p-0"
+  bodyClass: { type: String, default: "p-5" },
 });
 </script>

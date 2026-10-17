@@ -1,29 +1,22 @@
 <template>
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Page Header -->
-    <div
-      class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-    >
-      <div>
-        <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-          Help & Documentation
-        </h2>
-        <p class="text-gray-500 text-xs md:text-sm">
-          A comprehensive guide to managing the Chapel of Praise system.
-        </p>
-      </div>
-    </div>
+    <AppHeading
+      class="mb-8"
+      title="Help & documentation"
+      subtitle="A comprehensive guide to managing the Chapel of Praise system."
+    />
 
     <!-- Main Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
       <!-- Left Column: Navigation Sidebar -->
       <div class="lg:col-span-1">
-        <div
-          class="sticky top-24 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
+        <AppCard
+          class="sticky top-24" body-class="p-0"
         >
-          <div class="bg-gray-50/50 border-b border-gray-100 px-5 py-4">
+          <div class="bg-subtle/60 border-b border-line px-5 py-4">
             <h3
-              class="text-xs font-jetbrains font-bold text-black uppercase tracking-widest"
+              class="text-xs font-mono font-semibold text-ink"
             >
               Topics
             </h3>
@@ -33,43 +26,43 @@
               v-for="tab in tabs"
               :key="tab.id"
               :class="[
-                'text-left px-4 py-2.5 rounded-lg text-xs md:text-sm font-medium transition-colors font-jetbrains',
+                'text-left rounded-control px-4 py-2.5 text-xs font-medium transition-colors md:text-sm',
                 activeTab === tab.id
-                  ? 'bg-black text-white'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-black',
+                  ? 'bg-ink text-white'
+                  : 'text-muted hover:bg-subtle hover:text-ink',
               ]"
               @click="activeTab = tab.id"
             >
               {{ tab.label }}
             </button>
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Right Column: Content Area -->
       <div class="lg:col-span-3 space-y-6">
         <!-- SECTION: Architecture & Overview -->
-        <div
+        <AppCard
           v-show="activeTab === 'overview'"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+          class="animate-fade-in" body-class="p-6 lg:p-8"
         >
           <div
-            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
           >
             <div
-              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
             >
               <Icon
                 name="heroicons:server-stack"
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-ink"
               />
             </div>
-            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-semibold text-ink">
               System Architecture
             </h2>
           </div>
 
-          <div class="space-y-4 text-xs md:text-sm text-black leading-relaxed">
+          <div class="space-y-4 text-xs md:text-sm text-ink leading-relaxed">
             <p>
               The Chapel of Praise digital ecosystem is split into three main
               components:
@@ -90,7 +83,7 @@
               </li>
             </ul>
 
-            <h4 class="text-sm font-bold text-black font-jetbrains mt-6 mb-2">
+            <h4 class="text-sm font-semibold text-ink font-mono mt-6 mb-2">
               Content Management (CMS)
             </h4>
             <ul class="list-disc pl-5 space-y-2">
@@ -104,41 +97,41 @@
               </li>
             </ul>
           </div>
-        </div>
+        </AppCard>
 
         <!-- SECTION: Roles & Permissions -->
-        <div
+        <AppCard
           v-show="activeTab === 'permissions'"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+          class="animate-fade-in" body-class="p-6 lg:p-8"
         >
           <div
-            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
           >
             <div
-              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
             >
               <Icon
                 name="heroicons:shield-check"
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-ink"
               />
             </div>
-            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-semibold text-ink">
               Roles & Permissions
             </h2>
           </div>
 
-          <div class="space-y-6 text-xs md:text-sm text-black leading-relaxed">
+          <div class="space-y-6 text-xs md:text-sm text-ink leading-relaxed">
             <p>
               Access is heavily regulated by two main attributes:
               <strong>Role</strong> and <strong>Type</strong>.
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+              <div class="p-4 border border-line rounded-surface bg-subtle/60">
                 <h4
-                  class="font-jetbrains font-bold text-black mb-2 flex items-center gap-2"
+                  class="font-semibold text-ink mb-2 flex items-center gap-2"
                 >
-                  <Icon name="heroicons:user" class="h-4 w-4 text-[#e94e4e]" />
+                  <Icon name="heroicons:user" class="h-4 w-4 text-danger-text" />
                   User Roles
                 </h4>
                 <ul class="list-disc pl-5 space-y-1">
@@ -153,11 +146,11 @@
                 </ul>
               </div>
 
-              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+              <div class="p-4 border border-line rounded-surface bg-subtle/60">
                 <h4
-                  class="font-jetbrains font-bold text-black mb-2 flex items-center gap-2"
+                  class="font-semibold text-ink mb-2 flex items-center gap-2"
                 >
-                  <Icon name="heroicons:tag" class="h-4 w-4 text-blue-500" />
+                  <Icon name="heroicons:tag" class="h-4 w-4 text-muted" />
                   Access Types
                 </h4>
                 <ul class="list-disc pl-5 space-y-1">
@@ -177,33 +170,33 @@
               </div>
             </div>
           </div>
-        </div>
+        </AppCard>
 
         <!-- SECTION: Core Workflows -->
-        <div
+        <AppCard
           v-show="activeTab === 'workflows'"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+          class="animate-fade-in" body-class="p-6 lg:p-8"
         >
           <div
-            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
           >
             <div
-              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
             >
               <Icon
                 name="heroicons:arrow-path-rounded-square"
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-ink"
               />
             </div>
-            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-semibold text-ink">
               Core Workflows
             </h2>
           </div>
 
-          <div class="space-y-8 text-xs md:text-sm text-black leading-relaxed">
+          <div class="space-y-8 text-xs md:text-sm text-ink leading-relaxed">
             <!-- Event Lifecycle -->
             <div>
-              <h3 class="font-bold text-black text-base mb-3 font-jetbrains">
+              <h3 class="font-semibold text-ink text-base mb-3">
                 The Event Lifecycle
               </h3>
               <p class="mb-4">
@@ -211,21 +204,21 @@
               </p>
 
               <div
-                class="space-y-4 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gray-200"
+                class="space-y-4 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-line"
               >
                 <div
                   class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
                 >
                   <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-white bg-black text-white font-bold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10"
+                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
                   >
                     1
                   </div>
                   <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl border border-gray-200 bg-gray-50/50 shadow-sm"
+                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
                   >
                     <h4
-                      class="font-bold text-black font-jetbrains text-xs uppercase mb-1"
+                      class="font-semibold text-ink text-xs mb-1"
                     >
                       Create Event
                     </h4>
@@ -240,15 +233,15 @@
                   class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
                 >
                   <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-white bg-black text-white font-bold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10"
+                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
                   >
                     2
                   </div>
                   <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl border border-gray-200 bg-gray-50/50 shadow-sm"
+                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
                   >
                     <h4
-                      class="font-bold text-black font-jetbrains text-xs uppercase mb-1"
+                      class="font-semibold text-ink text-xs mb-1"
                     >
                       Record Headcounts
                     </h4>
@@ -263,15 +256,15 @@
                   class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
                 >
                   <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-white bg-black text-white font-bold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10"
+                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
                   >
                     3
                   </div>
                   <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl border border-gray-200 bg-gray-50/50 shadow-sm"
+                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
                   >
                     <h4
-                      class="font-bold text-black font-jetbrains text-xs uppercase mb-1"
+                      class="font-semibold text-ink text-xs mb-1"
                     >
                       Unit Attendance
                     </h4>
@@ -286,15 +279,15 @@
                   class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
                 >
                   <div
-                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-white bg-black text-white font-bold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10"
+                    class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-canvas bg-ink text-white font-semibold text-xs shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 relative z-10"
                   >
                     4
                   </div>
                   <div
-                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl border border-gray-200 bg-gray-50/50 shadow-sm"
+                    class="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-surface border border-line bg-subtle/60"
                   >
                     <h4
-                      class="font-bold text-black font-jetbrains text-xs uppercase mb-1"
+                      class="font-semibold text-ink text-xs mb-1"
                     >
                       Altar Calls & Follow-ups
                     </h4>
@@ -308,8 +301,8 @@
             </div>
 
             <!-- Website Content Workflow -->
-            <div class="pt-6 border-t border-gray-100">
-              <h3 class="font-bold text-black text-sm mb-4 font-jetbrains">
+            <div class="pt-6 border-t border-line">
+              <h3 class="font-semibold text-ink text-sm mb-4">
                 Updating Website Content
               </h3>
               <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
@@ -328,8 +321,8 @@
             </div>
 
             <!-- Unit Meeting Attendance -->
-            <div class="pt-6 border-t border-gray-100">
-              <h3 class="font-bold text-black text-sm mb-4 font-jetbrains">
+            <div class="pt-6 border-t border-line">
+              <h3 class="font-semibold text-ink text-sm mb-4">
                 Unit Meeting Attendance
               </h3>
               <ul class="list-disc pl-5 space-y-2 text-xs md:text-sm">
@@ -353,39 +346,39 @@
               </ul>
             </div>
           </div>
-        </div>
+        </AppCard>
 
         <!-- SECTION: Troubleshooting -->
-        <div
+        <AppCard
           v-show="activeTab === 'troubleshooting'"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+          class="animate-fade-in" body-class="p-6 lg:p-8"
         >
           <div
-            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
           >
             <div
-              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
             >
               <Icon
                 name="heroicons:wrench-screwdriver"
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-ink"
               />
             </div>
-            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-semibold text-ink">
               Troubleshooting & Edge Cases
             </h2>
           </div>
 
           <div
-            class="space-y-6 text-xs md:text-sm text-gray-600 leading-relaxed"
+            class="space-y-6 text-xs md:text-sm text-muted leading-relaxed"
           >
-            <div class="bg-red-50 border border-red-100 rounded-xl p-4">
+            <div class="bg-danger-surface border border-danger-line rounded-surface p-4">
               <h4
-                class="font-bold text-red-700 font-jetbrains text-xs uppercase tracking-widest mb-3"
+                class="font-semibold text-danger-text text-xs mb-3"
               >
                 Important Limitations
               </h4>
-              <ul class="list-disc pl-5 space-y-2 text-red-800/80">
+              <ul class="list-disc pl-5 space-y-2 text-danger-text/80">
                 <li>
                   <strong>No Cascading Deletes:</strong> Deleting an event does
                   not automatically delete its related headcounts, altar calls,
@@ -399,31 +392,31 @@
             </div>
 
             <div>
-              <h4 class="font-bold text-black font-jetbrains mb-3">
+              <h4 class="font-semibold text-ink mb-3">
                 Common Errors
               </h4>
-              <div class="border border-gray-200 rounded-xl overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
+              <div class="border border-line rounded-surface overflow-hidden">
+                <table class="min-w-full divide-y divide-line">
                   <caption class="sr-only">
                     Common error messages and their solutions
                   </caption>
-                  <thead class="bg-gray-50">
+                  <thead class="bg-subtle">
                     <tr>
                       <th
-                        class="px-4 py-3 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase"
+                        class="px-4 py-3 text-left font-mono text-xs font-medium text-muted"
                       >
                         Error Message
                       </th>
                       <th
-                        class="px-4 py-3 text-left text-[11px] font-jetbrains font-bold text-gray-500 uppercase"
+                        class="px-4 py-3 text-left font-mono text-xs font-medium text-muted"
                       >
                         Cause & Resolution
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200 bg-white">
+                  <tbody class="divide-y divide-line bg-surface">
                     <tr>
-                      <td class="px-4 py-3 font-medium text-black text-xs">
+                      <td class="px-4 py-3 font-medium text-ink text-xs">
                         "Session Expired"
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -432,7 +425,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-4 py-3 font-medium text-black text-xs">
+                      <td class="px-4 py-3 font-medium text-ink text-xs">
                         "Access Denied"
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -441,7 +434,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-4 py-3 font-medium text-black text-xs">
+                      <td class="px-4 py-3 font-medium text-ink text-xs">
                         "Invalid passkey"
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -450,7 +443,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="px-4 py-3 font-medium text-black text-xs">
+                      <td class="px-4 py-3 font-medium text-ink text-xs">
                         404 Error (Events)
                       </td>
                       <td class="px-4 py-3 text-xs">
@@ -465,7 +458,7 @@
             </div>
 
             <div>
-              <h4 class="font-bold text-black font-jetbrains mb-3">
+              <h4 class="font-semibold text-ink mb-3">
                 Automated Attendance Behavior
               </h4>
               <p class="text-xs md:text-sm">
@@ -475,30 +468,30 @@
               </p>
             </div>
           </div>
-        </div>
+        </AppCard>
 
         <!-- SECTION: PWA Installation -->
-        <div
+        <AppCard
           v-show="activeTab === 'pwa'"
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 lg:p-8 animate-fade-in"
+          class="animate-fade-in" body-class="p-6 lg:p-8"
         >
           <div
-            class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4"
+            class="flex items-center gap-3 mb-6 border-b border-line pb-4"
           >
             <div
-              class="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100"
+              class="h-8 w-8 rounded-control bg-subtle flex items-center justify-center border border-line"
             >
               <Icon
                 name="heroicons:device-phone-mobile"
-                class="h-4 w-4 text-gray-700"
+                class="h-4 w-4 text-ink"
               />
             </div>
-            <h2 class="text-sm md:text-base font-bold text-black font-jetbrains">
+            <h2 class="text-sm md:text-base font-semibold text-ink">
               Installing the PWA App
             </h2>
           </div>
 
-          <div class="space-y-6 text-xs md:text-sm text-black leading-relaxed">
+          <div class="space-y-6 text-xs md:text-sm text-ink leading-relaxed">
             <p>
               The Chapel of Praise system can be installed as a Progressive Web
               App (PWA) on your device, giving you quick access directly from
@@ -508,13 +501,13 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Android -->
-              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+              <div class="p-4 border border-line rounded-surface bg-subtle/60">
                 <h4
-                  class="font-jetbrains font-bold text-black mb-3 flex items-center gap-2"
+                  class="font-semibold text-ink mb-3 flex items-center gap-2"
                 >
                   <Icon
                     name="simple-icons:android"
-                    class="h-4 w-4 text-green-600"
+                    class="h-4 w-4 text-success-text"
                   />
                   Android (Chrome)
                 </h4>
@@ -532,20 +525,20 @@
                     Tap <strong>"Add"</strong> on the confirmation dialog.
                   </li>
                 </ol>
-                <p class="mt-3 text-xs text-gray-500">
+                <p class="mt-3 text-xs text-muted">
                   You may also see an install banner at the bottom of the screen
                   — tap <strong>"Install"</strong> to skip the menu steps.
                 </p>
               </div>
 
               <!-- iPhone -->
-              <div class="p-4 border border-gray-200 rounded-xl bg-gray-50/50">
+              <div class="p-4 border border-line rounded-surface bg-subtle/60">
                 <h4
-                  class="font-jetbrains font-bold text-black mb-3 flex items-center gap-2"
+                  class="font-semibold text-ink mb-3 flex items-center gap-2"
                 >
                   <Icon
                     name="simple-icons:apple"
-                    class="h-4 w-4 text-gray-700"
+                    class="h-4 w-4 text-ink"
                   />
                   iPhone (Safari)
                 </h4>
@@ -570,7 +563,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </AppCard>
       </div>
     </div>
   </div>

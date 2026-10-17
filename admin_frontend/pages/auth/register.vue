@@ -1,42 +1,38 @@
 <!-- pages/register.vue -->
 <template>
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
-    <!-- Page Header -->
-    <div class="mb-8">
-      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-        Registration
-      </h2>
-      <p class="text-gray-500 text-xs md:text-sm">
-        Register a new administrator and assign their access privileges.
-      </p>
-    </div>
+  <div class="relative min-h-screen pt-5">
+    <AppHeading
+      class="mb-8"
+      title="Registration"
+      subtitle="Register a new administrator and assign their access privileges."
+    />
 
     <!-- Main Form -->
     <form
-      class="space-y-13 border-t border-gray-200 pt-7"
+      class="space-y-13 border-t border-line pt-7"
       @submit.prevent="handleRegister"
     >
       <!-- Section 1: Account Details -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Account Details
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Provide the personal details, authentication credentials, and system
             roles for the new admin.
           </p>
         </div>
 
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+        <AppCard
+          class="md:col-span-2" body-class="p-6 space-y-6"
         >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Full Name -->
             <div>
               <label
                 for="name"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Full Name
               </label>
@@ -45,7 +41,7 @@
                 v-model="formData.name"
                 type="text"
                 required
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="e.g. John Doe"
               >
             </div>
@@ -54,7 +50,7 @@
             <div>
               <label
                 for="email"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Email Address
               </label>
@@ -63,7 +59,7 @@
                 v-model="formData.email"
                 type="email"
                 required
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="admin@example.com"
               >
             </div>
@@ -72,7 +68,7 @@
             <div class="md:col-span-2">
               <label
                 for="password"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Password
               </label>
@@ -85,16 +81,16 @@
                   minlength="8"
                   :aria-invalid="errors.password ? 'true' : 'false'"
                   aria-describedby="password-hint password-error"
-                  class="w-full bg-gray-50 border rounded-lg px-4 py-2.5 pr-12 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                  class="w-full rounded-control border bg-subtle px-4 py-2.5 pr-12 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                   :class="
-                    errors.password ? 'border-red-400' : 'border-gray-200'
+                    errors.password ? 'border-danger-text' : 'border-line'
                   "
                   placeholder="••••••••"
                 >
                 <button
                   type="button"
                   :aria-label="showPassword ? 'Hide password' : 'Show password'"
-                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-black focus:outline-none transition-colors"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-muted hover:text-ink focus:outline-none transition-colors"
                   @click="showPassword = !showPassword"
                 >
                   <Icon
@@ -105,14 +101,14 @@
                   <Icon v-else name="heroicons:eye-slash" class="h-4 w-4" />
                 </button>
               </div>
-              <p id="password-hint" class="text-[11px] text-gray-500 mt-1.5">
+              <p id="password-hint" class="text-xs text-muted mt-1.5">
                 At least 8 characters.
               </p>
               <p
                 v-if="errors.password"
                 id="password-error"
                 role="alert"
-                class="text-[11px] text-red-600 font-medium mt-1.5"
+                class="text-xs text-danger-text font-medium mt-1.5"
               >
                 {{ errors.password }}
               </p>
@@ -122,7 +118,7 @@
             <div class="md:col-span-2">
               <label
                 for="confirm-password"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Confirm Password
               </label>
@@ -133,9 +129,9 @@
                 required
                 :aria-invalid="errors.confirmPassword ? 'true' : 'false'"
                 aria-describedby="confirm-password-error"
-                class="w-full bg-gray-50 border rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 :class="
-                  errors.confirmPassword ? 'border-red-400' : 'border-gray-200'
+                  errors.confirmPassword ? 'border-danger-text' : 'border-line'
                 "
                 placeholder="••••••••"
               >
@@ -143,7 +139,7 @@
                 v-if="errors.confirmPassword"
                 id="confirm-password-error"
                 role="alert"
-                class="text-[11px] text-red-600 font-medium mt-1.5"
+                class="text-xs text-danger-text font-medium mt-1.5"
               >
                 {{ errors.confirmPassword }}
               </p>
@@ -153,7 +149,7 @@
             <div>
               <label
                 for="adminType"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Admin Type
               </label>
@@ -162,7 +158,7 @@
                   id="adminType"
                   v-model="formData.type"
                   required
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+                  class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 >
                   <option value="" disabled>Select Admin Type</option>
                   <option value="Website">Website</option>
@@ -174,7 +170,7 @@
                 >
                   <Icon
                     name="heroicons:chevron-down"
-                    class="h-4 w-4 text-gray-500"
+                    class="h-4 w-4 text-muted"
                   />
                 </div>
               </div>
@@ -184,7 +180,7 @@
             <div>
               <label
                 for="role"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Role
               </label>
@@ -193,7 +189,7 @@
                   id="role"
                   v-model="formData.role"
                   required
-                  class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm appearance-none cursor-pointer"
+                  class="w-full appearance-none cursor-pointer rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 >
                   <option value="" disabled>Select Role</option>
                   <option value="admin">Admin</option>
@@ -204,31 +200,25 @@
                 >
                   <Icon
                     name="heroicons:chevron-down"
-                    class="h-4 w-4 text-gray-500"
+                    class="h-4 w-4 text-muted"
                   />
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </AppCard>
       </div>
 
-      <!-- Sticky Footer -->
+      <!-- Sticky save bar: stays in flow at the end of the form and pins to
+           the viewport bottom while the form is in view. Negative margins
+           mirror main's padding (layout/default.vue) so the bar bleeds to
+           the column edges without width calculations. -->
       <div
-        class="fixed bottom-0 right-0 w-full md:w-[calc(100%-18rem)] bg-white/80 backdrop-blur-md border-t border-gray-200 p-4 flex justify-end z-30"
+        class="sticky bottom-0 z-sticky -mx-4 -mb-5 mt-6 flex items-center justify-end gap-3 border-t border-line bg-surface/90 px-4 py-3 backdrop-blur-md md:-mx-6 md:-mb-6 md:px-6 lg:-mx-8 lg:-mb-8 lg:px-8"
       >
-        <button
-          type="submit"
-          :disabled="loading"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
-        >
-          <Icon
-            v-if="loading"
-            name="heroicons:arrow-path"
-            class="mr-2 h-4 w-4 animate-spin"
-          />
-          {{ loading ? "Registering..." : "Register Administrator" }}
-        </button>
+        <AppButton type="submit" size="lg" :loading="loading">
+          {{ loading ? "Registering…" : "Register administrator" }}
+        </AppButton>
       </div>
     </form>
   </div>

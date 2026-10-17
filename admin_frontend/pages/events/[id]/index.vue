@@ -1,11 +1,11 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="pt-5 pb-10 font-poppins">
+  <div class="pt-5 pb-10">
     <div class="mb-8">
       <NuxtLink
         to="/events"
-        class="inline-flex items-center text-xs font-jetbrains font-bold text-gray-500 hover:text-black transition-colors mb-5"
+        class="inline-flex items-center text-xs font-medium text-muted transition-colors hover:text-ink mb-5"
       >
         <Icon name="heroicons:arrow-left" class="mr-2 h-4 w-4" />
         Back to Events
@@ -16,31 +16,21 @@
         class="flex flex-col md:flex-row md:items-start md:justify-between gap-5"
       >
         <div>
-          <h2
-            class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2"
-          >
-            {{
-              event.service === "SPECIAL PROGRAM"
-                ? event.specialProgram
-                : event.service
-            }}
-          </h2>
-
-          <p class="text-gray-600 text-xs md:text-sm max-w-xl">
-            View attendance, altar calls, demographics and follow-up records for
-            this event.
-          </p>
+          <AppHeading
+            :title="event.service === 'SPECIAL PROGRAM' ? event.specialProgram : event.service"
+            subtitle="View attendance, altar calls, demographics and follow-up records for this event."
+          />
         </div>
       </div>
     </div>
 
     <div v-if="event" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
       <div class="lg:col-span-1 space-y-6">
-        <div
-          class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+        <AppCard
+          body-class="p-6 space-y-6"
         >
           <h3
-            class="text-base font-bold text-black mb-4 border-b border-slate-200 font-jetbrains pb-3"
+            class="text-base font-semibold text-ink mb-4 border-b border-line pb-3"
           >
             Overview
           </h3>
@@ -48,16 +38,16 @@
           <div class="space-y-5">
             <div>
               <p
-                class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-600 mb-2"
+                class="font-mono text-xs font-medium text-muted mb-2"
               >
                 Date
               </p>
               <p
-                class="text-xs md:text-sm text-black flex items-center font-poppins"
+                class="text-xs md:text-sm text-ink flex items-center"
               >
                 <Icon
                   name="heroicons:calendar"
-                  class="mr-2 h-4 w-4 text-black"
+                  class="mr-2 h-4 w-4 text-ink"
                 />
                 {{ formatDate(event.eventDate) }}
               </p>
@@ -65,16 +55,16 @@
 
             <div>
               <p
-                class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-600 mb-2"
+                class="font-mono text-xs font-medium text-muted mb-2"
               >
                 Time
               </p>
               <p
-                class="text-xs md:text-sm text-black flex items-center font-poppins"
+                class="text-xs md:text-sm text-ink flex items-center"
               >
                 <Icon
                   name="heroicons:clock"
-                  class="mr-2 h-4 w-4 text-slate-400 dark:text-slate-500"
+                  class="mr-2 h-4 w-4 text-muted"
                 />
                 {{ event.startTime }} - {{ event.endTime }}
               </p>
@@ -82,16 +72,16 @@
 
             <div v-if="event.programDay">
               <p
-                class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-600 mb-2"
+                class="font-mono text-xs font-medium text-muted mb-2"
               >
                 Program Day
               </p>
               <p
-                class="text-xs md:text-sm text-black flex items-center font-poppins"
+                class="text-xs md:text-sm text-ink flex items-center"
               >
                 <Icon
                   name="heroicons:calendar"
-                  class="mr-2 h-4 w-4 text-black"
+                  class="mr-2 h-4 w-4 text-ink"
                 />
                 {{ event.programDay }}
               </p>
@@ -99,30 +89,30 @@
 
             <div class="mt-1">
               <p
-                class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-600 mb-2"
+                class="font-mono text-xs font-medium text-muted mb-2"
               >
                 Description
               </p>
               <p
-                class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs md:text-sm text-gray-700 leading-relaxed"
+                class="bg-subtle border border-line rounded-control p-4 text-xs md:text-sm text-ink leading-relaxed"
               >
                 {{ event.eventDescription || "No additional details provided" }}
               </p>
             </div>
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <div class="lg:col-span-2 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <EventHeadCount :event-id="eventId" />
 
-          <div
-            class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between gap-5 hover:shadow-md transition-shadow"
+          <AppCard
+            body-class="p-6 flex flex-col justify-between gap-5"
           >
             <div class="flex items-start gap-4">
               <div
-                class="h-12 w-12 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-black shrink-0"
+                class="h-12 w-12 rounded-surface bg-subtle border border-line flex items-center justify-center text-ink shrink-0"
               >
                 <Icon
                   name="heroicons:clipboard-document-check"
@@ -132,26 +122,23 @@
 
               <div class="space-y-1">
                 <p
-                  class="text-[11px] font-jetbrains font-bold uppercase tracking-wide text-gray-500"
+                  class="font-mono text-xs font-medium text-muted"
                 >
                   Attendance
                 </p>
-                <h3 class="text-base font-bold text-black font-jetbrains">
+                <h3 class="text-base font-semibold text-ink">
                   Unit Attendance
                 </h3>
-                <p class="text-xs md:text-sm text-gray-500 leading-relaxed">
+                <p class="text-xs md:text-sm text-muted leading-relaxed">
                   Record and review attendance by chapel unit.
                 </p>
               </div>
             </div>
 
-            <NuxtLink
-              :to="`/events/${eventId}/attendance`"
-              class="inline-flex items-center justify-center rounded-xl bg-black px-4 py-2.5 text-xs text-white shadow-sm hover:bg-gray-800 transition-colors font-jetbrains w-fit"
-            >
-              Manage Attendance &rarr;
-            </NuxtLink>
-          </div>
+            <AppButton :to="`/events/${eventId}/attendance`" class="w-fit">
+              Manage attendance &rarr;
+            </AppButton>
+          </AppCard>
 
           <div>
             <EventAltarCalls
@@ -172,17 +159,17 @@
     <div v-else class="py-24 text-center">
       <Icon
         name="heroicons:exclamation-triangle"
-        class="mx-auto h-12 w-12 text-red-400 mb-4"
+        class="mx-auto h-12 w-12 text-danger-text mb-4"
       />
-      <h3 class="text-sm font-bold text-black font-jetbrains">
+      <h3 class="text-sm font-semibold text-ink">
         Event not found
       </h3>
-      <p class="text-gray-500 text-xs md:text-sm mb-6">
+      <p class="text-muted text-xs md:text-sm mb-6">
         The event you are looking for does not exist or has been deleted.
       </p>
       <NuxtLink
         to="/events"
-        class="text-xs md:text-sm font-semibold text-black underline"
+        class="text-xs md:text-sm font-semibold text-ink underline"
         >Return to Events</NuxtLink
       >
     </div>

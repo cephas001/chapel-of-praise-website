@@ -13,7 +13,7 @@
         :aria-controls="listboxId"
         :aria-activedescendant="activeOptionId"
         :placeholder="placeholder"
-        class="w-full bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm cursor-text"
+        class="w-full cursor-text rounded-control border border-line bg-subtle py-2.5 pl-4 pr-10 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
         @focus="openDropdown"
         @keydown.down.prevent="moveActive(1)"
         @keydown.up.prevent="moveActive(-1)"
@@ -24,19 +24,19 @@
       <div
         class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
       >
-        <Icon name="heroicons:chevron-up-down" class="h-4 w-4 text-gray-500" />
+        <Icon name="heroicons:chevron-up-down" class="h-4 w-4 text-muted" />
       </div>
     </div>
 
     <!-- Dropdown Menu (listbox) -->
     <div
       v-if="isOpen"
-      class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+      class="absolute z-panel mt-1 max-h-60 w-full overflow-y-auto rounded-surface border border-line bg-surface shadow-overlay"
     >
       <ul :id="listboxId" role="listbox" :aria-label="placeholder" class="py-1">
         <li
           v-if="filteredOptions.length === 0"
-          class="px-4 py-3 text-xs md:text-sm text-gray-500 italic text-center"
+          class="px-4 py-3 text-center text-xs italic text-muted md:text-sm"
           role="presentation"
         >
           No results found.
@@ -49,10 +49,10 @@
           role="option"
           tabindex="-1"
           :aria-selected="modelValue === option[valueKey] ? 'true' : 'false'"
-          class="px-4 py-2.5 text-xs md:text-sm text-gray-900 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+          class="cursor-pointer border-b border-line px-4 py-2.5 text-xs text-ink transition-colors last:border-0 hover:bg-subtle md:text-sm"
           :class="{
-            'bg-gray-50 font-bold': modelValue === option[valueKey],
-            'bg-gray-100': index === activeIndex,
+            'bg-subtle font-medium': modelValue === option[valueKey],
+            'bg-line': index === activeIndex,
           }"
           @click="selectOption(option)"
           @keydown.enter.prevent="selectOption(option)"
@@ -67,7 +67,7 @@
     </div>
 
     <!-- Invisible overlay to handle outside clicks cleanly without extra libraries -->
-    <div v-if="isOpen" class="fixed inset-0 z-40" aria-hidden="true" @click="closeDropdown"/>
+    <div v-if="isOpen" class="fixed inset-0 z-scrim" aria-hidden="true" @click="closeDropdown"/>
   </div>
 </template>
 
@@ -77,7 +77,7 @@ import { ref, computed, watch, useId } from "vue";
 const props = defineProps({
   modelValue: { type: [String, Number], default: "" },
   options: { type: Array, required: true },
-  placeholder: { type: String, default: "Search and select..." },
+  placeholder: { type: String, default: "Search and select…" },
   displayKey: { type: String, default: "name" }, // What to type/search by default
   valueKey: { type: String, default: "id" }, // What is actually emitted (the ID)
   inputId: { type: String, default: undefined }, // Optional id for label association

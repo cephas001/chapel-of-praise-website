@@ -1,40 +1,37 @@
 <template>
   <LoadingScreen :is-loading="isFetching" />
 
-  <div class="relative min-h-screen pb-32 pt-5 font-poppins">
+  <div class="relative min-h-screen pt-5">
     <!-- Page Header -->
-    <div class="mb-8">
-      <h2 class="text-lg md:text-xl font-bold text-black font-jetbrains mb-2">
-        Homepage Management
-      </h2>
-      <p class="text-gray-500 text-xs md:text-sm">
-        Manage text and sections on the main website homepage.
-      </p>
-    </div>
+    <AppHeading
+      class="mb-8"
+      title="Homepage management"
+      subtitle="Manage text and sections on the main website homepage."
+    />
 
     <!-- Main Form -->
     <form
-      class="space-y-13 border-t border-gray-200 pt-7"
+      class="space-y-13 border-t border-line pt-7"
       @submit.prevent="saveSettings"
     >
       <!-- Section 1: Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Hero Banner
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Configure the first section of the homepage.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 for="homepage-hero-kicker"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Hero Kicker
               </label>
@@ -42,14 +39,14 @@
                 id="homepage-hero-kicker"
                 v-model="heroSection.heroKicker"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="e.g. Shining the Gospel light"
               >
             </div>
             <div>
               <label
                 for="homepage-hero-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Hero Headline
               </label>
@@ -57,14 +54,14 @@
                 id="homepage-hero-headline"
                 v-model="heroSection.heroHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="Our Church"
               >
             </div>
             <div>
               <label
                 for="homepage-hero-cta1-label"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Primary CTA Label
               </label>
@@ -72,14 +69,14 @@
                 id="homepage-hero-cta1-label"
                 v-model="heroSection.heroCta1Label"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="Join Us"
               >
             </div>
             <div>
               <label
                 for="homepage-hero-cta1-link"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Primary CTA Link
               </label>
@@ -87,14 +84,14 @@
                 id="homepage-hero-cta1-link"
                 v-model="heroSection.heroCta1Link"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="/about"
               >
             </div>
             <div>
               <label
                 for="homepage-hero-cta2-label"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Secondary CTA Label
               </label>
@@ -102,14 +99,14 @@
                 id="homepage-hero-cta2-label"
                 v-model="heroSection.heroCta2Label"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="Watch Live"
               >
             </div>
             <div>
               <label
                 for="homepage-hero-cta2-link"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Secondary CTA Link
               </label>
@@ -117,7 +114,7 @@
                 id="homepage-hero-cta2-link"
                 v-model="heroSection.heroCta2Link"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="/live"
               >
             </div>
@@ -128,29 +125,29 @@
               @click="handleSaveSection('heroSection', heroSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Section 2: Welcome Section -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Welcome Section
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             The introductory text block for your church.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 for="homepage-welcome-badge"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Welcome Badge
               </label>
@@ -158,13 +155,13 @@
                 id="homepage-welcome-badge"
                 v-model="welcomeSection.welcomeBadge"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div>
               <label
                 for="homepage-welcome-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Welcome Headline
               </label>
@@ -172,13 +169,13 @@
                 id="homepage-welcome-headline"
                 v-model="welcomeSection.welcomeHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div class="md:col-span-2">
               <label
                 for="homepage-welcome-description"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Welcome Description
               </label>
@@ -186,7 +183,7 @@
                 id="homepage-welcome-description"
                 v-model="welcomeSection.welcomeDescription"
                 rows="4"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
               />
             </div>
           </div>
@@ -196,37 +193,37 @@
               @click="handleSaveSection('welcomeSection', welcomeSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Section 3: Action Cards -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-gray-200"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-line"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Action Cards
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Manage the featured action cards below the hero.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border shadow-sm border-gray-200 flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 space-y-6">
             <div
               v-for="(card, index) in actionCardsSection.actionCards"
               :key="'card' + index"
-              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
+              class="bg-subtle/60 rounded-surface p-5 border border-line relative"
             >
               <span
-                class="absolute top-4 right-4 text-[11px] font-bold text-gray-500 uppercase font-jetbrains flex items-center justify-center gap-2"
+                class="absolute top-4 right-4 text-xs font-semibold text-muted font-mono flex items-center justify-center gap-2"
               >
                 Card {{ index + 1 }}
                 <Icon
                   name="heroicons:minus-circle"
-                  class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
+                  class="h-4 w-4 text-danger-text cursor-pointer hover:text-danger-text transition-colors"
                   @click="removeActionCard(index)"
                 />
               </span>
@@ -235,7 +232,7 @@
                 <div class="md:col-span-2">
                   <label
                     :for="`homepage-card-image-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Image URL
                   </label>
@@ -247,7 +244,7 @@
                 <div>
                   <label
                     :for="`homepage-card-kicker-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Kicker
                   </label>
@@ -255,13 +252,13 @@
                     :id="`homepage-card-kicker-${index}`"
                     v-model="card.kicker"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`homepage-card-title-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Title
                   </label>
@@ -269,13 +266,13 @@
                     :id="`homepage-card-title-${index}`"
                     v-model="card.title"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`homepage-card-cta-label-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     CTA Label
                   </label>
@@ -283,13 +280,13 @@
                     :id="`homepage-card-cta-label-${index}`"
                     v-model="card.ctaLabel"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`homepage-card-cta-link-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     CTA Link
                   </label>
@@ -297,19 +294,16 @@
                     :id="`homepage-card-cta-link-${index}`"
                     v-model="card.ctaLink"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
               </div>
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
-            <button
-              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
-              @click.prevent="addActionCard"
-            >
+            <AppButton variant="secondary" @click.prevent="addActionCard">
               Add Card
-            </button>
+            </AppButton>
             <SaveSectionButton
               :is-loading="sectionSavingState.actionCardsSection"
               @click="
@@ -317,29 +311,29 @@
               "
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Section 4: Great Champions Section -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Great Champions
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Configure the spotlight section for testimonies or ministry focus.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
                 for="homepage-champion-image"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Background Image URL
               </label>
@@ -351,7 +345,7 @@
             <div class="md:col-span-2">
               <label
                 for="homepage-champion-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Champion Headline
               </label>
@@ -359,13 +353,13 @@
                 id="homepage-champion-headline"
                 v-model="championsSection.championHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div class="md:col-span-2">
               <label
                 for="homepage-champion-description"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Champion Description
               </label>
@@ -373,13 +367,13 @@
                 id="homepage-champion-description"
                 v-model="championsSection.championDescription"
                 rows="3"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
               />
             </div>
             <div>
               <label
                 for="homepage-champion-cta-label"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 CTA Label
               </label>
@@ -387,14 +381,14 @@
                 id="homepage-champion-cta-label"
                 v-model="championsSection.championCtaLabel"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="e.g. Learn More"
               >
             </div>
             <div>
               <label
                 for="homepage-champion-cta-link"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 CTA Link
               </label>
@@ -402,7 +396,7 @@
                 id="homepage-champion-cta-link"
                 v-model="championsSection.championCtaLink"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
           </div>
@@ -412,37 +406,37 @@
               @click="handleSaveSection('championsSection', championsSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Section 5: Editorial Slides -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Sticky Editorial
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Manage the scrolling text slides overlaying the background image.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 space-y-6">
             <div
               v-for="(slide, index) in editorialSection.editorialSlides"
               :key="'slide' + index"
-              class="bg-gray-50/50 rounded-xl p-5 border border-gray-200 relative"
+              class="bg-subtle/60 rounded-surface p-5 border border-line relative"
             >
               <span
-                class="absolute top-4 right-4 text-[11px] font-bold text-gray-500 uppercase font-jetbrains flex items-center gap-2"
+                class="absolute top-4 right-4 text-xs font-semibold text-muted font-mono flex items-center gap-2"
               >
                 Slide {{ index + 1 }}
                 <Icon
                   name="heroicons:minus-circle"
-                  class="h-4 w-4 text-red-500 cursor-pointer hover:text-red-700 transition-colors"
+                  class="h-4 w-4 text-danger-text cursor-pointer hover:text-danger-text transition-colors"
                   @click="removeEditorialCard(index)"
                 />
               </span>
@@ -451,7 +445,7 @@
                 <div>
                   <label
                     :for="`homepage-slide-kicker-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Kicker
                   </label>
@@ -459,13 +453,13 @@
                     :id="`homepage-slide-kicker-${index}`"
                     v-model="slide.kicker"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div>
                   <label
                     :for="`homepage-slide-title-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Title
                   </label>
@@ -473,13 +467,13 @@
                     :id="`homepage-slide-title-${index}`"
                     v-model="slide.title"
                     type="text"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
                   >
                 </div>
                 <div class="md:col-span-2">
                   <label
                     :for="`homepage-slide-description-${index}`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                    class="block text-xs font-medium text-ink mb-2"
                   >
                     Description
                   </label>
@@ -487,13 +481,13 @@
                     :id="`homepage-slide-description-${index}`"
                     v-model="slide.description"
                     rows="2"
-                    class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:border-black transition-all outline-none text-xs md:text-sm resize-none shadow-sm"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
                   />
                 </div>
-                <div class="md:col-span-2 border-t border-gray-200 pt-5 mt-2">
+                <div class="md:col-span-2 border-t border-line pt-5 mt-2">
                   <label
                     :for="`homepage-slide-image-${index}-1`"
-                    class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-3"
+                    class="block text-xs font-medium text-ink mb-3"
                   >
                     Slide Images (4 URLs Required)
                   </label>
@@ -514,40 +508,37 @@
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
-            <button
-              class="inline-flex items-center justify-center rounded-xl bg-white border border-gray-200 px-6 py-3 text-xs md:text-sm text-gray-700 shadow-sm hover:bg-gray-50 transition-colors font-jetbrains"
-              @click.prevent="addEditorialCard"
-            >
+            <AppButton variant="secondary" @click.prevent="addEditorialCard">
               Add Slide
-            </button>
+            </AppButton>
             <SaveSectionButton
               :is-loading="sectionSavingState.editorialSection"
               @click="handleSaveSection('editorialSection', editorialSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- Section 6: Leadership Section -->
       <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-200 pt-8"
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-jetbrains font-bold text-gray-900 mb-1">
+          <h3 class="text-base font-semibold text-ink mb-1">
             Leadership Section
           </h3>
-          <p class="text-xs md:text-sm text-gray-500">
+          <p class="text-xs md:text-sm text-muted">
             Introduce the lead pastor or core leadership team.
           </p>
         </div>
-        <div
-          class="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col"
+        <AppCard
+          class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 for="homepage-leadership-badge"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Leadership Badge
               </label>
@@ -555,13 +546,13 @@
                 id="homepage-leadership-badge"
                 v-model="leadershipSection.leadershipBadge"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div>
               <label
                 for="homepage-leadership-headline"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Leadership Headline
               </label>
@@ -569,13 +560,13 @@
                 id="homepage-leadership-headline"
                 v-model="leadershipSection.leadershipHeadline"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
             <div class="md:col-span-2">
               <label
                 for="homepage-leadership-image"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Leadership Image URL
               </label>
@@ -587,7 +578,7 @@
             <div class="md:col-span-2">
               <label
                 for="homepage-leadership-bio"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 Leadership Bio
               </label>
@@ -595,13 +586,13 @@
                 id="homepage-leadership-bio"
                 v-model="leadershipSection.leadershipBio"
                 rows="4"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm resize-none"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
               />
             </div>
             <div>
               <label
                 for="homepage-leadership-cta-label"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 CTA Label
               </label>
@@ -609,14 +600,14 @@
                 id="homepage-leadership-cta-label"
                 v-model="leadershipSection.leadershipCtaLabel"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
                 placeholder="e.g. Read More"
               >
             </div>
             <div>
               <label
                 for="homepage-leadership-cta-link"
-                class="block text-[11px] font-jetbrains font-bold text-gray-700 uppercase tracking-wide mb-2"
+                class="block text-xs font-medium text-ink mb-2"
               >
                 CTA Link
               </label>
@@ -624,7 +615,7 @@
                 id="homepage-leadership-cta-link"
                 v-model="leadershipSection.leadershipCtaLink"
                 type="text"
-                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-black focus:bg-white focus:border-black transition-all outline-none text-xs md:text-sm"
+                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
               >
             </div>
           </div>
@@ -634,25 +625,19 @@
               @click="handleSaveSection('leadershipSection', leadershipSection)"
             />
           </div>
-        </div>
+        </AppCard>
       </div>
 
-      <!-- Sticky Footer -->
+      <!-- Sticky save bar: stays in flow at the end of the form and pins to
+           the viewport bottom while the form is in view. Negative margins
+           mirror main's padding (layout/default.vue) so the bar bleeds to
+           the column edges without width calculations. -->
       <div
-        class="fixed bottom-0 right-0 w-full md:w-[calc(100%-18rem)] bg-white/80 backdrop-blur-md border-t border-gray-200 p-4 flex justify-end z-30"
+        class="sticky bottom-0 z-sticky -mx-4 -mb-5 mt-6 flex items-center justify-end gap-3 border-t border-line bg-surface/90 px-4 py-3 backdrop-blur-md md:-mx-6 md:-mb-6 md:px-6 lg:-mx-8 lg:-mb-8 lg:px-8"
       >
-        <button
-          type="submit"
-          :disabled="isSaving"
-          class="inline-flex items-center justify-center rounded-xl bg-black px-8 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-800 disabled:opacity-70 disabled:cursor-not-allowed transition-all font-jetbrains"
-        >
-          <Icon
-            v-if="isSaving"
-            name="heroicons:arrow-path"
-            class="mr-2 h-4 w-4 animate-spin"
-          />
-          {{ isSaving ? "Saving..." : "Save Changes" }}
-        </button>
+        <AppButton type="submit" size="lg" :loading="isSaving">
+          {{ isSaving ? "Saving…" : "Save changes" }}
+        </AppButton>
       </div>
     </form>
   </div>

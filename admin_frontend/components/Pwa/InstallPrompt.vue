@@ -1,51 +1,52 @@
 <template>
   <div
     v-if="showPrompt"
-    class="fixed bottom-6 inset-x-0 mx-auto z-[90] animate-slide-up w-[calc(100%-3rem)] max-w-sm font-poppins"
+    class="fixed bottom-6 inset-x-0 mx-auto z-chrome animate-slide-up w-[calc(100%-3rem)] max-w-sm"
   >
     <div
-      class="bg-black/95 backdrop-blur-xl text-white p-5 rounded-2xl shadow-2xl border border-gray-800 flex flex-col gap-4"
+      class="rounded-surface border border-line bg-surface p-5 text-ink shadow-overlay backdrop-blur-xl flex flex-col gap-4"
     >
       <div class="flex justify-between items-start">
         <div class="flex items-center gap-3">
           <div
-            class="bg-white text-black w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
+            class="h-10 w-10 rounded-control bg-ink text-white flex items-center justify-center shrink-0"
           >
             <Icon name="heroicons:squares-plus" class="h-6 w-6" />
           </div>
           <div class="flex flex-col">
-            <span class="text-sm font-jetbrains tracking-wide text-white">
+            <span class="text-sm font-semibold">
               COP Admin App
             </span>
-            <span class="text-[11px] text-gray-400 font-medium mt-0.5">
+            <span class="text-xs font-medium text-muted mt-0.5">
               Fast, offline-ready chapel operations.
             </span>
           </div>
         </div>
         <button
-          class="text-gray-500 hover:text-white transition-colors p-1 rounded-md"
+          aria-label="Dismiss install prompt"
+          class="rounded-control p-1 text-muted transition-colors hover:text-ink"
           @click="dismissPrompt"
         >
           <Icon name="heroicons:x-mark" class="h-5 w-5" />
         </button>
       </div>
 
-      <button
+      <AppButton
         v-if="!isIOS"
-        class="w-full bg-white text-black py-3 rounded-xl text-xs font-jetbrains uppercase tracking-widest hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+        icon="heroicons:arrow-down-tray"
+        class="w-full"
         @click="installApp"
       >
-        <Icon name="heroicons:arrow-down-tray" class="h-4 w-4" />
-        Install App
-      </button>
+        Install app
+      </AppButton>
 
       <div
         v-else
-        class="bg-gray-900 rounded-xl p-3 text-[11px] text-gray-300 font-medium leading-relaxed border border-gray-800"
+        class="rounded-control border border-line bg-subtle p-3 text-xs font-medium leading-relaxed text-muted"
       >
         To install on iOS: tap the
         <span
-          class="inline-flex items-center justify-center bg-gray-800 p-1 rounded mx-1"
+          class="mx-1 inline-flex items-center justify-center rounded-badge border border-line bg-surface p-1"
         >
           <Icon name="heroicons:arrow-up-tray" class="h-3.5 w-3.5" />
         </span>
