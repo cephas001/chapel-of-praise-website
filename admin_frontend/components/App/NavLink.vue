@@ -2,7 +2,7 @@
   <NuxtLink
     :to="url"
     :class="[
-      'group relative flex items-center gap-2.5 rounded-control px-3 py-2 text-sm font-medium transition-colors',
+      'group relative flex items-center gap-2.5 rounded-control px-3 py-2 text-sm transition-colors',
       isActive
         ? 'bg-subtle text-ink before:absolute before:bottom-1.5 before:left-0 before:top-1.5 before:w-0.5 before:rounded-full before:bg-ink'
         : 'text-muted hover:bg-subtle hover:text-ink',
