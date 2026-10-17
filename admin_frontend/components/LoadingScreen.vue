@@ -5,7 +5,7 @@
       class="fixed inset-0 z-overlay bg-surface/95 backdrop-blur-md flex flex-col items-center justify-center"
     >
       <!-- Static Logo with subtle pulse -->
-      <div class="relative w-40 sm:w-48 h-auto mb-10">
+      <div class="relative w-40 sm:w-48 h-auto mb-10 -mt-2.5">
         <!-- The 'invert' class turns your white PNG into stark black -->
         <img
           src="~/assets/images/Chapel Of Praise Logo.png"
@@ -18,7 +18,7 @@
       <div class="flex flex-col items-center gap-4">
         <!-- Sleek progress track -->
         <div class="h-[2px] w-32 bg-line overflow-hidden rounded-full">
-          <div class="h-full bg-ink rounded-full animate-progress"/>
+          <div class="h-full bg-ink rounded-full animate-progress" />
         </div>
 
         <!-- Technical micro-copy -->
