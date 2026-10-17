@@ -49,8 +49,8 @@ const variantClasses = {
 
 const sizeClasses = {
   sm: "h-9 gap-1.5 px-3.5 text-sm",
-  md: "h-10 gap-2 px-4 text-sm",
-  lg: "h-12 gap-2 px-6 text-base",
+  md: "h-10 gap-2 px-4 text-xs md:text-sm",
+  lg: "h-12 gap-2 px-6 text-xs md:text-sm",
 };
 
 const iconSizeClasses = {

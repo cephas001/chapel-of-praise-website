@@ -17,16 +17,12 @@
       <!-- Section 1: Hero Banner -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-1">
-          <h3 class="text-base font-semibold text-ink mb-1">
-            Hero Banner
-          </h3>
+          <h3 class="text-base font-semibold text-ink mb-1">Hero Banner</h3>
           <p class="text-xs md:text-sm text-muted">
             Configure the first section of the homepage.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
@@ -133,16 +129,12 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-semibold text-ink mb-1">
-            Welcome Section
-          </h3>
+          <h3 class="text-base font-semibold text-ink mb-1">Welcome Section</h3>
           <p class="text-xs md:text-sm text-muted">
             The introductory text block for your church.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
@@ -201,16 +193,12 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t pt-8 border-line"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-semibold text-ink mb-1">
-            Action Cards
-          </h3>
+          <h3 class="text-base font-semibold text-ink mb-1">Action Cards</h3>
           <p class="text-xs md:text-sm text-muted">
             Manage the featured action cards below the hero.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 space-y-6">
             <div
               v-for="(card, index) in actionCardsSection.actionCards"
@@ -319,16 +307,12 @@
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
         <div class="md:col-span-1">
-          <h3 class="text-base font-semibold text-ink mb-1">
-            Great Champions
-          </h3>
+          <h3 class="text-base font-semibold text-ink mb-1">Great Champions</h3>
           <p class="text-xs md:text-sm text-muted">
             Configure the spotlight section for testimonies or ministry focus.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <label
@@ -421,9 +405,7 @@
             Manage the scrolling text slides overlaying the background image.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 space-y-6">
             <div
               v-for="(slide, index) in editorialSection.editorialSlides"
@@ -531,9 +513,7 @@
             Introduce the lead pastor or core leadership team.
           </p>
         </div>
-        <AppCard
-          class="md:col-span-2" body-class="flex flex-col"
-        >
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
@@ -628,17 +608,7 @@
         </AppCard>
       </div>
 
-      <!-- Sticky save bar: stays in flow at the end of the form and pins to
-           the viewport bottom while the form is in view. Negative margins
-           mirror main's padding (layout/default.vue) so the bar bleeds to
-           the column edges without width calculations. -->
-      <div
-        class="sticky bottom-0 z-sticky -mx-4 -mb-5 mt-6 flex items-center justify-end gap-3 border-t border-line bg-surface/90 px-4 py-3 backdrop-blur-md md:-mx-6 md:-mb-6 md:px-6 lg:-mx-8 lg:-mb-8 lg:px-8"
-      >
-        <AppButton type="submit" size="lg" :loading="isSaving">
-          {{ isSaving ? "Saving…" : "Save changes" }}
-        </AppButton>
-      </div>
+      <SaveBar :loading="isSaving" />
     </form>
   </div>
 </template>
