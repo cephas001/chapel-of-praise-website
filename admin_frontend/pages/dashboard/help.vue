@@ -52,8 +52,8 @@
               class="mt-1 text-xs md:text-sm leading-relaxed text-muted text-justify"
             >
               Use the email and password a Super Admin set up for you. If you
-              forget it, tap Forgot password? on the sign-in screen and a reset
-              link goes to your email.
+              forget it, tap <span class="italic">Forgot password?</span> and a
+              reset link goes to your email.
             </p>
           </div>
 
@@ -175,8 +175,8 @@
         </template>
 
         <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
-          Your unit's own meetings run separately from events, and they get
-          their own attendance records.
+          Your unit meetings run separately from events, and they get their own
+          attendance records.
         </p>
 
         <div class="mt-5 space-y-4">
@@ -237,9 +237,8 @@
         </template>
 
         <p class="text-xs md:text-sm leading-relaxed text-ink text-justify">
-          The <span class="italic">Media Unit</span> is responsible for
-          controlling what the chapel website shows. They can edit and make
-          changes from here.
+          The <span class="italic">Media Unit</span> is responsible for managing
+          the chapel's public website. They edit the content from here.
         </p>
 
         <div class="mt-5 space-y-4">
@@ -676,7 +675,7 @@ const serviceSteps = [
   {
     title: "Pick the service",
     text: "Open Events and select the day's service, or add a new one.",
-    responsible: "Adding New Events: General Secretary",
+    responsible: "General Secretary",
   },
   {
     title: "Record the attendance totals",
@@ -691,7 +690,7 @@ const serviceSteps = [
   {
     title: "Record the altar calls",
     text: "Open the service and add each call and the number of responders. Then add their details.",
-    responsible: "Evangelism Coordinator",
+    responsible: "Evangelism Coord",
   },
   {
     title: "Follow up with them",
