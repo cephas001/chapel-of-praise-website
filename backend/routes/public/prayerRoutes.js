@@ -1,6 +1,56 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../../config/firebase");
+const { formSubmissionLimiter } = require("../../middleware/rateLimiters");
+const {
+  cleanString,
+  isValidEmail,
+  isSpamSubmission,
+} = require("../../utils/formValidation");
+
+// Submit a prayer request from the public form
+router.post("/submit", formSubmissionLimiter, async (req, res) => {
+  try {
+    if (isSpamSubmission(req.body)) {
+      return res.status(201).json({ message: "Request received." });
+    }
+
+    const fullName = cleanString(req.body?.fullName, 150);
+    const email = cleanString(req.body?.email, 254).toLowerCase();
+    const request = cleanString(req.body?.request, 5000);
+    const confidential = req.body?.confidential === true;
+
+    if (!fullName || !request) {
+      return res
+        .status(400)
+        .json({ error: "Please enter your name and prayer request." });
+    }
+
+    if (email && !isValidEmail(email)) {
+      return res
+        .status(400)
+        .json({ error: "Please enter a valid email address." });
+    }
+
+    const docRef = await db.collection("prayerRequests").add({
+      fullName,
+      email,
+      request,
+      confidential,
+      status: "NEW",
+      source: "prayer-page",
+      createdAt: new Date().toISOString(),
+    });
+
+    res.status(201).json({
+      message: "Prayer request received.",
+      id: docRef.id,
+    });
+  } catch (error) {
+    console.error("Error saving prayer request:", error);
+    res.status(500).json({ error: "Failed to submit prayer request." });
+  }
+});
 
 // Get ALL prayer sections at once
 router.get("/", async (req, res) => {

@@ -1,6 +1,87 @@
 const express = require("express");
 const router = express.Router();
 const { db } = require("../../config/firebase");
+const { formSubmissionLimiter } = require("../../middleware/rateLimiters");
+const {
+  cleanString,
+  isValidEmail,
+  isSpamSubmission,
+} = require("../../utils/formValidation");
+
+const CONTACT_METHODS = new Set(["phone", "email", "text"]);
+const COUNSELLING_AREAS = new Set([
+  "marriage",
+  "premarital",
+  "spiritual",
+  "grief",
+  "addiction",
+  "general",
+]);
+
+// Submit a counselling request from the public form
+router.post("/submit", formSubmissionLimiter, async (req, res) => {
+  try {
+    if (isSpamSubmission(req.body)) {
+      return res.status(201).json({ message: "Request received." });
+    }
+
+    const firstName = cleanString(req.body?.firstName, 100);
+    const lastName = cleanString(req.body?.lastName, 100);
+    const email = cleanString(req.body?.email, 254).toLowerCase();
+    const phone = cleanString(req.body?.phone, 32);
+    const preferredContactMethod = cleanString(
+      req.body?.preferredContactMethod,
+      20,
+    );
+    const counsellingArea = cleanString(req.body?.counsellingArea, 40);
+    const details = cleanString(req.body?.details, 5000);
+
+    if (!firstName || !lastName || !email || !phone) {
+      return res
+        .status(400)
+        .json({ error: "Please fill in all required fields." });
+    }
+
+    if (!isValidEmail(email)) {
+      return res
+        .status(400)
+        .json({ error: "Please enter a valid email address." });
+    }
+
+    if (preferredContactMethod && !CONTACT_METHODS.has(preferredContactMethod)) {
+      return res
+        .status(400)
+        .json({ error: "Please choose a valid contact method." });
+    }
+
+    if (counsellingArea && !COUNSELLING_AREAS.has(counsellingArea)) {
+      return res
+        .status(400)
+        .json({ error: "Please choose a valid counselling area." });
+    }
+
+    const docRef = await db.collection("counsellingRequests").add({
+      firstName,
+      lastName,
+      email,
+      phone,
+      preferredContactMethod,
+      counsellingArea,
+      details,
+      status: "NEW",
+      source: "counselling-page",
+      createdAt: new Date().toISOString(),
+    });
+
+    res.status(201).json({
+      message: "Counselling request received.",
+      id: docRef.id,
+    });
+  } catch (error) {
+    console.error("Error saving counselling request:", error);
+    res.status(500).json({ error: "Failed to submit counselling request." });
+  }
+});
 
 // Get ALL counselling sections at once
 router.get("/", async (req, res) => {

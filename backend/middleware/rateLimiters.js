@@ -32,4 +32,17 @@ const registrationLimiter = buildLimiter({
   message: "Too many registration attempts. Please try again in an hour.",
 });
 
-module.exports = { apiLimiter, loginLimiter, registrationLimiter };
+// Public website forms (contact, counselling, prayer): generous enough for
+// shared campus networks while still stopping automated flooding.
+const formSubmissionLimiter = buildLimiter({
+  windowMs: 10 * 60 * 1000,
+  limit: 10,
+  message: "Too many submissions. Please wait a few minutes and try again.",
+});
+
+module.exports = {
+  apiLimiter,
+  loginLimiter,
+  registrationLimiter,
+  formSubmissionLimiter,
+};
