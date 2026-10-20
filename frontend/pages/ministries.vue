@@ -31,9 +31,9 @@
             v-if="pageData.ministries.length === 0"
             class="rounded-2xl border border-line bg-paper p-10 text-center"
           >
-            <h2 class="text-xl font-semibold">No ministries listed yet</h2>
+            <h2 class="text-xl font-semibold">No ministries listed</h2>
             <p class="mt-3 text-base font-light text-gray-600">
-              Check back soon to discover the ministries of Chapel of Praise.
+              Please check back soon.
             </p>
           </div>
         </div>

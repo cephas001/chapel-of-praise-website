@@ -1,9 +1,7 @@
 <template>
   <section
     class="relative flex w-full items-center justify-center overflow-hidden bg-ink text-paper"
-    :class="
-      size === 'full' ? 'min-h-svh' : 'h-[50vh] min-h-[400px]'
-    "
+    :class="size === 'full' ? 'min-h-svh' : 'h-[50vh] min-h-[400px]'"
   >
     <AppImage
       v-if="image"
@@ -13,13 +11,16 @@
       :width="width"
       :height="height"
       alt=""
-      class="absolute inset-0 h-full w-full object-cover opacity-40 grayscale"
+      class="absolute inset-0 h-full w-full object-cover object-top opacity-60 grayscale-[0.3]"
       :loading="priority ? 'eager' : 'lazy'"
       :fetchpriority="priority ? 'high' : undefined"
       decoding="async"
     />
 
-    <div class="absolute inset-0 bg-black/60" aria-hidden="true" />
+    <div
+      class="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/80"
+      aria-hidden="true"
+    />
 
     <div
       class="relative z-10 flex w-full flex-col items-center px-4 pt-20 text-center"

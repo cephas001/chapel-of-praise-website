@@ -74,11 +74,14 @@
       <AppImage
         :src="pageData.champions.image"
         alt=""
-        class="absolute inset-0 h-full w-full object-cover opacity-20 grayscale"
+        class="absolute inset-0 h-full w-full object-cover opacity-50 grayscale-[0.5]"
         loading="lazy"
         decoding="async"
       />
-      <div class="absolute inset-0 bg-black/50" aria-hidden="true" />
+      <div
+        class="absolute inset-0 bg-linear-to-b from-black/80 via-black/55 to-black/75 lg:bg-linear-to-r lg:from-black/85 lg:via-black/45 lg:to-black/20"
+        aria-hidden="true"
+      />
       <AppContainer class="relative z-10">
         <h2
           class="max-w-3xl font-impact text-4xl uppercase leading-none md:text-5xl lg:text-6xl"
@@ -86,7 +89,7 @@
           {{ pageData.champions.headline }}
         </h2>
         <p
-          class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg text-justify"
+          class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg"
         >
           {{ pageData.champions.description }}
         </p>
@@ -111,11 +114,14 @@
           v-if="section.images?.[0]"
           :src="section.images[0]"
           alt=""
-          class="absolute inset-0 h-full w-full object-cover opacity-30 grayscale"
+          class="absolute inset-0 h-full w-full object-cover opacity-50 grayscale-[0.5]"
           loading="lazy"
           decoding="async"
         />
-        <div class="absolute inset-0 bg-black/60" aria-hidden="true" />
+        <div
+          class="absolute inset-0 bg-linear-to-b from-black/80 via-black/55 to-black/75 lg:bg-linear-to-r lg:from-black/85 lg:via-black/50 lg:to-black/20"
+          aria-hidden="true"
+        />
         <AppContainer class="relative z-10">
           <span
             class="mb-5 block h-0.5 w-10 rounded-full bg-brand-600"
@@ -145,9 +151,9 @@
         >
           <div class="overflow-hidden rounded-2xl">
             <AppImage
-              :src="pastorImage"
+              :src="pageData.leadership.image"
               alt="Reverend Ibiwunmi Alo, lead pastor of Chapel of Praise"
-              class="aspect-[4/5] w-full object-cover grayscale"
+              class="aspect-[4/5] w-full object-cover"
               loading="lazy"
               decoding="async"
             />
@@ -159,7 +165,7 @@
               {{ pageData.leadership.headline }}
             </h2>
             <p
-              class="mt-6 text-base font-light leading-relaxed text-gray-600 md:text-lg text-justify"
+              class="mt-6 text-base font-light leading-relaxed text-gray-600 md:text-lg"
             >
               {{ pageData.leadership.bio }}
             </p>
@@ -232,6 +238,7 @@ const pageData = computed(() => {
       ctaLink: data.championsSection?.championCtaLink || "/events-calendar",
     },
     leadership: {
+      image: data.leadershipSection?.leadershipImage || pastorImage,
       headline: data.leadershipSection?.leadershipHeadline || "Our Chaplain",
       bio:
         data.leadershipSection?.leadershipBio ||
@@ -286,7 +293,7 @@ const defaultEditorialSections = [
     title: "Vibrant Worship",
     description:
       "Experience the transformative power of God's presence through high-energy praise and deep, intimate worship.",
-    images: [aboutImage, connectImage, celebrationsImage],
+    images: [aboutImage],
   },
   {
     id: 2,
@@ -294,7 +301,7 @@ const defaultEditorialSections = [
     title: "Deep Word",
     description:
       "Rooted in scripture. We believe in building a foundation of excellence and integrity through unadulterated teachings.",
-    images: [celebrationsImage, aboutImage, connectImage],
+    images: [celebrationsImage],
   },
   {
     id: 3,
@@ -302,7 +309,7 @@ const defaultEditorialSections = [
     title: "Strong Community",
     description:
       "A vibrant family of young believers. Find your tribe, grow together, and shine the gospel light in your world.",
-    images: [connectImage, celebrationsImage, aboutImage],
+    images: [connectImage],
   },
 ];
 
@@ -310,16 +317,15 @@ const sectionsToDisplay = computed(() => {
   const incomingSections =
     homepageData.value?.editorialSection?.editorialSlides;
   if (incomingSections?.length > 0) {
-    const isValid = incomingSections.every((section) => {
-      return Object.values(section).every((field) => {
-        if (Array.isArray(field))
-          return (
-            field.length > 0 &&
-            field.every((img) => typeof img === "string" && img.trim() !== "")
-          );
-        return typeof field === "string" && field.trim() !== "";
-      });
-    });
+    const isValid = incomingSections.every(
+      ({ images, kicker, title, description }) =>
+        [kicker, title, description].every(
+          (field) => typeof field === "string" && field.trim() !== "",
+        ) &&
+        Array.isArray(images) &&
+        typeof images[0] === "string" &&
+        images[0].trim() !== "",
+    );
     if (isValid) return incomingSections;
   }
   return defaultEditorialSections;

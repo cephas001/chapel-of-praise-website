@@ -136,21 +136,7 @@
         </div>
         <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="homepage-welcome-badge"
-                class="block text-xs font-medium text-ink mb-2"
-              >
-                Welcome Badge
-              </label>
-              <input
-                id="homepage-welcome-badge"
-                v-model="welcomeSection.welcomeBadge"
-                type="text"
-                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-              >
-            </div>
-            <div>
+            <div class="md:col-span-2">
               <label
                 for="homepage-welcome-headline"
                 class="block text-xs font-medium text-ink mb-2"
@@ -468,23 +454,16 @@
                 </div>
                 <div class="md:col-span-2 border-t border-line pt-5 mt-2">
                   <label
-                    :for="`homepage-slide-image-${index}-1`"
+                    :for="`homepage-slide-image-${index}`"
                     class="block text-xs font-medium text-ink mb-3"
                   >
-                    Slide Images (4 URLs Required)
+                    Slide Image
                   </label>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div
-                      v-for="imgIndex in 4"
-                      :key="`img-${index}-${imgIndex}`"
-                    >
-                      <MediaPickerInput
-                        v-model="slide.images[imgIndex - 1]"
-                        :placeholder="`Image ${imgIndex}`"
-                        :input-id="`homepage-slide-image-${index}-${imgIndex}`"
-                      />
-                    </div>
-                  </div>
+                  <MediaPickerInput
+                    v-model="slide.images[0]"
+                    placeholder="Image"
+                    :input-id="`homepage-slide-image-${index}`"
+                  />
                 </div>
               </div>
             </div>
@@ -515,21 +494,7 @@
         </div>
         <AppCard class="md:col-span-2" body-class="flex flex-col">
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="homepage-leadership-badge"
-                class="block text-xs font-medium text-ink mb-2"
-              >
-                Leadership Badge
-              </label>
-              <input
-                id="homepage-leadership-badge"
-                v-model="leadershipSection.leadershipBadge"
-                type="text"
-                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-              >
-            </div>
-            <div>
+            <div class="md:col-span-2">
               <label
                 for="homepage-leadership-headline"
                 class="block text-xs font-medium text-ink mb-2"
@@ -634,7 +599,6 @@ const heroSection = reactive({
 });
 
 const welcomeSection = reactive({
-  welcomeBadge: "",
   welcomeHeadline: "",
   welcomeDescription: "",
 });
@@ -651,17 +615,15 @@ const championsSection = reactive({
   championCtaLink: "",
 });
 
-// Explicitly initialize with 4 empty strings to ensure v-model binding works natively
 const editorialSection = reactive({
   editorialSlides: [
-    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
-    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
-    { images: ["", "", "", ""], kicker: "", title: "", description: "" },
+    { images: [""], kicker: "", title: "", description: "" },
+    { images: [""], kicker: "", title: "", description: "" },
+    { images: [""], kicker: "", title: "", description: "" },
   ],
 });
 
 const leadershipSection = reactive({
-  leadershipBadge: "",
   leadershipHeadline: "",
   leadershipBio: "",
   leadershipImage: "",
@@ -720,7 +682,7 @@ const addEditorialCard = () => {
     kicker: "",
     title: "",
     description: "",
-    images: ["", "", "", ""], // explicitly pushing 4 empty strings
+    images: [""],
   });
 };
 
@@ -750,8 +712,8 @@ const homepageParser = (response, map) => {
           (slide) => ({
             ...slide,
             images: Array.isArray(slide.images)
-              ? [...slide.images, "", "", "", ""].slice(0, 4)
-              : ["", "", "", ""],
+              ? [slide.images[0] || ""]
+              : [""],
           }),
         );
       } else {

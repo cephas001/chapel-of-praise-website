@@ -21,7 +21,9 @@
               Chaplaincy
             </h3>
 
-            <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div
+              class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            >
               <article
                 v-for="(chaplain, index) in pageData.chaplaincy"
                 :key="'chaplain-' + index"
@@ -30,7 +32,7 @@
                 <AppImage
                   :src="chaplain.imageUrl || defaultPastorImage"
                   :alt="chaplain.name || 'Chaplain'"
-                  class="aspect-square w-40 rounded-2xl object-cover grayscale"
+                  class="aspect-square w-40 rounded-2xl object-cover"
                   loading="lazy"
                   decoding="async"
                 />
@@ -49,11 +51,9 @@
                 v-if="pageData.chaplaincy.length === 0"
                 class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
               >
-                <h4 class="text-xl font-semibold">
-                  No chaplains listed yet
-                </h4>
+                <h4 class="text-xl font-semibold">No chaplains listed yet</h4>
                 <p class="mt-3 text-base font-light text-gray-600">
-                  Check back soon to meet our chaplaincy team.
+                  Please check back soon.
                 </p>
               </div>
             </div>
@@ -64,7 +64,9 @@
               Student Executives
             </h3>
 
-            <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div
+              class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            >
               <article
                 v-for="(executive, index) in pageData.executives"
                 :key="'exec-' + index"
@@ -96,7 +98,7 @@
                   No student executives listed yet
                 </h4>
                 <p class="mt-3 text-base font-light text-gray-600">
-                  Check back soon to meet the student leadership team.
+                  Please check back soon.
                 </p>
               </div>
             </div>

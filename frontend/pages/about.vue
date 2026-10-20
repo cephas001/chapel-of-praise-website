@@ -19,21 +19,54 @@
             <h2
               class="font-impact text-4xl uppercase leading-[0.95] md:text-5xl"
             >
-              <span class="block">{{ pageContent.vision.headlineBlack }}</span>
-              <span class="block">{{ pageContent.vision.headlineColored }}</span>
+              <span
+                v-for="(line, index) in pageContent.vision.headlineLines"
+                :key="`vision-headline-${index}`"
+                class="block"
+              >
+                {{ line }}
+              </span>
             </h2>
           </div>
 
           <div class="lg:col-span-8">
-            <div class="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2">
+            <div
+              v-if="pageContent.vision.usesLegacy"
+              class="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2"
+            >
               <div
                 class="vision-content-blocks text-base font-light leading-7 text-gray-600"
-                v-html="pageContent.vision.col1"
+                v-html="pageContent.vision.legacyCol1"
               />
               <div
                 class="vision-content-blocks text-base font-light leading-7 text-gray-600"
-                v-html="pageContent.vision.col2"
+                v-html="pageContent.vision.legacyCol2"
               />
+            </div>
+            <div
+              v-else
+              class="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2"
+            >
+              <div class="space-y-5">
+                <p
+                  v-for="(paragraph, index) in pageContent.vision
+                    .leftParagraphs"
+                  :key="`vision-left-${index}`"
+                  class="text-base font-light leading-7 text-gray-600"
+                >
+                  {{ paragraph }}
+                </p>
+              </div>
+              <div class="space-y-5">
+                <p
+                  v-for="(paragraph, index) in pageContent.vision
+                    .rightParagraphs"
+                  :key="`vision-right-${index}`"
+                  class="text-base font-light leading-7 text-gray-600"
+                >
+                  {{ paragraph }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -69,10 +102,36 @@ const { data: pageData } = await useFetch(
 const sanitizeHtml = (html) =>
   DOMPurify.sanitize(String(html ?? ""), { USE_PROFILES: { html: true } });
 
+const defaultVisionParagraphs = [
+  "Chapel of Praise (COP) is a mission-minded teaching ministry founded with a profound vision. Our vision is to see all people celebrate endless life in Christ Jesus and fully embrace the power of His death, burial, and resurrection.",
+  "At COP, we are committed to knowing Christ deeply and making Him known across the world. We nurture spiritual growth through in-depth teaching services, powerful prayer sessions, and outreach programs, empowering believers to live out their faith boldly. Our services are marked by the gifts of the Spirit, where prayer, prophecies, and spiritual songs flow freely in an atmosphere of worship.",
+  "We hold firmly to the Word of God as the ultimate standard for doctrine, and we believe that the greatest demonstration of God's love is found in the redemptive work of Christ. Through His grace, we are blessed and righteous in His sight.",
+];
+
+const normalizeParagraphs = (paragraphs) =>
+  (Array.isArray(paragraphs) ? paragraphs : [])
+    .map((paragraph) => String(paragraph ?? "").trim())
+    .filter(Boolean);
+
 const pageContent = computed(() => {
   const apiData = pageData.value || {};
   const hero = apiData.heroSection || {};
   const vision = apiData.visionSection || {};
+
+  const paragraphs = normalizeParagraphs(vision.visionParagraphs);
+  const legacyCol1 = String(vision.visionContentCol1 ?? "").trim();
+  const legacyCol2 = String(vision.visionContentCol2 ?? "").trim();
+  const usesLegacy =
+    paragraphs.length === 0 && Boolean(legacyCol1 || legacyCol2);
+  const displayParagraphs =
+    paragraphs.length > 0 || usesLegacy
+      ? paragraphs
+      : defaultVisionParagraphs;
+  const midpoint = Math.ceil(displayParagraphs.length / 2);
+  const headlineLines = String(vision.visionHeadline ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   return {
     hero: {
@@ -84,22 +143,15 @@ const pageContent = computed(() => {
       ),
     },
     vision: {
-      headlineBlack: vision.visionHeadlineBlack || "We serve God",
-      headlineColored: vision.visionHeadlineColored || "By His Spirit",
-      col1: sanitizeHtml(
-        vision.visionContentCol1 ||
-          `
-    <p>Chapel of Praise (COP) is a mission-minded teaching ministry founded with a profound vision. <span class="font-bold text-ink">Our vision is to see all people celebrate endless life in Christ Jesus and fully embrace the power of His death, burial, and resurrection.</span></p>
-    <p>At COP, we are committed to knowing Christ deeply and making Him known across the world. We nurture spiritual growth through in-depth teaching services, powerful prayer sessions, and outreach programs, empowering believers to live out their faith boldly. Our services are marked by the gifts of the Spirit, where prayer, prophecies, and spiritual songs flow freely in an atmosphere of worship.</p>
-  `,
-      ),
-      col2: sanitizeHtml(
-        vision.visionContentCol2 ||
-          `
-    <p>We hold firmly to the Word of God as the ultimate standard for doctrine, and we believe that the greatest demonstration of God's love is found in the redemptive work of Christ. Through His grace, we are blessed and righteous in His sight.</p>
-    <p>Under Reverend Ibiwunmi Alo and Apostle Iren's leadership, COP has grown from a campus fellowship into a global ministry with over 15,000 members and more than 30 campuses across Nigeria, Europe, Canada, and the USA. We are the hands and feet of Christ, spreading the gospel to the uttermost parts of the earth—one billion souls in 10,000 cities for Christ.</p>
-  `,
-      ),
+      headlineLines:
+        headlineLines.length > 0
+          ? headlineLines
+          : ["We serve God", "By His Spirit"],
+      leftParagraphs: displayParagraphs.slice(0, midpoint),
+      rightParagraphs: displayParagraphs.slice(midpoint),
+      usesLegacy,
+      legacyCol1: sanitizeHtml(legacyCol1),
+      legacyCol2: sanitizeHtml(legacyCol2),
     },
   };
 });

@@ -35,7 +35,10 @@
               <div
                 class="mt-4 flex flex-wrap items-center gap-5 text-sm text-muted"
               >
-                <span v-if="event.time" class="inline-flex items-center gap-1.5">
+                <span
+                  v-if="event.time"
+                  class="inline-flex items-center gap-1.5"
+                >
                   <Icon
                     name="heroicons:clock"
                     class="h-4 w-4"
@@ -60,7 +63,7 @@
 
           <div
             v-if="pageData.events.length === 0"
-            class="rounded-2xl border border-line bg-surface p-10 text-center"
+            class="rounded-2xl border border-line bg-surface py-10 px-5 text-center"
           >
             <h2 class="text-xl font-semibold">No events scheduled yet</h2>
             <p class="mt-3 text-base font-light leading-7 text-gray-600">

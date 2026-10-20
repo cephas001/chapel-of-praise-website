@@ -1,6 +1,39 @@
 // composables/usePageManager.js
-import { ref, watch, nextTick } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useRuntimeConfig } from "#app";
+
+const cloneValue = (value) => {
+  if (Array.isArray(value)) return value.map(cloneValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, cloneValue(entry)]),
+    );
+  }
+  return value;
+};
+
+const valuesEqual = (left, right) => {
+  if (left === right) return true;
+  if (
+    !left ||
+    !right ||
+    typeof left !== "object" ||
+    typeof right !== "object" ||
+    Array.isArray(left) !== Array.isArray(right)
+  ) {
+    return false;
+  }
+
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  if (leftKeys.length !== rightKeys.length) return false;
+
+  return leftKeys.every(
+    (key) =>
+      Object.prototype.hasOwnProperty.call(right, key) &&
+      valuesEqual(left[key], right[key]),
+  );
+};
 
 export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
   const config = useRuntimeConfig();
@@ -9,21 +42,29 @@ export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
   const isFetching = ref(true);
   const isSaving = ref(false);
   const loadFailed = ref(false);
-  const isDirty = ref(false);
-
-  // Track unsaved changes across all sections
-  watch(
-    () => sectionsMap,
-    () => {
-      isDirty.value = true;
-    },
-    { deep: true },
+  const savedSections = reactive(
+    Object.fromEntries(
+      Object.keys(sectionsMap).map((sectionId) => [
+        sectionId,
+        cloneValue(sectionsMap[sectionId]),
+      ]),
+    ),
   );
 
-  const markClean = async () => {
-    await nextTick();
-    isDirty.value = false;
+  const markSectionsSaved = (savedValues) => {
+    Object.entries(savedValues).forEach(([sectionId, value]) => {
+      if (Object.prototype.hasOwnProperty.call(sectionsMap, sectionId)) {
+        savedSections[sectionId] = cloneValue(value);
+      }
+    });
   };
+
+  const isDirty = computed(() =>
+    Object.keys(sectionsMap).some(
+      (sectionId) =>
+        !valuesEqual(sectionsMap[sectionId], savedSections[sectionId]),
+    ),
+  );
 
   // Warn before leaving with unsaved changes
   useUnsavedChanges(isDirty);
@@ -49,7 +90,7 @@ export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
       }
 
       loadFailed.value = false;
-      await markClean();
+      markSectionsSaved(sectionsMap);
     } catch (error) {
       console.error(`Failed to load ${pageEndpoint} settings:`, error);
       loadFailed.value = true;
@@ -70,22 +111,28 @@ export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
 
     isSaving.value = true;
     const failedSections = [];
+    const savedValues = {};
 
     try {
       for (const [sectionId, sectionData] of Object.entries(sectionsMap)) {
+        const payload = cloneValue(sectionData);
+
         try {
           await $fetch(
             `${config.public.apiBase}/admin/${pageEndpoint}/${sectionId}`,
             {
               method: "PUT",
-              body: sectionData,
+              body: payload,
             },
           );
+          savedValues[sectionId] = payload;
         } catch (error) {
           console.error(`Failed to save ${sectionId}:`, error);
           failedSections.push(sectionId);
         }
       }
+
+      markSectionsSaved(savedValues);
 
       if (failedSections.length > 0) {
         toast.error(
@@ -97,8 +144,6 @@ export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
         // Optionally reload data to ensure sync
         if (options.reloadOnSave) {
           await loadSettings();
-        } else {
-          await markClean();
         }
       }
     } finally {
@@ -115,14 +160,17 @@ export function usePageManager(pageEndpoint, sectionsMap, options = {}) {
       return;
     }
 
+    const payload = cloneValue(sectionData);
+
     try {
       await $fetch(
         `${config.public.apiBase}/admin/${pageEndpoint}/${sectionId}`,
         {
           method: "PUT",
-          body: sectionData,
+          body: payload,
         },
       );
+      markSectionsSaved({ [sectionId]: payload });
       toast.success(`${sectionId} saved successfully!`);
     } catch (error) {
       console.error(`Failed to save ${sectionId}:`, error);

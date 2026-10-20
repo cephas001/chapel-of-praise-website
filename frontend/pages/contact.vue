@@ -10,9 +10,7 @@
       <AppContainer>
         <div class="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
-            <h2
-              class="font-impact text-3xl uppercase leading-none md:text-4xl"
-            >
+            <h2 class="font-impact text-3xl uppercase leading-none md:text-4xl">
               {{ pageData.form.heading }}
             </h2>
             <p class="mt-5 text-base font-light leading-7 text-gray-600">
@@ -190,12 +188,15 @@
                       aria-hidden="true"
                     />
                   </div>
-                  <div>
+                  <div class="min-w-0">
                     <p class="text-sm font-semibold">Contact details</p>
                     <p
                       class="mt-1 text-base font-light leading-7 text-gray-600"
                     >
-                      <span v-if="pageData.contact.email" class="block">
+                      <span
+                        v-if="pageData.contact.email"
+                        class="block break-words"
+                      >
                         Email: {{ pageData.contact.email }}
                       </span>
                       <span v-if="pageData.contact.phone" class="block">
@@ -209,12 +210,15 @@
                   v-if="!hasContactDetails"
                   class="text-base font-light leading-7 text-gray-600"
                 >
-                  Contact details are temporarily unavailable. Send us a
-                  message and our team will respond.
+                  Contact details are temporarily unavailable. Send us a message
+                  and our team will respond.
                 </p>
               </div>
 
-              <div v-if="hasSocialLinks" class="mt-10 border-t border-line pt-8">
+              <div
+                v-if="hasSocialLinks"
+                class="mt-10 border-t border-line pt-8"
+              >
                 <p class="text-sm font-semibold">Follow our journey</p>
                 <div class="mt-4 flex gap-3">
                   <a
@@ -274,20 +278,14 @@ useSeoMeta({
     "Find our campus address, service times, phone number, and send us a message.",
 });
 
-const {
-  loading,
-  errorMessage,
-  success,
-  website,
-  submit,
-  reset,
-} = usePublicForm({
-  path: "/public/contact/submit",
-  successMessage:
-    "Your message has been received and our team will get back to you soon.",
-  fallbackError:
-    "We could not send your message right now. Please try again in a moment.",
-});
+const { loading, errorMessage, success, website, submit, reset } =
+  usePublicForm({
+    path: "/public/contact/submit",
+    successMessage:
+      "Your message has been received and our team will get back to you soon.",
+    fallbackError:
+      "We could not send your message right now. Please try again in a moment.",
+  });
 
 const form = ref({
   firstName: "",
@@ -348,17 +346,17 @@ const pageData = computed(() => {
 const hasContactDetails = computed(() =>
   Boolean(
     pageData.value.campus.address ||
-      pageData.value.campus.serviceTimesDetails ||
-      pageData.value.contact.email ||
-      pageData.value.contact.phone,
+    pageData.value.campus.serviceTimesDetails ||
+    pageData.value.contact.email ||
+    pageData.value.contact.phone,
   ),
 );
 
 const hasSocialLinks = computed(() =>
   Boolean(
     pageData.value.contact.instagramUrl ||
-      pageData.value.contact.twitterUrl ||
-      pageData.value.contact.youtubeUrl,
+    pageData.value.contact.twitterUrl ||
+    pageData.value.contact.youtubeUrl,
   ),
 );
 </script>

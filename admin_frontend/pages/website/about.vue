@@ -85,68 +85,68 @@
             Vision & Mission Section
           </h3>
           <p class="text-xs md:text-sm text-muted">
-            Manage the core vision statements and descriptive columns.
+            Manage the vision headline and descriptive paragraphs.
           </p>
         </div>
         <AppCard
           class="md:col-span-2" body-class="flex flex-col"
         >
           <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label
-                for="about-vision-headline-black"
-                class="block text-xs font-medium text-ink mb-2"
-                >Section Headline (Black Text)</label
-              >
-              <input
-                id="about-vision-headline-black"
-                v-model="visionSection.visionHeadlineBlack"
-                type="text"
-                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-                placeholder="e.g. We serve God"
-              >
-            </div>
-            <div>
-              <label
-                for="about-vision-headline-colored"
-                class="block text-xs font-medium text-ink mb-2"
-                >Section Headline (Colored Text)</label
-              >
-              <input
-                id="about-vision-headline-colored"
-                v-model="visionSection.visionHeadlineColored"
-                type="text"
-                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-                placeholder="e.g. By His Spirit"
-              >
-            </div>
             <div class="md:col-span-2">
               <label
-                for="about-vision-content-1"
+                for="about-vision-headline"
                 class="block text-xs font-medium text-ink mb-2"
-                >Content Column 1</label
+                >Section Headline</label
               >
               <textarea
-                id="about-vision-content-1"
-                v-model="visionSection.visionContentCol1"
-                rows="6"
+                id="about-vision-headline"
+                v-model="visionSection.visionHeadline"
+                rows="2"
                 class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
-                placeholder="Enter the first column of text..."
+                placeholder="e.g. We serve God by His Spirit"
               />
+              <p class="mt-2 text-xs text-muted">
+                Each line renders on its own line.
+              </p>
             </div>
-            <div class="md:col-span-2">
-              <label
-                for="about-vision-content-2"
-                class="block text-xs font-medium text-ink mb-2"
-                >Content Column 2</label
+
+            <div class="md:col-span-2 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-ink">Paragraphs</span>
+                <span class="text-xs text-muted">
+                  Each paragraph renders as its own block.
+                </span>
+              </div>
+
+              <div
+                v-for="(paragraph, index) in visionSection.visionParagraphs"
+                :key="'vision-paragraph' + index"
+                class="bg-subtle/60 rounded-surface p-5 border border-line relative"
               >
-              <textarea
-                id="about-vision-content-2"
-                v-model="visionSection.visionContentCol2"
-                rows="6"
-                class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
-                placeholder="Enter the second column of text..."
-              />
+                <span
+                  class="absolute top-4 right-4 text-xs font-semibold text-muted font-mono flex items-center gap-2"
+                >
+                  Paragraph {{ index + 1 }}
+                  <Icon
+                    name="heroicons:minus-circle"
+                    class="h-4 w-4 text-danger-text cursor-pointer hover:text-danger-text transition-colors"
+                    @click="removeParagraph(index)"
+                  />
+                </span>
+                <textarea
+                  :id="`about-vision-paragraph-${index}`"
+                  v-model="visionSection.visionParagraphs[index]"
+                  rows="4"
+                  class="mt-2 w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
+                  placeholder="Write one paragraph..."
+                />
+              </div>
+
+              <div>
+                <AppButton variant="secondary" @click.prevent="addParagraph">
+                  Add paragraph
+                </AppButton>
+              </div>
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
@@ -177,15 +177,70 @@ const heroSection = reactive({
 });
 
 const visionSection = reactive({
-  visionHeadlineBlack: "",
-  visionHeadlineColored: "",
+  visionHeadline: "",
+  visionParagraphs: [""],
   visionContentCol1: "",
   visionContentCol2: "",
+  visionHeadlineBlack: "",
+  visionHeadlineColored: "",
 });
 
 const sectionsMap = {
   heroSection,
   visionSection,
+};
+
+const htmlToParagraphs = (html) => {
+  const source = String(html ?? "").trim();
+  if (!source) return [];
+
+  const doc = new DOMParser().parseFromString(source, "text/html");
+  const blocks = [...doc.querySelectorAll("p")]
+    .map((element) => element.textContent.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+
+  if (blocks.length > 0) return blocks;
+
+  return source
+    .replace(/<[^>]+>/g, " ")
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+};
+
+const aboutParser = (response, map) => {
+  Object.entries(response).forEach(([key, value]) => {
+    if (!map[key]) return;
+
+    if (key === "visionSection") {
+      const legacyParagraphs = [
+        ...htmlToParagraphs(value.visionContentCol1),
+        ...htmlToParagraphs(value.visionContentCol2),
+      ];
+      const paragraphs = Array.isArray(value.visionParagraphs)
+        ? value.visionParagraphs
+            .map((paragraph) => String(paragraph ?? "").trim())
+            .filter(Boolean)
+        : legacyParagraphs;
+      const headline =
+        String(value.visionHeadline ?? "").trim() ||
+        [value.visionHeadlineBlack, value.visionHeadlineColored]
+          .map((line) => String(line ?? "").trim())
+          .filter(Boolean)
+          .join("\n");
+
+      map.visionSection.visionParagraphs =
+        paragraphs.length > 0 ? paragraphs : [""];
+      map.visionSection.visionHeadline = headline;
+      map.visionSection.visionContentCol1 = "";
+      map.visionSection.visionContentCol2 = "";
+      map.visionSection.visionHeadlineBlack = "";
+      map.visionSection.visionHeadlineColored = "";
+      return;
+    }
+
+    Object.assign(map[key], value);
+  });
 };
 
 // State for individual section saves
@@ -194,9 +249,33 @@ const sectionSavingState = reactive({
   visionSection: false,
 });
 
+const confirm = useConfirm();
+
 // Initialize the composable
 const { isFetching, isSaving, loadSettings, saveSettings, saveSection } =
-  usePageManager("about", sectionsMap, { reloadOnSave: true });
+  usePageManager("about", sectionsMap, {
+    reloadOnSave: true,
+    customParser: aboutParser,
+  });
+
+const addParagraph = () => {
+  visionSection.visionParagraphs.push("");
+};
+
+const removeParagraph = async (index) => {
+  const answer = await confirm.ask({
+    title: "Remove Paragraph",
+    message:
+      "Are you sure you want to delete this paragraph? Once saved this action is irreversible.",
+    confirmText: "Remove",
+    cancelText: "Cancel",
+    isDestructive: true,
+  });
+
+  if (answer) {
+    visionSection.visionParagraphs.splice(index, 1);
+  }
+};
 
 // Section-specific save handler
 const handleSaveSection = async (sectionKey, sectionData) => {
