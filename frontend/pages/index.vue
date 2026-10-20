@@ -34,7 +34,9 @@
         >
           {{ pageData.welcome.headline }}
         </h2>
-        <p class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600">
+        <p
+          class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600"
+        >
           {{ pageData.welcome.description }}
         </p>
 
@@ -156,10 +158,16 @@
             >
               {{ pageData.leadership.headline }}
             </h2>
-            <p class="mt-6 text-base font-light leading-relaxed text-gray-600 md:text-lg">
+            <p
+              class="mt-6 text-base font-light leading-relaxed text-gray-600 md:text-lg text-justify"
+            >
               {{ pageData.leadership.bio }}
             </p>
-            <AppButton variant="ghost" class="mt-8" :to="pageData.leadership.ctaLink">
+            <AppButton
+              variant="ghost"
+              class="mt-8"
+              :to="pageData.leadership.ctaLink"
+            >
               {{ pageData.leadership.ctaLabel }}
             </AppButton>
           </div>
@@ -200,8 +208,7 @@ const pageData = computed(() => {
   return {
     hero: {
       kicker: data.heroSection?.heroKicker || "Shining the Gospel Light",
-      headline:
-        data.heroSection?.heroHeadline || "McPherson University Chapel",
+      headline: data.heroSection?.heroHeadline || "McPherson University Chapel",
       cta1Label: data.heroSection?.heroCta1Label || "Watch us",
       cta1Link:
         data.heroSection?.heroCta1Link || "https://www.youtube.com/@mcucop",
