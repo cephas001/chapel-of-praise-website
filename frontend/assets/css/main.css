@@ -1,85 +1,53 @@
-@import '@fontsource/poppins';
-@import '@fontsource/montserrat';
-@import '@fontsource/inter';
-@import '@fontsource/anton';
-@import 'tailwindcss';
+@import "tailwindcss";
+@import "@fontsource/inter/latin-300.css";
+@import "@fontsource/inter/latin-400.css";
+@import "@fontsource/inter/latin-500.css";
+@import "@fontsource/inter/latin-600.css";
+@import "@fontsource/inter/latin-700.css";
+@import "@fontsource/anton/latin-400.css";
 
-.font-impact {
-    font-family: "Anton", sans-serif !important;
-    font-weight: normal !important;
-    letter-spacing: 0.02em; /* Refined letter spacing for Anton */
-}
-
-html,
-body {
-    font-family: "Poppins", sans-serif, system-ui, sans-serif !important;
-}
-
-/* 1. Define the Light Mode (Default) Colors */
-:root {
-    --brand-primary: #f04f23;
-    --brand-secondary: #d4b56a;
-    --brand-base: #ececec;
-    --brand-surface: #ffffff;
-    --brand-border: #d4d4d8;
-    --brand-text: #0f1115;
-    --brand-text-muted: #4d5159;
-    --navbar-border: #242831;
-}
-
-/* 2. Define the Dark Mode Colors */
-.dark {
-    --brand-primary: #f04f23;
-    --brand-secondary: #d4b56a;
-    --brand-base: #0f1115;
-    --brand-surface: #171a21;
-    --brand-border: #2e3440;
-    --brand-text: #f3f4f6;
-    --brand-text-muted: #a3a8b2;
-}
-
-/* 3. Feed the dynamic variables into Tailwind v4 */
 @theme {
-    --font-poppins: "Poppins", sans-serif;
-    --font-display: "Montserrat", sans-serif;
-    --font-sans: "Inter", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-impact: "Anton", sans-serif;
 
-    --color-theme-primary: var(--brand-primary);
-    --color-theme-secondary: var(--brand-secondary);
-    --color-theme-base: var(--brand-base);
-    --color-theme-surface: var(--brand-surface);
-    --color-theme-border: var(--brand-border);
-
-    /* Adding text colors so your typography flips automatically */
-    --color-theme-text: var(--brand-text);
-    --color-theme-text-muted: var(--brand-text-muted);
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-surface: #f9fafb;
+  --color-line: #e5e7eb;
+  --color-muted: #4b5563;
+  --color-brand-600: #c93838;
+  --color-brand-700: #a82a2a;
+  --color-brand-100: #f6dcdc;
+  --color-brand-50: #faecec;
 }
 
-/* 4. Force the base background and text to transition smoothly */
 @layer base {
+  html,
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-    html,
-    body {
-        background-color: var(--brand-base);
-        color: var(--brand-text);
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+  .font-impact {
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
 
-    .dark {
-        color-scheme: dark;
-    }
-
-    ::selection {
-        background: color-mix(in srgb, var(--brand-primary) 38%, transparent);
-        color: var(--brand-text);
-    }
+  ::selection {
+    background: color-mix(in srgb, var(--color-brand-600) 38%, transparent);
+    color: var(--color-ink);
+  }
 }
 
 @layer utilities {
-    .church-display {
-        font-family: "Montserrat", "Poppins", sans-serif;
-        font-weight: 900;
-        letter-spacing: -0.04em;
-        line-height: 0.95;
-    }
+  .form-honeypot {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+  }
 }
