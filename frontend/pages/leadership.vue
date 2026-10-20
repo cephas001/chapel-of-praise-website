@@ -27,7 +27,7 @@
                 :key="'chaplain-' + index"
                 class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
               >
-                <img
+                <AppImage
                   :src="chaplain.imageUrl || defaultPastorImage"
                   :alt="chaplain.name || 'Chaplain'"
                   class="aspect-square w-40 rounded-2xl object-cover grayscale"
@@ -70,7 +70,7 @@
                 :key="'exec-' + index"
                 class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
               >
-                <img
+                <AppImage
                   :src="executive.imageUrl || defaultConnectImage"
                   :alt="executive.name || 'Executive'"
                   class="aspect-square w-40 rounded-2xl object-cover grayscale"

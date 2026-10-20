@@ -48,7 +48,7 @@
             class="group overflow-hidden rounded-2xl border border-line bg-paper transition-colors hover:border-ink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           >
             <div class="relative aspect-[4/3] overflow-hidden bg-surface">
-              <img
+              <AppImage
                 :src="card.image"
                 :alt="card.title"
                 class="h-full w-full object-cover [@media(hover:hover)]:grayscale transition-[filter] duration-500 group-hover:grayscale-0 motion-reduce:transition-none"
@@ -71,7 +71,7 @@
     </section>
 
     <section class="relative overflow-hidden bg-ink py-24 text-paper md:py-32">
-      <img
+      <AppImage
         :src="pageData.champions.image"
         alt=""
         class="absolute inset-0 h-full w-full object-cover opacity-20 grayscale"
@@ -86,7 +86,7 @@
           {{ pageData.champions.headline }}
         </h2>
         <p
-          class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg"
+          class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg text-justify"
         >
           {{ pageData.champions.description }}
         </p>
@@ -107,7 +107,7 @@
         class="sticky top-0 flex h-screen w-full items-center overflow-hidden border-t border-white/10 bg-ink"
         :style="{ zIndex: sIndex + 10 }"
       >
-        <img
+        <AppImage
           v-if="section.images?.[0]"
           :src="section.images[0]"
           alt=""
@@ -144,8 +144,8 @@
           class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-20"
         >
           <div class="overflow-hidden rounded-2xl">
-            <img
-              src="~/assets/images/pastor.webp"
+            <AppImage
+              :src="pastorImage"
               alt="Reverend Ibiwunmi Alo, lead pastor of Chapel of Praise"
               class="aspect-[4/5] w-full object-cover grayscale"
               loading="lazy"
@@ -184,6 +184,7 @@ import { useRuntimeConfig, useFetch, useSeoMeta } from "#app";
 import aboutImage from "~/assets/images/about.webp";
 import connectImage from "~/assets/images/connect.webp";
 import celebrationsImage from "~/assets/images/celebrations.webp";
+import pastorImage from "~/assets/images/pastor.webp";
 import chapelHero from "~/assets/images/chapel.webp";
 import chapelHeroSmall from "~/assets/images/chapel-960.webp";
 
@@ -222,20 +223,19 @@ const pageData = computed(() => {
         "Dive into our teachings, events and community. Your journey of faith begins here.",
     },
     champions: {
-      image:
-        data.championsSection?.championsBackgroundImage || celebrationsImage,
-      headline: data.championsSection?.championsHeadline || "Great Champions",
+      image: data.championsSection?.championImage || celebrationsImage,
+      headline: data.championsSection?.championHeadline || "Great Champions",
       description:
-        data.championsSection?.championsDescription ||
+        data.championsSection?.championDescription ||
         "We are a vibrant family of young believers, passionate about God's Word. We are committed to rising as the next generation of champions, who always shine the gospel light.",
-      ctaLabel: data.championsSection?.championsCtaLabel || "Join us",
-      ctaLink: data.championsSection?.championsCtaLink || "/events-calendar",
+      ctaLabel: data.championsSection?.championCtaLabel || "Join us",
+      ctaLink: data.championsSection?.championCtaLink || "/events-calendar",
     },
     leadership: {
-      headline: data.leadershipSection?.leadershipHeadline || "Our Lead Pastor",
+      headline: data.leadershipSection?.leadershipHeadline || "Our Chaplain",
       bio:
         data.leadershipSection?.leadershipBio ||
-        "Reverend Ibiwunmi Alo is the lead pastor of Chapel of Praise, a dynamic teaching ministry dedicated to spreading the gospel and helping people discover their purpose in Christ. With a passion for the Word of God and a heart for missions, Apostle Iren has led the church to establish Over 30 campuses across Nigeria, North America, and the UK.",
+        "Reverend Mrs Ibiwunmi Alo is the chaplain of Chapel of Praise, a dynamic teaching ministry dedicated to preaching the gospel of the kingdom, and helping young people discover their purpose in Christ.",
       ctaLabel: data.leadershipSection?.leadershipCtaLabel || "Read more",
       ctaLink: data.leadershipSection?.leadershipCtaLink || "/about",
     },
@@ -258,7 +258,7 @@ const defaultCards = [
     image: connectImage,
   },
   {
-    kicker: "Endless celebration",
+    kicker: "Endless praise",
     title: "Celebrations",
     ctaLabel: "See events",
     ctaLink: "/events-calendar",

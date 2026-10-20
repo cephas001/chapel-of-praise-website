@@ -1,7 +1,8 @@
 const crypto = require("crypto");
 const express = require("express");
+const { put, del } = require("@vercel/blob");
 const router = express.Router();
-const { admin, db } = require("../../config/firebase");
+const { db } = require("../../config/firebase");
 const {
   verifyToken,
   requireStaticTypeAccess,
@@ -50,6 +51,7 @@ router.post("/", async (req, res) => {
         size: 0,
         url: imageUrl,
         storagePath: null,
+        storageProvider: "external",
         createdAt: new Date().toISOString(),
         createdBy: req.user.uid,
       };
@@ -67,26 +69,26 @@ router.post("/", async (req, res) => {
     }
 
     const extension = type.split("/")[1] === "jpeg" ? "jpg" : type.split("/")[1];
-    const safeName = name.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/\.[^.]+$/, "");
-    const storagePath = `website-media/${Date.now()}-${crypto.randomUUID()}-${safeName}.${extension}`;
-    const file = admin.storage().bucket().file(storagePath);
-    const token = crypto.randomUUID();
+    const safeName =
+      name
+        .replace(/[^a-zA-Z0-9._-]/g, "-")
+        .replace(/\.[^.]+$/, "")
+        .slice(0, 80) || "image";
+    const pathname = `website-media/${Date.now()}-${crypto.randomUUID()}-${safeName}.${extension}`;
 
-    await file.save(buffer, {
-      metadata: {
-        contentType: type,
-        metadata: { firebaseStorageDownloadTokens: token },
-      },
-      resumable: false,
+    const blob = await put(pathname, buffer, {
+      access: "public",
+      addRandomSuffix: true,
+      contentType: type,
     });
 
-    const url = `https://firebasestorage.googleapis.com/v0/b/${file.bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media&token=${token}`;
     const media = {
       name,
       type,
       size: buffer.length,
-      url,
-      storagePath,
+      url: blob.url,
+      storagePath: blob.pathname,
+      storageProvider: "vercel-blob",
       createdAt: new Date().toISOString(),
       createdBy: req.user.uid,
     };
@@ -105,7 +107,14 @@ router.delete("/:id", async (req, res) => {
     if (!doc.exists) return res.status(404).json({ message: "Image not found" });
 
     const media = doc.data();
-    if (media.storagePath) await admin.storage().bucket().file(media.storagePath).delete({ ignoreNotFound: true });
+    const isBlobUrl =
+      typeof media.url === "string" &&
+      /^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\//i.test(media.url);
+
+    if (media.storageProvider === "vercel-blob" || isBlobUrl) {
+      await del(media.url);
+    }
+
     await ref.delete();
     res.status(204).send();
   } catch (error) {

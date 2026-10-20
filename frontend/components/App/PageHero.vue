@@ -5,7 +5,7 @@
       size === 'full' ? 'min-h-svh' : 'h-[50vh] min-h-[400px]'
     "
   >
-    <img
+    <AppImage
       v-if="image"
       :src="image"
       :srcset="srcset"

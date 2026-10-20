@@ -1,9 +1,18 @@
+const blobHosts = (process.env.NUXT_PUBLIC_BLOB_HOSTS || "")
+  .split(",")
+  .map((host) => host.trim())
+  .filter(Boolean);
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   css: ["~/assets/css/main.css"],
   devtools: { enabled: process.env.NODE_ENV !== "production" },
 
   modules: ["@nuxt/icon", "@nuxt/ui", "@pinia/nuxt", "@nuxt/image"],
+
+  image: {
+    domains: blobHosts,
+  },
 
   app: {
     head: {
@@ -43,6 +52,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: "http://localhost:5000/api",
       siteUrl: "http://localhost:3000",
+      blobHosts: process.env.NUXT_PUBLIC_BLOB_HOSTS,
     },
   },
 
