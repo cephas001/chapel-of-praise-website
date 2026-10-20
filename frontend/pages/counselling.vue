@@ -1,206 +1,226 @@
 <template>
-  <LoadingScreen :isLoading="pending" />
-  <div class="bg-white text-black w-full font-sans">
-    <!-- Static Hero Banner -->
-    <section
-      class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white"
-    >
-      <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      :kicker="pageData.hero.kicker"
+      :title="pageData.hero.headline"
+      :image="pageData.hero.image"
+    />
 
-      <!-- Unified Hero Image -->
-      <img
-        :src="pageData.hero.image"
-        alt="Counselling Hero"
-        class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale"
-      />
+    <section class="py-16 md:py-24">
+      <AppContainer>
+        <div class="mx-auto max-w-2xl">
+          <h2 class="font-impact text-3xl uppercase leading-none md:text-4xl">
+            {{ pageData.form.heading }}
+          </h2>
+          <p class="mt-5 text-base font-light leading-7 text-gray-600">
+            {{ pageData.form.description }}
+          </p>
 
-      <div class="relative z-20 text-center px-4 mt-16">
-        <p
-          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]"
-        >
-          {{ pageData.hero.kicker }}
-        </p>
-        <h1
-          class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg"
-        >
-          {{ pageData.hero.headline }}
-        </h1>
-      </div>
+          <div class="mt-10 rounded-2xl border border-line bg-paper p-6 md:p-10">
+            <div v-if="success">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700"
+              >
+                <Icon
+                  name="heroicons:check"
+                  class="h-6 w-6"
+                  aria-hidden="true"
+                />
+              </div>
+              <h3 class="mt-5 text-xl font-semibold">Request received</h3>
+              <p class="mt-3 text-base font-light leading-7 text-gray-600">
+                {{ success }}
+              </p>
+              <AppButton variant="ghost" class="mt-6" @click="resetForm">
+                Submit another request
+              </AppButton>
+            </div>
+
+            <form v-else class="space-y-6" @submit.prevent="handleSubmit">
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <AppField
+                  id="firstName"
+                  v-model="form.firstName"
+                  label="First name"
+                  autocomplete="given-name"
+                  maxlength="100"
+                  required
+                />
+                <AppField
+                  id="lastName"
+                  v-model="form.lastName"
+                  label="Last name"
+                  autocomplete="family-name"
+                  maxlength="100"
+                  required
+                />
+                <AppField
+                  id="email"
+                  v-model="form.email"
+                  type="email"
+                  label="Email address"
+                  autocomplete="email"
+                  maxlength="254"
+                  required
+                />
+                <AppField
+                  id="phone"
+                  v-model="form.phone"
+                  type="tel"
+                  label="Phone number"
+                  autocomplete="tel"
+                  maxlength="32"
+                  placeholder="+234 XXX XXX XXXX"
+                  required
+                />
+              </div>
+
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <AppField
+                  id="contactMethod"
+                  v-model="form.preferredContactMethod"
+                  as="select"
+                  label="Preferred contact method"
+                >
+                  <option value="" disabled>Select an option</option>
+                  <option value="phone">Phone call</option>
+                  <option value="email">Email</option>
+                  <option value="text">Text message</option>
+                </AppField>
+
+                <AppField
+                  id="counsellingArea"
+                  v-model="form.counsellingArea"
+                  as="select"
+                  label="Area of counselling"
+                >
+                  <option value="" disabled>Select an area</option>
+                  <option value="marriage">Marriage / relationship</option>
+                  <option value="premarital">Pre-marital course</option>
+                  <option value="spiritual">Spiritual growth</option>
+                  <option value="grief">Grief and loss</option>
+                  <option value="addiction">Habits and addiction</option>
+                  <option value="general">General guidance</option>
+                </AppField>
+              </div>
+
+              <AppField
+                id="details"
+                v-model="form.details"
+                as="textarea"
+                label="Additional information"
+                optional
+                :rows="5"
+                maxlength="5000"
+                placeholder="Briefly describe what you would like to discuss (this is strictly confidential)"
+              />
+
+              <div class="form-honeypot" aria-hidden="true">
+                <label for="counselling-website">Leave this field empty</label>
+                <input
+                  id="counselling-website"
+                  v-model="website"
+                  type="text"
+                  name="website"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div
+                v-if="errorMessage"
+                role="alert"
+                class="flex gap-3 rounded-xl border border-brand-100 bg-brand-50 p-4"
+              >
+                <Icon
+                  name="heroicons:x-circle"
+                  class="h-5 w-5 shrink-0 text-brand-600"
+                  aria-hidden="true"
+                />
+                <p class="text-sm font-medium text-brand-700">
+                  {{ errorMessage }}
+                </p>
+              </div>
+
+              <div>
+                <AppButton type="submit" :loading="loading" class="w-full">
+                  {{ loading ? "Submitting..." : "Request counselling session" }}
+                </AppButton>
+                <p class="mt-6 text-sm leading-6 text-gray-500">
+                  {{ pageData.form.footerNote }}
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </AppContainer>
     </section>
-
-    <!-- Main Content Form Container -->
-    <main class="max-w-3xl mx-auto px-4 md:px-8 py-20 md:py-28">
-      <div class="text-center mb-12">
-        <Icon
-          name="heroicons:users"
-          class="w-12 h-12 mx-auto text-[#e94e4e] mb-6"
-        />
-        <h2
-          class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black"
-        >
-          {{ pageData.form.heading }}
-        </h2>
-        <p
-          class="text-base md:text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto"
-        >
-          {{ pageData.form.description }}
-        </p>
-      </div>
-
-      <div
-        class="bg-white border border-gray-200 shadow-sm rounded-2xl p-6 md:p-10 lg:p-12 text-left"
-      >
-        <form class="space-y-8" @submit.prevent>
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-gray-100 pb-8"
-          >
-            <div class="space-y-2">
-              <label
-                for="firstName"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >First Name <span class="text-[#e94e4e]">*</span></label
-              >
-              <input
-                type="text"
-                id="firstName"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="lastName"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Last Name <span class="text-[#e94e4e]">*</span></label
-              >
-              <input
-                type="text"
-                id="lastName"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="email"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Email Address <span class="text-[#e94e4e]">*</span></label
-              >
-              <input
-                type="email"
-                id="email"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="phone"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Phone Number <span class="text-[#e94e4e]">*</span></label
-              >
-              <input
-                type="tel"
-                id="phone"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                placeholder="+234 XXX XXX XXXX"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label
-                for="contactMethod"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Preferred Contact Method</label
-              >
-              <select
-                id="contactMethod"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all appearance-none"
-              >
-                <option value="" disabled selected>Select an option</option>
-                <option value="phone">Phone Call</option>
-                <option value="email">Email</option>
-                <option value="text">Text Message</option>
-              </select>
-            </div>
-
-            <div class="space-y-2">
-              <label
-                for="counsellingArea"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Area of Counselling</label
-              >
-              <select
-                id="counsellingArea"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all appearance-none"
-              >
-                <option value="" disabled selected>Select an area</option>
-                <option value="marriage">Marriage / Relationship</option>
-                <option value="premarital">Pre-Marital Course</option>
-                <option value="spiritual">Spiritual Growth</option>
-                <option value="grief">Grief & Loss</option>
-                <option value="addiction">Habits & Addiction</option>
-                <option value="general">General Guidance</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="details"
-              class="block text-xs font-bold uppercase tracking-wider text-black/70"
-            >
-              Additional Information
-              <span class="text-gray-400 font-normal lowercase tracking-normal"
-                >(Optional)</span
-              >
-            </label>
-            <textarea
-              id="details"
-              rows="5"
-              class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all resize-y"
-              placeholder="Briefly describe what you would like to discuss (this is strictly confidential)"
-            ></textarea>
-          </div>
-
-          <div class="pt-2">
-            <button
-              type="submit"
-              class="bg-black hover:bg-[#e94e4e] text-white font-bold py-4 px-10 rounded-full transition-colors uppercase tracking-wider font-mono text-xs md:text-sm w-full"
-            >
-              Request Counselling Session
-            </button>
-            <p class="text-center text-xs text-gray-500 mt-7 leading-relaxed">
-              {{ pageData.form.footerNote }}
-            </p>
-          </div>
-        </form>
-      </div>
-    </main>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRuntimeConfig, useFetch, useHead } from "#app";
+import { computed, ref } from "vue";
+import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
 import defaultHeroImage from "~/assets/images/about.webp";
 
 useHead({
   title: "Counselling | Chapel of Praise",
 });
 
+useSeoMeta({
+  description:
+    "Request a confidential pastoral counselling session with the Chapel of Praise care team.",
+  ogTitle: "Counselling | Chapel of Praise",
+  ogDescription:
+    "Request a confidential pastoral counselling session with our care team.",
+});
+
+const {
+  loading,
+  errorMessage,
+  success,
+  website,
+  submit,
+  reset,
+} = usePublicForm({
+  path: "/public/counselling/submit",
+  successMessage:
+    "A member of our pastoral care team will reach out using your preferred contact method.",
+  fallbackError:
+    "We could not submit your request right now. Please try again in a moment.",
+});
+
+const form = ref({
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  preferredContactMethod: "",
+  counsellingArea: "",
+  details: "",
+});
+
+const handleSubmit = () => submit(form.value);
+
+const resetForm = () => {
+  form.value = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    preferredContactMethod: "",
+    counsellingArea: "",
+    details: "",
+  };
+  reset();
+};
+
 const config = useRuntimeConfig();
 
-// SSR optimized fetching
-const { data: fetchedData, pending } = await useFetch(
+const { data: fetchedData } = await useFetch(
   `${config.public.apiBaseUrl}/public/counselling`,
-  { lazy: true, server: true },
 );
 
-// Centralized computed property mapped to backend sections
 const pageData = computed(() => {
   const apiData = fetchedData.value || {};
 
@@ -210,11 +230,11 @@ const pageData = computed(() => {
   return {
     hero: {
       image: hero.heroImage || defaultHeroImage,
-      kicker: hero.heroKicker || "Guidance & Support",
+      kicker: hero.heroKicker || "Guidance and support",
       headline: hero.heroHeadline || "Counselling",
     },
     form: {
-      heading: form.formHeading || "A Safe Place To Talk",
+      heading: form.formHeading || "A safe place to talk",
       description:
         form.formDescription ||
         "Life can be challenging, but you don't have to navigate it alone. Our pastoral care and counselling team is here to provide biblical guidance, emotional support, and a listening ear in a completely confidential environment.",

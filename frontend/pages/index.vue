@@ -1,301 +1,214 @@
 <template>
-  <LoadingScreen :isLoading="pending" />
-  <div class="bg-white text-black w-full font-sans">
-    <!-- HERO SECTION -->
-    <section
-      class="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black text-white"
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      size="full"
+      priority
+      animated
+      :kicker="pageData.hero.kicker"
+      :title="pageData.hero.headline"
+      :image="chapelHero"
+      :srcset="`${chapelHeroSmall} 960w, ${chapelHero} 1920w`"
+      sizes="100vw"
+      :width="1920"
+      :height="1280"
     >
-      <div class="absolute inset-0 bg-black/50 z-10 pointer-events-none"></div>
-      <img
-        src="~/assets/images/chapel.png"
-        alt="Hero Background"
-        class="absolute inset-0 w-full h-full object-cover z-0 object-center"
-        loading="lazy"
-      />
-
-      <div
-        class="relative z-20 text-center px-4 max-w-6xl mx-auto flex flex-col items-center justify-center mt-20"
-      >
-        <p
-          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-5 text-white/90"
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <AppButton
+          variant="inverse"
+          :href="pageData.hero.cta1Link"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {{ pageData.hero.kicker }}
-        </p>
-
-        <h1
-          class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-impact uppercase leading-none md:leading-[1.1] mb-6 text-white max-w-3xl mx-auto"
-        >
-          <template
-            v-for="(word, index) in pageData.hero.headlineWords"
-            :key="index"
-          >
-            <span :class="{ 'text-[#e94e4e]': index === 1 }">{{ word }}</span>
-            <template v-if="index < pageData.hero.headlineWords.length - 1">{{
-              " "
-            }}</template>
-          </template>
-        </h1>
-
-        <div class="flex gap-4 mt-4">
-          <NuxtLink
-            :to="pageData.hero.cta1Link"
-            class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm flex items-center"
-            target="_blank"
-          >
-            {{ pageData.hero.cta1Label }}
-          </NuxtLink>
-          <NuxtLink
-            :to="pageData.hero.cta2Link"
-            class="border-2 border-white/80 hover:bg-white hover:text-black text-white font-bold py-3 px-7 rounded-full transition-colors uppercase tracking-wider text-xs md:text-sm relative z-20 flex items-center"
-          >
-            {{ pageData.hero.cta2Label }}
-          </NuxtLink>
-        </div>
+          {{ pageData.hero.cta1Label }}
+        </AppButton>
+        <AppButton variant="ghost-inverse" :to="pageData.hero.cta2Link">
+          {{ pageData.hero.cta2Label }}
+        </AppButton>
       </div>
-    </section>
+    </AppPageHero>
 
-    <!-- WELCOME SECTION -->
-    <div class="max-w-7xl mx-auto px-4 md:px-8 pt-20 pb-16">
-      <section
-        class="mb-10 md:mb-14 animate-fade-in-up text-center md:text-left flex flex-col items-center md:items-start"
-      >
-        <div
-          class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-black/60 mb-6"
-        >
-          <span class="w-1.5 h-1.5 rounded-full bg-[#e94e4e]"></span>
-          {{ pageData.welcome.badge }}
-        </div>
-        <!-- Changed to H2 for better SEO -->
+    <section class="py-16 md:py-24">
+      <AppContainer>
         <h2
-          class="text-4xl sm:text-5xl md:text-6xl font-impact uppercase text-black max-w-4xl leading-none"
+          class="font-impact max-w-4xl text-3xl uppercase leading-none sm:text-4xl md:text-5xl"
         >
           {{ pageData.welcome.headline }}
         </h2>
-        <p
-          class="mt-4 text-base md:text-lg text-gray-500 max-w-2xl font-medium leading-relaxed"
-        >
+        <p class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600">
           {{ pageData.welcome.description }}
         </p>
-      </section>
 
-      <!-- CARDS SECTION -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <NuxtLink
-          v-for="(card, index) in cardsToDisplay"
-          :key="card.title"
-          :to="card.to || card.ctaLink"
-          class="group relative min-h-[22rem] md:min-h-[28rem] overflow-hidden card-reveal rounded-lg"
-          :style="{ animationDelay: `${index * 150}ms` }"
-        >
-          <div
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-105"
-            :style="cardBackground(card.image)"
-          ></div>
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100"
-          ></div>
-
-          <div
-            class="relative h-full flex flex-col justify-between p-6 text-white"
+        <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <NuxtLink
+            v-for="card in cardsToDisplay"
+            :key="card.title"
+            :to="card.to || card.ctaLink"
+            class="group overflow-hidden rounded-2xl border border-line bg-paper transition-colors hover:border-ink/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           >
-            <div
-              class="mb-2 transition-transform duration-500 transform group-hover:-translate-y-2"
-            >
-              <p
-                class="text-[10px] uppercase tracking-widest font-semibold text-white/90"
-              >
+            <div class="relative aspect-[4/3] overflow-hidden bg-surface">
+              <img
+                :src="card.image"
+                :alt="card.title"
+                class="h-full w-full object-cover [@media(hover:hover)]:grayscale transition-[filter] duration-500 group-hover:grayscale-0 motion-reduce:transition-none"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="p-6">
+              <p class="text-sm font-medium text-brand-600">
                 {{ card.kicker }}
               </p>
-              <h3
-                class="mt-2 text-3xl md:text-4xl font-black leading-none tracking-tight"
-              >
-                {{ card.title }}
-              </h3>
+              <h3 class="mt-2 text-xl font-semibold">{{ card.title }}</h3>
+              <p class="mt-4 text-sm font-semibold text-brand-600">
+                {{ card.ctaLabel }}
+              </p>
             </div>
-            <span
-              class="inline-flex items-center gap-2 uppercase tracking-wider text-xs font-bold text-white/95"
-            >
-              {{ card.cta || card.ctaLabel }}
-              <Icon name="heroicons:arrow-long-right" class="w-5 h-5" />
-            </span>
-          </div>
-        </NuxtLink>
-      </section>
-    </div>
-
-    <!-- CHAMPIONS SECTION -->
-    <section
-      class="relative w-full py-32 flex items-center bg-black overflow-hidden"
-    >
-      <img
-        :src="pageData.champions.image"
-        alt="Building a People of Excellence"
-        class="absolute inset-0 w-full h-full object-cover z-0 opacity-20 grayscale"
-      />
-      <div
-        class="relative z-20 container mx-auto px-4 md:px-12 flex items-center h-full"
-      >
-        <div class="max-w-3xl text-left">
-          <h2
-            class="text-4xl md:text-5xl lg:text-6xl font-impact uppercase mb-6 leading-none text-white"
-          >
-            {{ pageData.champions.headline }}
-          </h2>
-          <p
-            class="text-base md:text-lg text-gray-300 mb-8 max-w-2xl leading-relaxed font-light"
-          >
-            {{ pageData.champions.description }}
-          </p>
-          <NuxtLink
-            :to="pageData.champions.ctaLink"
-            class="bg-[#e94e4e] hover:bg-white hover:text-black text-white font-bold py-3 px-7 rounded-full transition-colors inline-block uppercase tracking-wider text-xs md:text-sm"
-          >
-            {{ pageData.champions.ctaLabel }}
           </NuxtLink>
         </div>
-      </div>
+      </AppContainer>
     </section>
 
-    <!-- EDITORIAL SCATTERED IMAGES SECTION -->
-    <div
-      class="relative w-full bg-black text-white"
-      id="editorial-sticky-container"
-    >
+    <section class="relative overflow-hidden bg-ink py-24 text-paper md:py-32">
+      <img
+        :src="pageData.champions.image"
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover opacity-20 grayscale"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="absolute inset-0 bg-black/50" aria-hidden="true" />
+      <AppContainer class="relative z-10">
+        <h2
+          class="max-w-3xl font-impact text-4xl uppercase leading-none md:text-5xl lg:text-6xl"
+        >
+          {{ pageData.champions.headline }}
+        </h2>
+        <p
+          class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg"
+        >
+          {{ pageData.champions.description }}
+        </p>
+        <AppButton
+          variant="inverse"
+          class="mt-8"
+          :to="pageData.champions.ctaLink"
+        >
+          {{ pageData.champions.ctaLabel }}
+        </AppButton>
+      </AppContainer>
+    </section>
+
+    <div class="relative w-full bg-ink text-paper">
       <section
         v-for="(section, sIndex) in sectionsToDisplay"
-        :key="sIndex"
-        class="sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden border-t border-white/10"
-        :class="[
-          sIndex === 0
-            ? 'bg-zinc-950 z-10'
-            : sIndex === 1
-              ? 'bg-zinc-900 z-20'
-              : 'bg-black z-30',
-        ]"
+        :key="section.id || sIndex"
+        class="sticky top-0 flex h-screen w-full items-center overflow-hidden border-t border-white/10 bg-ink"
+        :style="{ zIndex: sIndex + 10 }"
       >
-        <div class="absolute inset-0 z-0 pointer-events-none opacity-60">
-          <img
-            v-for="(img, iIndex) in section.images"
-            :key="`${sIndex}-${iIndex}`"
-            :src="img"
-            alt="Scattered Imagery"
-            class="editorial-scattered-image absolute w-40 h-56 md:w-64 md:h-80 object-cover rounded-sm shadow-2xl transition-transform duration-1000 ease-out"
-            :style="
-              scatteredImageStyles[`${sIndex}-${iIndex}`] || { opacity: 0 }
-            "
+        <img
+          v-if="section.images?.[0]"
+          :src="section.images[0]"
+          alt=""
+          class="absolute inset-0 h-full w-full object-cover opacity-30 grayscale"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-black/60" aria-hidden="true" />
+        <AppContainer class="relative z-10">
+          <span
+            class="mb-5 block h-0.5 w-10 rounded-full bg-brand-600"
+            aria-hidden="true"
           />
-        </div>
-
-        <div
-          class="relative z-10 text-center max-w-3xl px-4 pointer-events-none"
-        >
-          <p
-            class="text-xs md:text-sm font-bold uppercase tracking-widest mb-4 text-[#e94e4e]"
-          >
+          <p class="mb-3 text-sm font-medium text-white">
             {{ section.kicker }}
           </p>
           <h2
-            class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none mb-6 drop-shadow-xl"
+            class="max-w-3xl font-impact text-5xl uppercase leading-none sm:text-6xl md:text-7xl"
           >
             {{ section.title }}
           </h2>
           <p
-            class="text-base md:text-lg lg:text-xl font-light text-white/90 drop-shadow-md"
+            class="mt-6 max-w-2xl text-base font-light leading-relaxed text-white/80 md:text-lg"
           >
             {{ section.description }}
           </p>
-        </div>
+        </AppContainer>
       </section>
     </div>
 
-    <!-- LEADERSHIP SECTION -->
-    <section
-      class="relative w-full bg-white text-black py-20 md:py-24 flex items-center z-40"
-    >
-      <div class="container mx-auto px-4 md:px-12 max-w-6xl">
+    <section class="py-16 md:py-24">
+      <AppContainer>
         <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center"
+          class="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-20"
         >
-          <div
-            class="relative w-full aspect-[4/5] md:aspect-[3/4] flex justify-center overflow-hidden rounded-xl"
-          >
+          <div class="overflow-hidden rounded-2xl">
             <img
               src="~/assets/images/pastor.webp"
-              alt="Our Lead Pastor"
-              class="w-full h-full object-cover grayscale contrast-125"
+              alt="Reverend Ibiwunmi Alo, lead pastor of Chapel of Praise"
+              class="aspect-[4/5] w-full object-cover grayscale"
+              loading="lazy"
+              decoding="async"
             />
           </div>
-          <div class="text-left flex flex-col justify-center">
-            <div class="flex items-center gap-3 mb-6">
-              <Icon name="heroicons:globe-alt" class="w-6 h-6 text-[#e94e4e]" />
-              <span
-                class="text-[10px] font-bold tracking-widest uppercase text-gray-500"
-              >
-                {{ pageData.leadership.badge }}
-              </span>
-            </div>
+          <div>
             <h2
-              class="text-3xl md:text-4xl lg:text-5xl font-impact uppercase mb-6 leading-none"
+              class="font-impact text-3xl uppercase leading-none md:text-4xl lg:text-5xl"
             >
               {{ pageData.leadership.headline }}
             </h2>
-            <p
-              class="text-gray-600 mb-8 leading-relaxed text-base md:text-lg font-light"
-            >
+            <p class="mt-6 text-base font-light leading-relaxed text-gray-600 md:text-lg">
               {{ pageData.leadership.bio }}
             </p>
-            <div>
-              <NuxtLink
-                :to="pageData.leadership.ctaLink"
-                class="border-2 border-black hover:bg-black hover:text-white text-black font-bold py-3 px-7 rounded-full transition-colors inline-block uppercase tracking-wider text-xs"
-              >
-                {{ pageData.leadership.ctaLabel }}
-              </NuxtLink>
-            </div>
+            <AppButton variant="ghost" class="mt-8" :to="pageData.leadership.ctaLink">
+              {{ pageData.leadership.ctaLabel }}
+            </AppButton>
           </div>
         </div>
-      </div>
+      </AppContainer>
     </section>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { useRuntimeConfig, useFetch } from "#app";
+import { computed } from "vue";
+import { useRuntimeConfig, useFetch, useSeoMeta } from "#app";
 
-// Existing Image Imports
 import aboutImage from "~/assets/images/about.webp";
 import connectImage from "~/assets/images/connect.webp";
 import celebrationsImage from "~/assets/images/celebrations.webp";
+import chapelHero from "~/assets/images/chapel.webp";
+import chapelHeroSmall from "~/assets/images/chapel-960.webp";
+
+useSeoMeta({
+  title: "Chapel of Praise | McPherson University Chapel",
+  description:
+    "Chapel of Praise is a vibrant campus church at McPherson University, raising a generation of champions who shine the gospel light.",
+  ogTitle: "Chapel of Praise | McPherson University Chapel",
+  ogDescription:
+    "A vibrant campus church at McPherson University, raising a generation of champions who shine the gospel light.",
+});
 
 const config = useRuntimeConfig();
 
-// 1. Better Data Fetching Strategy using Nuxt's useFetch (handles SSR out of the box)
-const { data: homepageData, pending } = await useFetch(
+const { data: homepageData } = await useFetch(
   `${config.public.apiBaseUrl}/public/homepage`,
-  {
-    lazy: true, // Prevents route blocking, loading screen handles the UI state
-    server: true, // Enables SSR
-  },
 );
 
-// 2. Computed Page Data - Centralizes all fallback logic to keep template clean
 const pageData = computed(() => {
   const data = homepageData.value || {};
-  const heroText =
-    data.heroSection?.heroHeadline || "McPherson University Chapel";
 
   return {
     hero: {
       kicker: data.heroSection?.heroKicker || "Shining the Gospel Light",
-      headlineWords: heroText.split(" "),
-      cta1Label: data.heroSection?.heroCta1Label || "Watch Us",
-      cta1Link: data.heroSection?.heroCta1Link || "/",
-      cta2Label: data.heroSection?.heroCta2Label || "About Us",
+      headline:
+        data.heroSection?.heroHeadline || "McPherson University Chapel",
+      cta1Label: data.heroSection?.heroCta1Label || "Watch us",
+      cta1Link:
+        data.heroSection?.heroCta1Link || "https://www.youtube.com/@mcucop",
+      cta2Label: data.heroSection?.heroCta2Label || "About us",
       cta2Link: data.heroSection?.heroCta2Link || "/about",
     },
     welcome: {
-      badge: data.welcomeSection?.welcomeBadge || "Welcome to COP",
       headline: data.welcomeSection?.welcomeHeadline || "Welcome Home!",
       description:
         data.welcomeSection?.welcomeDescription ||
@@ -308,42 +221,40 @@ const pageData = computed(() => {
       description:
         data.championsSection?.championsDescription ||
         "We are a vibrant family of young believers, passionate about God's Word. We are committed to rising as the next generation of champions, who always shine the gospel light.",
-      ctaLabel: data.championsSection?.championsCtaLabel || "Join Us",
-      ctaLink: data.championsSection?.championsCtaLink || "/events",
+      ctaLabel: data.championsSection?.championsCtaLabel || "Join us",
+      ctaLink: data.championsSection?.championsCtaLink || "/events-calendar",
     },
     leadership: {
-      badge: data.leadershipSection?.leadershipBadge || "Chapel Leadership",
       headline: data.leadershipSection?.leadershipHeadline || "Our Lead Pastor",
       bio:
         data.leadershipSection?.leadershipBio ||
         "Reverend Ibiwunmi Alo is the lead pastor of Chapel of Praise, a dynamic teaching ministry dedicated to spreading the gospel and helping people discover their purpose in Christ. With a passion for the Word of God and a heart for missions, Apostle Iren has led the church to establish Over 30 campuses across Nigeria, North America, and the UK.",
-      ctaLabel: data.leadershipSection?.leadershipCtaLabel || "Read More",
+      ctaLabel: data.leadershipSection?.leadershipCtaLabel || "Read more",
       ctaLink: data.leadershipSection?.leadershipCtaLink || "/about",
     },
   };
 });
 
-// Action Cards Logic
 const defaultCards = [
   {
-    kicker: "Who We Are",
+    kicker: "Who we are",
     title: "About us",
-    ctaLabel: "Learn More",
-    ctaLink: "/",
+    ctaLabel: "Learn more",
+    ctaLink: "/about",
     image: aboutImage,
   },
   {
-    kicker: "Join Our Community",
+    kicker: "Join our community",
     title: "Connect with us",
-    ctaLabel: "Sign Up",
-    ctaLink: "/",
+    ctaLabel: "Get in touch",
+    ctaLink: "/contact",
     image: connectImage,
   },
   {
-    kicker: "Endless Celebration",
+    kicker: "Endless celebration",
     title: "Celebrations",
-    ctaLabel: "Learn More",
-    ctaLink: "/",
+    ctaLabel: "See events",
+    ctaLink: "/events-calendar",
     image: celebrationsImage,
   },
 ];
@@ -361,49 +272,30 @@ const cardsToDisplay = computed(() => {
   return defaultCards;
 });
 
-// Editorial Sections Logic
 const defaultEditorialSections = [
   {
     id: 1,
-    kicker: "The Experience",
+    kicker: "The experience",
     title: "Vibrant Worship",
     description:
       "Experience the transformative power of God's presence through high-energy praise and deep, intimate worship.",
-    images: [
-      aboutImage,
-      connectImage,
-      celebrationsImage,
-      aboutImage,
-      celebrationsImage,
-    ],
+    images: [aboutImage, connectImage, celebrationsImage],
   },
   {
     id: 2,
-    kicker: "The Foundation",
+    kicker: "The foundation",
     title: "Deep Word",
     description:
       "Rooted in scripture. We believe in building a foundation of excellence and integrity through unadulterated teachings.",
-    images: [
-      celebrationsImage,
-      aboutImage,
-      connectImage,
-      celebrationsImage,
-      aboutImage,
-    ],
+    images: [celebrationsImage, aboutImage, connectImage],
   },
   {
     id: 3,
-    kicker: "The People",
+    kicker: "The people",
     title: "Strong Community",
     description:
       "A vibrant family of young believers. Find your tribe, grow together, and shine the gospel light in your world.",
-    images: [
-      connectImage,
-      celebrationsImage,
-      aboutImage,
-      connectImage,
-      celebrationsImage,
-    ],
+    images: [connectImage, celebrationsImage, aboutImage],
   },
 ];
 
@@ -425,58 +317,4 @@ const sectionsToDisplay = computed(() => {
   }
   return defaultEditorialSections;
 });
-
-// Function for card gradients
-const cardBackground = (imagePath) => {
-  const atmosphere =
-    "linear-gradient(140deg, rgba(15,17,21,0.68), rgba(240,79,35,0.2), rgba(11,14,20,0.72))";
-  return { backgroundImage: `${atmosphere}, url('${imagePath}')` };
-};
-
-// 3. Replaced DOM manipulation with Reactive State
-// To prevent hydration mismatches, we run the randomizer only on the client side via onMounted.
-const scatteredImageStyles = ref({});
-
-onMounted(() => {
-  const newStyles = {};
-
-  sectionsToDisplay.value.forEach((section, sIndex) => {
-    section.images.forEach((img, iIndex) => {
-      const randomLeft = Math.floor(Math.random() * 70) + 5;
-      const randomTop = Math.floor(Math.random() * 70) + 5;
-      const randomRotation = Math.floor(Math.random() * 40) - 20;
-      const randomScale = (Math.random() * 0.3 + 0.85).toFixed(2);
-      const delay = (Math.random() * 3).toFixed(2);
-      const duration = (Math.random() * 3 + 5).toFixed(2);
-
-      newStyles[`${sIndex}-${iIndex}`] = {
-        left: `${randomLeft}%`,
-        top: `${randomTop}%`,
-        "--rot": `${randomRotation}deg`,
-        "--scl": randomScale,
-        animationDelay: `${delay}s`,
-        animationDuration: `${duration}s`,
-        opacity: 1, // reveals after hydration to prevent jump
-      };
-    });
-  });
-
-  scatteredImageStyles.value = newStyles;
-});
 </script>
-
-<style scoped>
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(var(--rot)) scale(var(--scl));
-  }
-  50% {
-    transform: translateY(-20px) rotate(var(--rot)) scale(var(--scl));
-  }
-}
-
-.editorial-scattered-image {
-  animation: float ease-in-out infinite;
-}
-</style>

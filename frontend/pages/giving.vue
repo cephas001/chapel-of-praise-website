@@ -1,143 +1,130 @@
 <template>
-  <LoadingScreen :isLoading="pending" />
-  <div class="bg-white text-black w-full font-sans">
-    <!-- Static Hero Banner -->
-    <section
-      class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white"
-    >
-      <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      :kicker="pageData.hero.kicker"
+      :title="pageData.hero.headline"
+      :image="pageData.hero.image"
+    />
 
-      <!-- Unified Hero Image -->
-      <img
-        :src="pageData.hero.image"
-        alt="Giving Hero"
-        class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale"
-      />
-
-      <div class="relative z-20 text-center px-4 mt-16">
-        <p
-          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]"
+    <section class="py-16 md:py-24">
+      <AppContainer>
+        <h2
+          class="font-impact max-w-3xl text-3xl uppercase leading-none md:text-4xl"
         >
-          {{ pageData.hero.kicker }}
+          {{ pageData.headline.title }}
+        </h2>
+        <p class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600">
+          {{ pageData.headline.description }}
         </p>
-        <h1
-          class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg"
-        >
-          {{ pageData.hero.headline }}
-        </h1>
-      </div>
-    </section>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 md:px-8 py-20 md:py-28 text-center">
-      <h2 class="text-3xl md:text-4xl font-impact uppercase mb-6 text-black">
-        {{ pageData.headline.title }}
-      </h2>
-      <p
-        class="text-base md:text-lg text-gray-600 font-light leading-relaxed mb-12"
-      >
-        {{ pageData.headline.description }}
-      </p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-        <!-- Bank Transfer Card -->
-        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-8">
-          <Icon
-            name="heroicons:building-library"
-            class="w-10 h-10 text-[#e94e4e] mb-4"
-          />
-          <h3 class="text-2xl font-impact uppercase text-black mb-4">
-            Bank Transfer
-          </h3>
-          <div class="space-y-4 text-gray-700 font-light">
-            <div>
-              <p
-                class="text-xs font-bold uppercase tracking-wider text-gray-500"
-              >
-                Bank Name
-              </p>
-              <p class="text-lg font-medium text-black">
-                {{ pageData.bank.name }}
-              </p>
-            </div>
-            <div>
-              <p
-                class="text-xs font-bold uppercase tracking-wider text-gray-500"
-              >
-                Account Name
-              </p>
-              <p class="text-lg font-medium text-black">
-                {{ pageData.bank.accountName }}
-              </p>
-            </div>
-            <div>
-              <p
-                class="text-xs font-bold uppercase tracking-wider text-gray-500"
-              >
-                Account Number
-              </p>
-              <p class="text-2xl font-medium tracking-widest text-[#e25858]">
-                {{ pageData.bank.accountNumber }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Online Payment Card -->
         <div
-          class="bg-white border border-gray-200 shadow-sm rounded-2xl p-8 flex flex-col justify-between"
+          class="mt-12 grid grid-cols-1 gap-6"
+          :class="{ 'lg:grid-cols-2': hasBankDetails && hasOnlineGiving }"
         >
-          <div>
+          <div
+            v-if="hasBankDetails"
+            class="rounded-2xl border border-line bg-surface p-8"
+          >
             <Icon
-              name="heroicons:credit-card"
-              class="w-10 h-10 text-[#e94e4e] mb-4"
+              name="heroicons:building-library"
+              class="h-8 w-8 text-brand-600"
+              aria-hidden="true"
             />
-            <h3 class="text-2xl font-impact uppercase text-black mb-4">
-              Give Online
-            </h3>
-            <p class="text-gray-600 font-light mb-8">
-              {{ pageData.online.description }}
-            </p>
+            <h3 class="mt-5 text-xl font-semibold">Bank transfer</h3>
+
+            <dl class="mt-6 space-y-5">
+              <div v-if="pageData.bank.name">
+                <dt class="text-sm text-muted">Bank name</dt>
+                <dd class="mt-1 text-lg font-medium">
+                  {{ pageData.bank.name }}
+                </dd>
+              </div>
+              <div v-if="pageData.bank.accountName">
+                <dt class="text-sm text-muted">Account name</dt>
+                <dd class="mt-1 text-lg font-medium">
+                  {{ pageData.bank.accountName }}
+                </dd>
+              </div>
+              <div v-if="pageData.bank.accountNumber">
+                <dt class="text-sm text-muted">Account number</dt>
+                <dd
+                  class="mt-1 text-2xl font-semibold tracking-widest text-brand-700 tabular-nums"
+                >
+                  {{ pageData.bank.accountNumber }}
+                </dd>
+              </div>
+            </dl>
           </div>
-          <a
-            v-if="pageData.online.buttonUrl"
-            :href="pageData.online.buttonUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block w-full bg-black hover:bg-[#e94e4e] text-white font-bold py-4 rounded-xl transition-colors uppercase tracking-wider text-sm text-center"
+
+          <div
+            v-if="hasOnlineGiving"
+            class="flex flex-col justify-between rounded-2xl border border-line bg-paper p-8"
           >
-            Give Now
-          </a>
-          <button
-            v-else
-            class="w-full bg-black hover:bg-[#e94e4e] text-white font-bold py-4 rounded-xl transition-colors uppercase tracking-wider text-sm"
+            <div>
+              <Icon
+                name="heroicons:credit-card"
+                class="h-8 w-8 text-brand-600"
+                aria-hidden="true"
+              />
+              <h3 class="mt-5 text-xl font-semibold">Give online</h3>
+              <p class="mt-4 text-base font-light leading-7 text-gray-600">
+                {{ pageData.online.description }}
+              </p>
+            </div>
+            <AppButton
+              variant="primary"
+              class="mt-8 w-full"
+              :href="pageData.online.buttonUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Give now
+            </AppButton>
+          </div>
+
+          <div
+            v-if="!hasBankDetails && !hasOnlineGiving"
+            class="rounded-2xl border border-line bg-surface p-10 text-center"
           >
-            Give Now
-          </button>
+            <h3 class="text-xl font-semibold">
+              Giving details are temporarily unavailable
+            </h3>
+            <p class="mt-3 text-base font-light leading-7 text-gray-600">
+              Please contact the chapel office for assistance with your giving.
+            </p>
+            <AppButton variant="ghost" class="mt-6" to="/contact">
+              Contact us
+            </AppButton>
+          </div>
         </div>
-      </div>
-    </main>
+      </AppContainer>
+    </section>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useRuntimeConfig, useFetch, useHead } from "#app";
+import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
 import defaultHeroImage from "~/assets/images/celebrations.webp";
 
 useHead({
   title: "Giving | Chapel of Praise",
 });
 
+useSeoMeta({
+  description:
+    "Partner with Chapel of Praise through giving. Find our bank transfer details and secure online giving options.",
+  ogTitle: "Giving | Chapel of Praise",
+  ogDescription:
+    "Partner with Chapel of Praise through giving. Find our bank transfer and online giving options.",
+});
+
 const config = useRuntimeConfig();
 
-// SSR optimized fetching
-const { data: fetchedData, pending } = await useFetch(
+const { data: fetchedData } = await useFetch(
   `${config.public.apiBaseUrl}/public/giving`,
-  { lazy: true, server: true },
 );
 
-// Centralized computed property mapped to backend sections
 const pageData = computed(() => {
   const apiData = fetchedData.value || {};
 
@@ -153,15 +140,15 @@ const pageData = computed(() => {
       headline: hero.heroHeadline || "Giving",
     },
     headline: {
-      title: headline.sectionHeadline || "Worship Through Giving",
+      title: headline.sectionHeadline || "Worship through giving",
       description:
         headline.sectionDescription ||
         "Your generosity helps us continue our mission to shine the gospel light globally and raise the next generation of champions. Thank you for partnering with Chapel of Praise.",
     },
     bank: {
-      name: bank.bankName || "Guaranty Trust Bank (GTB)",
-      accountName: bank.accountName || "Chapel of Praise",
-      accountNumber: bank.accountNumber || "0123456789",
+      name: bank.bankName || "",
+      accountName: bank.accountName || "",
+      accountNumber: bank.accountNumber || "",
     },
     online: {
       description:
@@ -171,4 +158,10 @@ const pageData = computed(() => {
     },
   };
 });
+
+const hasBankDetails = computed(() =>
+  Boolean(pageData.value.bank.accountNumber),
+);
+
+const hasOnlineGiving = computed(() => Boolean(pageData.value.online.buttonUrl));
 </script>

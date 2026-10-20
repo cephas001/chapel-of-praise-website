@@ -1,161 +1,185 @@
 <template>
-  <LoadingScreen :isLoading="pending" />
-  <div class="bg-white text-black w-full font-sans">
-    <!-- Static Hero Banner -->
-    <section
-      class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white"
-    >
-      <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      :kicker="pageData.hero.kicker"
+      :title="pageData.hero.headline"
+      :image="pageData.hero.image"
+    />
 
-      <!-- Unified Hero Image -->
-      <img
-        :src="pageData.hero.image"
-        alt="Prayer Request Hero"
-        class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale"
-      />
+    <section class="py-16 md:py-24">
+      <AppContainer>
+        <div class="mx-auto max-w-2xl">
+          <h2 class="font-impact text-3xl uppercase leading-none md:text-4xl">
+            {{ pageData.form.heading }}
+          </h2>
+          <p class="mt-5 text-base font-light leading-7 text-gray-600">
+            {{ pageData.form.description }}
+          </p>
 
-      <div class="relative z-20 text-center px-4 mt-16">
-        <p
-          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]"
-        >
-          {{ pageData.hero.kicker }}
-        </p>
-        <h1
-          class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg"
-        >
-          {{ pageData.hero.headline }}
-        </h1>
-      </div>
-    </section>
-
-    <!-- Main Content Form Container -->
-    <main class="max-w-3xl mx-auto px-4 md:px-8 py-20 md:py-28">
-      <div class="text-center mb-12">
-        <Icon
-          name="heroicons:sparkles"
-          class="w-12 h-12 mx-auto text-[#e94e4e] mb-6"
-        />
-        <h2
-          class="text-3xl md:text-4xl font-impact uppercase mb-4 leading-none text-black"
-        >
-          {{ pageData.form.heading }}
-        </h2>
-        <p
-          class="text-base md:text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto"
-        >
-          {{ pageData.form.description }}
-        </p>
-      </div>
-
-      <div
-        class="bg-white border text-left border-gray-200 shadow-sm rounded-2xl p-6 md:p-10 lg:p-12"
-      >
-        <form class="space-y-8" @submit.prevent>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label
-                for="fullName"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Full Name <span class="text-[#e94e4e]">*</span></label
+          <div class="mt-10 rounded-2xl border border-line bg-paper p-6 md:p-10">
+            <div v-if="success">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700"
               >
-              <input
-                type="text"
-                id="fullName"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                for="email"
-                class="block text-xs font-bold uppercase tracking-wider text-black/70"
-                >Email Address
-                <span
-                  class="text-gray-400 font-normal lowercase tracking-normal"
-                  >(Optional)</span
-                ></label
-              >
-              <input
-                type="email"
-                id="email"
-                class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all"
-                placeholder="For follow-up"
-              />
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label
-              for="prayerRequest"
-              class="block text-xs font-bold uppercase tracking-wider text-black/70"
-              >Your {{ pageData.hero.headline
-              }}<span class="text-[#e94e4e]">*</span></label
-            >
-            <textarea
-              id="prayerRequest"
-              rows="6"
-              class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black focus:bg-white transition-all resize-y"
-              placeholder="Please share how we can pray for you..."
-              required
-            ></textarea>
-          </div>
-
-          <!-- Privacy Consent Checkbox -->
-          <div class="flex items-start gap-4">
-            <div class="flex items-center h-6">
-              <input
-                id="privacy"
-                type="checkbox"
-                class="w-4 h-4 text-black border-gray-300 rounded focus:ring-black focus:ring-2 accent-black"
-                required
-              />
-            </div>
-            <div class="text-sm mt-0.5">
-              <label for="privacy" class="font-medium text-gray-700"
-                >Keep this request confidential</label
-              >
-              <p class="text-gray-500 font-light mt-2 font-mono text-xs">
-                If checked, this request will only be seen by our pastoral staff
-                and will not be shared openly with the general prayer team.
+                <Icon
+                  name="heroicons:check"
+                  class="h-6 w-6"
+                  aria-hidden="true"
+                />
+              </div>
+              <h3 class="mt-5 text-xl font-semibold">Request received</h3>
+              <p class="mt-3 text-base font-light leading-7 text-gray-600">
+                {{ success }}
               </p>
+              <AppButton variant="ghost" class="mt-6" @click="resetForm">
+                Send another request
+              </AppButton>
             </div>
-          </div>
 
-          <div class="pt-4">
-            <button
-              type="submit"
-              class="bg-black hover:bg-[#e94e4e] text-white font-bold py-4 px-10 rounded-full transition-colors uppercase tracking-wider font-mono text-xs md:text-sm w-full"
-            >
-              Submit {{ pageData.hero.headline }}
-            </button>
+            <form v-else class="space-y-6" @submit.prevent="handleSubmit">
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <AppField
+                  id="fullName"
+                  v-model="form.fullName"
+                  label="Full name"
+                  autocomplete="name"
+                  maxlength="150"
+                  placeholder="Enter your name"
+                  required
+                />
+                <AppField
+                  id="email"
+                  v-model="form.email"
+                  type="email"
+                  label="Email address"
+                  optional
+                  autocomplete="email"
+                  maxlength="254"
+                  placeholder="For follow-up"
+                />
+              </div>
+
+              <AppField
+                id="prayerRequest"
+                v-model="form.request"
+                as="textarea"
+                label="Your prayer request"
+                :rows="6"
+                maxlength="5000"
+                placeholder="Please share how we can pray for you..."
+                required
+              />
+
+              <div class="flex items-start gap-3">
+                <input
+                  id="privacy"
+                  v-model="form.confidential"
+                  type="checkbox"
+                  name="confidential"
+                  class="mt-1 h-4 w-4 rounded border-line accent-ink"
+                />
+                <div>
+                  <label for="privacy" class="text-sm font-medium text-gray-700">
+                    Keep this request confidential
+                  </label>
+                  <p class="mt-1 text-sm leading-6 text-gray-500">
+                    If checked, this request will only be seen by our pastoral
+                    staff and will not be shared with the general prayer team.
+                  </p>
+                </div>
+              </div>
+
+              <div class="form-honeypot" aria-hidden="true">
+                <label for="prayer-website">Leave this field empty</label>
+                <input
+                  id="prayer-website"
+                  v-model="website"
+                  type="text"
+                  name="website"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+
+              <div
+                v-if="errorMessage"
+                role="alert"
+                class="flex gap-3 rounded-xl border border-brand-100 bg-brand-50 p-4"
+              >
+                <Icon
+                  name="heroicons:x-circle"
+                  class="h-5 w-5 shrink-0 text-brand-600"
+                  aria-hidden="true"
+                />
+                <p class="text-sm font-medium text-brand-700">
+                  {{ errorMessage }}
+                </p>
+              </div>
+
+              <AppButton type="submit" :loading="loading" class="w-full">
+                {{ loading ? "Submitting..." : "Send prayer request" }}
+              </AppButton>
+            </form>
           </div>
-        </form>
-      </div>
-    </main>
+        </div>
+      </AppContainer>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRuntimeConfig, useFetch, useHead } from "#app";
+import { computed, ref } from "vue";
+import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
 import defaultHeroImage from "~/assets/images/celebrations.webp";
 
 useHead({
   title: "Prayer Request | Chapel of Praise",
 });
 
+useSeoMeta({
+  description:
+    "Submit a prayer request and stand in faith with the Chapel of Praise prayer team.",
+  ogTitle: "Prayer Request | Chapel of Praise",
+  ogDescription:
+    "Submit a prayer request and stand in faith with our prayer team.",
+});
+
+const {
+  loading,
+  errorMessage,
+  success,
+  website,
+  submit,
+  reset,
+} = usePublicForm({
+  path: "/public/prayer/submit",
+  successMessage:
+    "Our prayer team will be standing with you in faith.",
+  fallbackError:
+    "We could not submit your prayer request right now. Please try again in a moment.",
+});
+
+const form = ref({
+  fullName: "",
+  email: "",
+  request: "",
+  confidential: false,
+});
+
+const handleSubmit = () => submit(form.value);
+
+const resetForm = () => {
+  form.value = { fullName: "", email: "", request: "", confidential: false };
+  reset();
+};
+
 const config = useRuntimeConfig();
 
-// SSR optimized fetching
-const { data: fetchedData, pending } = await useFetch(
+const { data: fetchedData } = await useFetch(
   `${config.public.apiBaseUrl}/public/prayer`,
-  { lazy: true, server: true },
 );
 
-// Centralized computed property mapped to backend sections
 const pageData = computed(() => {
-  // Safe unwrap in case the API nests the response inside a 'data' key
   const apiData = fetchedData.value?.data || fetchedData.value || {};
 
   const hero = apiData.heroSection || {};
@@ -164,11 +188,11 @@ const pageData = computed(() => {
   return {
     hero: {
       image: hero.heroImage || defaultHeroImage,
-      kicker: hero.heroKicker || "Stand With Us",
+      kicker: hero.heroKicker || "Stand with us",
       headline: hero.heroHeadline || "Prayer Request",
     },
     form: {
-      heading: form.formHeading || "We Want To Pray With You",
+      heading: form.formHeading || "We want to pray with you",
       description:
         form.formDescription ||
         "No matter what you're facing, you don't have to carry it alone. Our prayer team considers it an honor to stand with you in faith and believe God for a breakthrough in your life.",

@@ -1,144 +1,115 @@
 <template>
-  <LoadingScreen :isLoading="pending" />
-  <div class="bg-white text-black w-full font-sans">
-    <!-- Static Hero Banner -->
-    <section
-      class="relative w-full h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden bg-black text-white"
-    >
-      <div class="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      :kicker="pageData.hero.kicker"
+      :title="pageData.hero.headline"
+      :image="pageData.hero.image"
+    />
 
-      <!-- Unified Hero Image -->
-      <img
-        :src="pageData.hero.image"
-        alt="Leadership Hero"
-        class="absolute inset-0 w-full h-full object-cover z-0 opacity-40 grayscale"
-      />
-
-      <div class="relative z-20 text-center px-4 mt-16">
-        <p
-          class="text-xs md:text-sm font-bold uppercase tracking-widest mb-3 text-[#e94e4e]"
-        >
-          {{ pageData.hero.kicker }}
+    <section class="bg-surface py-16 md:py-24">
+      <AppContainer>
+        <h2 class="font-impact text-3xl uppercase leading-none md:text-4xl">
+          {{ pageData.team.headline }}
+        </h2>
+        <p class="mt-4 max-w-2xl text-base font-light leading-7 text-gray-600">
+          {{ pageData.team.description }}
         </p>
-        <h1
-          class="text-5xl sm:text-6xl md:text-7xl font-impact uppercase leading-none text-white drop-shadow-lg"
-        >
-          {{ pageData.hero.headline }}
-        </h1>
-      </div>
-    </section>
 
-    <!-- Main Content Container -->
-    <main class="w-full bg-[#f3f4f7] py-20 md:py-32">
-      <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <div class="text-center mb-16">
-          <h2
-            class="text-4xl md:text-5xl font-impact uppercase tracking-tight text-gray-900 mb-4"
-          >
-            {{ pageData.team.headline }}
-          </h2>
-          <p
-            class="text-base md:text-lg text-gray-600 max-w-2xl mx-auto font-light"
-          >
-            {{ pageData.team.description }}
-          </p>
-        </div>
-
-        <div class="space-y-20">
-          <!-- Chaplaincy Section -->
+        <div class="mt-16 space-y-16">
           <section>
-            <div class="mb-10 text-center md:text-left">
-              <h3 class="text-3xl md:text-4xl font-impact uppercase text-black">
-                Chaplaincy
-              </h3>
-            </div>
+            <h3 class="font-impact text-2xl uppercase md:text-3xl">
+              Chaplaincy
+            </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              <div
+            <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <article
                 v-for="(chaplain, index) in pageData.chaplaincy"
                 :key="'chaplain-' + index"
-                class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center"
+                class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
               >
                 <img
                   :src="chaplain.imageUrl || defaultPastorImage"
                   :alt="chaplain.name || 'Chaplain'"
-                  class="w-40 h-40 rounded-full object-cover mb-6 shadow-md"
+                  class="aspect-square w-40 rounded-2xl object-cover grayscale"
+                  loading="lazy"
+                  decoding="async"
                 />
-                <h3 class="text-2xl font-impact uppercase text-black mb-1">
+                <h4 class="mt-6 text-xl font-semibold">
                   {{ chaplain.name }}
-                </h3>
-                <p
-                  class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4"
-                >
+                </h4>
+                <p class="mt-1 text-sm font-medium text-brand-600">
                   {{ chaplain.title }}
                 </p>
-                <p class="text-gray-600 font-light text-sm leading-relaxed">
+                <p class="mt-4 text-sm font-light leading-6 text-gray-600">
                   {{ chaplain.bio }}
                 </p>
-              </div>
+              </article>
 
               <div
                 v-if="pageData.chaplaincy.length === 0"
-                class="col-span-full text-center py-8"
+                class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
               >
-                <p class="text-gray-500 font-light px-5">
-                  No chaplains listed at this time.
+                <h4 class="text-xl font-semibold">
+                  No chaplains listed yet
+                </h4>
+                <p class="mt-3 text-base font-light text-gray-600">
+                  Check back soon to meet our chaplaincy team.
                 </p>
               </div>
             </div>
           </section>
 
-          <!-- Student Executives Section -->
           <section>
-            <div class="mb-10 text-center md:text-left">
-              <h3 class="text-3xl md:text-4xl font-impact uppercase text-black">
-                Student Executives
-              </h3>
-            </div>
+            <h3 class="font-impact text-2xl uppercase md:text-3xl">
+              Student Executives
+            </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              <div
-                v-for="(exec, index) in pageData.executives"
+            <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <article
+                v-for="(executive, index) in pageData.executives"
                 :key="'exec-' + index"
-                class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center"
+                class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
               >
                 <img
-                  :src="exec.imageUrl || defaultConnectImage"
-                  :alt="exec.name || 'Executive'"
-                  class="w-40 h-40 rounded-full object-cover mb-6 shadow-md"
+                  :src="executive.imageUrl || defaultConnectImage"
+                  :alt="executive.name || 'Executive'"
+                  class="aspect-square w-40 rounded-2xl object-cover grayscale"
+                  loading="lazy"
+                  decoding="async"
                 />
-                <h3 class="text-2xl font-impact uppercase text-black mb-1">
-                  {{ exec.name }}
-                </h3>
-                <p
-                  class="text-[#e25858] font-medium text-sm uppercase tracking-wider mb-4"
-                >
-                  {{ exec.title }}
+                <h4 class="mt-6 text-xl font-semibold">
+                  {{ executive.name }}
+                </h4>
+                <p class="mt-1 text-sm font-medium text-brand-600">
+                  {{ executive.title }}
                 </p>
-                <p class="text-gray-600 font-light text-sm leading-relaxed">
-                  {{ exec.bio }}
+                <p class="mt-4 text-sm font-light leading-6 text-gray-600">
+                  {{ executive.bio }}
                 </p>
-              </div>
+              </article>
 
               <div
                 v-if="pageData.executives.length === 0"
-                class="col-span-full text-center py-8"
+                class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
               >
-                <p class="text-gray-500 font-light px-5">
-                  No student executives listed at this time.
+                <h4 class="text-xl font-semibold">
+                  No student executives listed yet
+                </h4>
+                <p class="mt-3 text-base font-light text-gray-600">
+                  Check back soon to meet the student leadership team.
                 </p>
               </div>
             </div>
           </section>
         </div>
-      </div>
-    </main>
+      </AppContainer>
+    </section>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useRuntimeConfig, useFetch, useHead } from "#app";
+import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
 import defaultPastorImage from "~/assets/images/pastor.webp";
 import defaultConnectImage from "~/assets/images/connect.webp";
 
@@ -146,17 +117,21 @@ useHead({
   title: "Leadership | Chapel of Praise",
 });
 
+useSeoMeta({
+  description:
+    "Meet the pastors, chaplaincy team, and student executives leading Chapel of Praise.",
+  ogTitle: "Leadership | Chapel of Praise",
+  ogDescription:
+    "Meet the pastors, chaplaincy team, and student executives leading Chapel of Praise.",
+});
+
 const config = useRuntimeConfig();
 
-// SSR optimized fetching
-const { data: fetchedData, pending } = await useFetch(
+const { data: fetchedData } = await useFetch(
   `${config.public.apiBaseUrl}/public/leadership`,
-  { lazy: true, server: true },
 );
 
-// Centralized computed property mapped to backend sections
 const pageData = computed(() => {
-  // Ensure we safely unwrap the data, handling cases where it might be nested in a 'data' object
   const apiData = fetchedData.value?.data || fetchedData.value || {};
 
   const hero = apiData.heroSection || {};
@@ -167,11 +142,11 @@ const pageData = computed(() => {
   return {
     hero: {
       image: hero.heroImageUrl || defaultPastorImage,
-      kicker: hero.heroKicker || "Our Pastors & Leaders",
+      kicker: hero.heroKicker || "Our pastors and leaders",
       headline: hero.heroHeadline || "Leadership",
     },
     team: {
-      headline: team.teamHeadline || "Meet The Team",
+      headline: team.teamHeadline || "Meet the team",
       description:
         team.teamDescription ||
         "Dedicated men and women committed to shepherding the flock and advancing the kingdom of God.",

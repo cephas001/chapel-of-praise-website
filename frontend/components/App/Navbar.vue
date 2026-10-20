@@ -1,344 +1,374 @@
 <template>
-  <!-- Standard Top Navbar -->
   <header
-    class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b text-white"
-    :class="[
-      isScrollingDown
-        ? 'bg-black/50 backdrop-blur-md border-white/10 shadow-lg'
-        : 'bg-black border-[var(--navbar-border)]',
-    ]"
+    class="fixed inset-x-0 top-0 z-40 border-b border-white/10 text-white transition-colors duration-300"
+    :class="isScrolled ? 'bg-ink/80 backdrop-blur-md' : 'bg-ink'"
   >
-    <div class="max-w-6xl mx-auto px-4 md:px-8">
-      <div class="h-20 flex items-center justify-between">
-        <NuxtLink to="/" class="inline-flex items-center gap-2">
+    <AppContainer>
+      <div class="flex h-20 items-center justify-between">
+        <NuxtLink
+          to="/"
+          aria-label="Chapel of Praise home"
+          class="inline-flex items-center"
+        >
           <img
             src="~/assets/images/Chapel Of Praise Logo.png"
-            class="w-16 md:w-24 object-contain"
+            alt="Chapel of Praise"
+            class="h-12 w-auto object-contain md:h-14"
           />
         </NuxtLink>
 
-        <!-- Combined Desktop Nav + Universal Mega Menu Trigger -->
         <div class="flex items-center gap-6 md:gap-8">
           <nav
-            class="hidden lg:flex items-center gap-7 text-[11px] uppercase tracking-widest text-white/85"
+            class="hidden items-center gap-7 text-sm text-white/80 lg:flex"
+            aria-label="Primary"
           >
             <NuxtLink
-              v-for="item in menuItems"
+              v-for="item in quickLinks"
               :key="item.label"
               :to="item.to"
-              class="hover:text-white transition-colors"
+              :aria-current="isActive(item.to) ? 'page' : undefined"
+              class="transition-colors hover:text-white"
+              active-class="text-white"
             >
               {{ item.label }}
             </NuxtLink>
           </nav>
 
           <button
-            class="inline-flex items-center justify-center w-10 h-10 group"
-            aria-label="Open full-screen menu"
-            @click="isMenuOpen = true"
+            type="button"
+            class="inline-flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+            aria-label="Open menu"
+            aria-haspopup="dialog"
+            :aria-expanded="isMenuOpen"
+            @click="openMenu"
           >
-            <!-- Clean double-bar icon for a premium look, scales up slightly on hover -->
+            <span class="hidden md:inline">Menu</span>
             <svg
-              class="w-8 h-8 group-hover:text-[#e94e4e] group-hover:scale-110 transition-all duration-300"
+              class="h-7 w-7"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="1.5"
                 d="M4 8h16M4 16h16"
-              ></path>
+              />
             </svg>
           </button>
         </div>
       </div>
-    </div>
+    </AppContainer>
   </header>
 
-  <!-- Premium Full-Screen Overlay Menu -->
-  <transition name="mega-menu">
+  <Transition name="menu">
     <div
       v-if="isMenuOpen"
-      class="fixed inset-0 z-[100] bg-black text-white w-full h-[100dvh] overflow-y-auto flex flex-col flex-nowrap"
+      ref="panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Site menu"
+      class="fixed inset-0 z-50 flex h-[100dvh] w-full flex-col overflow-y-auto bg-ink text-white"
     >
-      <!-- Overlay Header -->
-      <div
-        class="w-full shrink-0 transition-opacity duration-500 delay-100"
-        :class="{ 'opacity-100': isMenuOpen, 'opacity-0': !isMenuOpen }"
-      >
-        <div class="max-w-6xl mx-auto px-4 md:px-8">
-          <div class="h-20 flex items-center justify-between">
+      <div class="w-full shrink-0">
+        <AppContainer>
+          <div class="flex h-20 items-center justify-between">
             <NuxtLink
               to="/"
-              @click="isMenuOpen = false"
+              aria-label="Chapel of Praise home"
               class="inline-flex items-center"
+              @click="closeMenu"
             >
               <img
                 src="~/assets/images/Combined Logos.png"
-                class="w-24 md:w-32 object-contain opacity-90 hover:opacity-100 transition-opacity"
+                alt="Chapel of Praise and Mountain of the Lord"
+                class="h-12 w-auto object-contain md:h-14"
               />
             </NuxtLink>
 
             <button
-              class="inline-flex items-center justify-center w-10 h-10 group"
+              type="button"
+              class="inline-flex h-11 w-11 items-center justify-center rounded-full text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
               aria-label="Close menu"
-              @click="isMenuOpen = false"
+              @click="closeMenu"
             >
-              <Icon
-                name="heroicons:x-mark"
-                class="w-10 h-10 group-hover:rotate-90 group-hover:text-[#e94e4e] transition-all duration-500"
-              />
+              <Icon name="heroicons:x-mark" class="h-8 w-8" aria-hidden="true" />
             </button>
           </div>
-        </div>
+        </AppContainer>
       </div>
 
-      <!-- Main Directory Grid -->
-      <div
-        class="flex-grow max-w-6xl w-full mx-auto px-4 md:px-8 py-10 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20 content-center"
-      >
-        <!-- Left Axis: Big Impact Links -->
-        <div class="lg:col-span-5 flex flex-col gap-1.5 md:gap-2">
-          <NuxtLink
-            v-for="(link, index) in mainLinks"
-            :key="link.label"
-            :to="link.to"
-            class="staggered-link font-impact uppercase text-4xl sm:text-5xl md:text-[4.5rem] tracking-normal leading-none text-white/90 hover:text-[#e94e4e] hover:translate-x-2 transition-all duration-300 w-max"
-            :style="{ animationDelay: `${index * 50 + 100}ms` }"
-            :class="{ 'active-red': route.fullPath == link.to }"
-            @click="isMenuOpen = false"
+      <div class="w-full grow">
+        <AppContainer>
+          <div
+            class="grid content-center gap-12 py-12 md:py-16 lg:grid-cols-12 lg:gap-20"
           >
-            {{ link.label }}
-          </NuxtLink>
-        </div>
-
-        <!-- Right Axis: Categorized Structure & Footer -->
-        <div class="lg:col-span-7 flex flex-col justify-between mt-4 lg:mt-2">
-          <!-- Categories Grid -->
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-y-12 md:gap-x-12">
-            <div
-              v-for="(cat, catIndex) in categoryLinks"
-              :key="cat.title"
-              class="flex flex-col gap-4 staggered-fade"
-              :style="{ animationDelay: `${catIndex * 75 + 400}ms` }"
+            <nav
+              class="flex flex-col gap-2.5 lg:col-span-5"
+              aria-label="Main pages"
             >
-              <p
-                class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-white/40 mb-1"
+              <NuxtLink
+                v-for="(link, index) in mainLinks"
+                :key="link.label"
+                :to="link.to"
+                :aria-current="isActive(link.to) ? 'page' : undefined"
+                class="menu-stagger group flex w-max items-center gap-4 font-impact text-4xl uppercase leading-none text-white/90 transition-colors hover:text-white sm:text-5xl md:text-[4rem]"
+                :class="{ 'text-white': isActive(link.to) }"
+                :style="{ animationDelay: `${index * 50 + 60}ms` }"
+                @click="closeMenu"
               >
-                {{ cat.title }}
-              </p>
-              <div class="flex flex-col gap-3">
-                <NuxtLink
-                  v-for="link in cat.links"
-                  :key="link.label"
-                  :to="link.to"
-                  class="text-sm md:text-[15px] font-medium tracking-wide text-white/80 hover:text-white transition-colors flex items-center group/link"
-                  @click="isMenuOpen = false"
-                >
-                  <span
-                    class="w-0 overflow-hidden group-hover/link:w-4 transition-all duration-300 ease-out text-[#e94e4e]"
-                    >&rarr;</span
-                  >
-                  {{ link.label }}
-                </NuxtLink>
+                <span
+                  class="h-8 w-1.5 shrink-0 rounded-full bg-brand-600 transition-opacity md:h-10"
+                  :class="
+                    isActive(link.to)
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-50'
+                  "
+                  aria-hidden="true"
+                />
+                {{ link.label }}
+              </NuxtLink>
+            </nav>
+
+            <div
+              class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:col-span-7"
+            >
+              <div
+                v-for="(group, groupIndex) in menuGroups"
+                :key="group.title"
+                class="menu-fade"
+                :style="{ animationDelay: `${groupIndex * 70 + 250}ms` }"
+              >
+                <p class="mb-4 text-sm font-semibold text-white">
+                  {{ group.title }}
+                </p>
+                <ul class="space-y-3">
+                  <li v-for="link in group.links" :key="link.label">
+                    <NuxtLink
+                      :to="link.external ? link.href : link.to"
+                      :target="link.external ? '_blank' : undefined"
+                      :rel="link.external ? 'noopener noreferrer' : undefined"
+                      :aria-current="
+                        !link.external && isActive(link.to)
+                          ? 'page'
+                          : undefined
+                      "
+                      class="text-sm transition-colors"
+                      :class="
+                        !link.external && isActive(link.to)
+                          ? 'text-brand-600'
+                          : 'text-white/80 hover:text-white'
+                      "
+                      @click="closeMenu"
+                    >
+                      {{ link.label }}
+                    </NuxtLink>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
+        </AppContainer>
+      </div>
 
-          <!-- Bottom Footer Group (Aligned perfectly under the categories) -->
+      <div class="w-full shrink-0 border-t border-white/10">
+        <AppContainer>
           <div
-            class="mt-16 md:mt-24 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 staggered-fade"
-            style="animation-delay: 800ms"
+            class="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between"
           >
-            <p class="text-[11px] text-white/50 leading-snug max-w-[260px]">
-              &copy; Copyright {{ new Date().getFullYear() }} Chapel of Praise.
-              All<br class="hidden md:block" />
-              Rights Reserved.
+            <p class="text-sm text-white/80">
+              &copy; {{ year }} Chapel of Praise. All rights reserved.
             </p>
-            <div class="flex items-center gap-3">
-              <NuxtLink
-                to="/"
-                class="w-10 h-10 rounded-full bg-[#1c1c1c] text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all outline-none"
-                ><Icon name="mdi:instagram" class="w-4 h-4"
-              /></NuxtLink>
-              <NuxtLink
-                to="/"
-                class="w-10 h-10 rounded-full bg-[#1c1c1c] text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all outline-none"
-                ><Icon name="mdi:twitter" class="w-4 h-4"
-              /></NuxtLink>
-              <NuxtLink
-                to="https://www.youtube.com/@mcucop"
-                class="w-10 h-10 rounded-full bg-[#1c1c1c] text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all outline-none"
-                ><Icon name="mdi:youtube" class="w-4 h-4"
-              /></NuxtLink>
-              <NuxtLink
-                to="/"
-                class="w-10 h-10 rounded-full bg-[#1c1c1c] text-white flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all outline-none"
-                ><Icon name="mdi:linkedin" class="w-4 h-4"
-              /></NuxtLink>
-            </div>
+            <a
+              href="https://www.youtube.com/@mcucop"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
+            >
+              <Icon name="mdi:youtube" class="h-5 w-5" aria-hidden="true" />
+              Watch on YouTube
+            </a>
           </div>
-        </div>
+        </AppContainer>
       </div>
     </div>
-  </transition>
+  </Transition>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-
-const isMenuOpen = ref(false);
-const isScrollingDown = ref(false);
-let lastScrollPosition = 0;
 
 const route = useRoute();
 
-// --- Professional Practice 1: Route-change cleanup ---
-watch(
-  () => route.fullPath,
-  () => {
-    isMenuOpen.value = false;
-  },
-);
+const isMenuOpen = ref(false);
+const isScrolled = ref(false);
+const panel = ref(null);
+const year = new Date().getFullYear();
 
-// --- Professional Practice 2: Body Scroll Lock ---
-watch(isMenuOpen, (isOpen) => {
-  if (typeof document !== "undefined") {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-  }
-});
+let lastFocusedElement = null;
 
-// --- Professional Practice 3: Keyboard Accessibility (Close on Esc) ---
-const handleKeydown = (e) => {
-  if (e.key === "Escape" && isMenuOpen.value) {
-    isMenuOpen.value = false;
-  }
-};
-
-const handleScroll = () => {
-  const currentScrollPosition = window.scrollY;
-  // Show glassmorphism effect when scrolling DOWN and past 50px threshold
-  if (
-    currentScrollPosition > lastScrollPosition &&
-    currentScrollPosition > 50
-  ) {
-    isScrollingDown.value = true;
-  } else {
-    isScrollingDown.value = false;
-  }
-  lastScrollPosition = currentScrollPosition;
-};
-
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  window.addEventListener("keydown", handleKeydown, { passive: true });
-});
-
-onUnmounted(() => {
-  if (typeof window !== "undefined") {
-    window.removeEventListener("scroll", handleScroll);
-    window.removeEventListener("keydown", handleKeydown);
-  }
-});
-
-// Standard Desktop Items (Kept for quick access toolbar)
-const menuItems = [
+const quickLinks = [
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
   { label: "Events", to: "/events-calendar" },
   { label: "Give", to: "/giving" },
 ];
 
-// Mega Menu Left Axis (Giant Impact typography)
 const mainLinks = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Ministries", to: "/ministries" },
   { label: "Leadership", to: "/leadership" },
-  { label: "Events", to: "/events-calendar" },
-  { label: "Give", to: "/giving" },
 ];
 
-// Mega Menu Right Axis (Structured directories)
-const categoryLinks = [
+const menuGroups = [
   {
-    title: "Quick Links",
+    title: "Visit",
     links: [
-      { label: "All Ministries", to: "/ministries" },
-      { label: "Our Leadership", to: "/leadership" },
-      { label: "Give Online", to: "/giving" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Counselling", to: "/counselling" },
-      { label: "Prayer Request", to: "/prayer" },
-      { label: "Our History", to: "/about" },
+      { label: "Events calendar", to: "/events-calendar" },
+      { label: "Contact us", to: "/contact" },
     ],
   },
   {
     title: "Connect",
     links: [
-      { label: "Contact Us", to: "/contact" },
-      { label: "Events Calendar", to: "/events-calendar" },
-      { label: "Join a Cell", to: "/" },
+      { label: "Prayer request", to: "/prayer" },
+      { label: "Counselling", to: "/counselling" },
+      { label: "Become a worker", to: "/become-a-worker" },
     ],
   },
   {
-    title: "Media",
+    title: "Watch and give",
     links: [
-      { label: "Watch Online", to: "https://www.youtube.com/@mcucop" },
-      { label: "Testimonies", to: "/" },
-      { label: "Vineyard's Voice", to: "/" },
+      { label: "Giving", to: "/giving" },
+      {
+        label: "Watch on YouTube",
+        href: "https://www.youtube.com/@mcucop",
+        external: true,
+      },
     ],
   },
 ];
+
+const isActive = (path) =>
+  path === "/" ? route.path === "/" : route.path.startsWith(path);
+
+const openMenu = async () => {
+  lastFocusedElement = document.activeElement;
+  isMenuOpen.value = true;
+  await nextTick();
+  panel.value?.querySelector("a, button")?.focus();
+};
+
+const closeMenu = () => {
+  if (!isMenuOpen.value) return;
+  isMenuOpen.value = false;
+  lastFocusedElement?.focus?.();
+};
+
+watch(
+  () => route.fullPath,
+  () => {
+    if (isMenuOpen.value) closeMenu();
+  },
+);
+
+watch(isMenuOpen, (isOpen) => {
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+  }
+});
+
+const handleKeydown = (event) => {
+  if (!isMenuOpen.value) return;
+
+  if (event.key === "Escape") {
+    closeMenu();
+    return;
+  }
+
+  if (event.key !== "Tab") return;
+
+  const focusables = panel.value?.querySelectorAll(
+    "a[href], button:not([disabled])",
+  );
+  if (!focusables?.length) return;
+
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+};
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50;
+};
+
+onMounted(() => {
+  handleScroll();
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("keydown", handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("keydown", handleKeydown);
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "";
+  }
+});
 </script>
 
 <style scoped>
-/* Mega Menu Main Container Animation */
-.mega-menu-enter-active,
-.mega-menu-leave-active {
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.mega-menu-enter-from,
-.mega-menu-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-  backdrop-filter: blur(0px);
-}
-.mega-menu-enter-to,
-.mega-menu-leave-from {
-  backdrop-filter: blur(10px);
+.menu-enter-active,
+.menu-leave-active {
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Staggered Entry Animation for Giant Links */
-.staggered-link {
+.menu-enter-from,
+.menu-leave-to {
   opacity: 0;
-  transform: translateY(20px);
-  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(-12px);
 }
 
-/* Staggered Entry Animation for Sub-Categories */
-.staggered-fade {
+.menu-stagger,
+.menu-fade {
   opacity: 0;
+  transform: translateY(16px);
+  animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.menu-fade {
   transform: translateY(10px);
-  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes slideUpFade {
+@keyframes slide-up-fade {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.active-red {
-  color: #e94e4e !important;
+@media (prefers-reduced-motion: reduce) {
+  .menu-enter-active,
+  .menu-leave-active,
+  .menu-stagger,
+  .menu-fade {
+    transition: none;
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 </style>

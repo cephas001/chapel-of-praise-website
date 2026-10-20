@@ -1,311 +1,234 @@
 <template>
-  <div
-    class="min-h-screen bg-gray-50 flex flex-col justify-center pt-30 pb-10 px-6 lg:px-8 font-montserrat"
-  >
-    <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
-      <div class="text-center mb-8">
-        <h2 class="text-xl font-black text-gray-900 tracking-tight">
-          Chapel of Praise
-        </h2>
-        <p class="mt-2 text-xs md:text-sm text-gray-600 font-medium font-mono">
-          Official Worker Registration Portal
-        </p>
-      </div>
+  <div class="w-full bg-paper text-ink">
+    <AppPageHero
+      kicker="Chapel of praise"
+      title="Workers biodata"
+      :image="heroImage"
+    />
 
-      <div
-        class="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100"
-      >
-        <div v-if="successMessage" class="text-center py-12">
-          <div
-            class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-green-100 mb-5"
-          >
-            <Icon name="heroicons:check" class="h-6 w-6 text-green-600" />
-          </div>
-          <h3 class="text-lg font-semibold tracking-wide text-gray-900 mb-5">
-            Registration <br class="md:hidden" />
-            Complete!
-          </h3>
-
-          <button
-            @click="resetForm"
-            class="inline-flex justify-center rounded-xl border border-transparent bg-black px-4 md:px-6 py-3 text-xs md:text-sm text-white shadow-sm hover:bg-gray-900 transition-colors font-mono"
-          >
-            Register Another Worker
-          </button>
-        </div>
-
-        <form v-else @submit.prevent="handleRegister" class="space-y-9">
-          <div
-            class="bg-gray-50 p-5 rounded-xl border border-gray-200 space-y-4"
-          >
-            <h4
-              class="text-xs md:text-sm font-bold font-mono text-black uppercase tracking-wider mb-5 flex items-center"
+    <section class="bg-surface py-16 md:py-24">
+      <AppContainer>
+        <div class="mx-auto max-w-3xl rounded-2xl border border-line bg-paper p-6 md:p-10">
+          <div v-if="successMessage">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700"
             >
-              <Icon
-                name="heroicons:shield-check"
-                class="w-4 h-4 mr-2 text-gray-400"
-              />
-              Unit Authentication
-            </h4>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs md:text-sm text-black mb-1.5"
-                  >Select Your Unit</label
-                >
-                <div class="relative">
-                  <select
-                    v-model="formData.chapelUnit"
-                    required
-                    class="block w-full pl-3 pr-10 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
-                  >
-                    <option value="" disabled>Choose Unit...</option>
-                    <option
-                      v-for="unit in availableUnits"
-                      :key="unit"
-                      :value="unit"
-                    >
-                      {{ unit }}
-                    </option>
-                  </select>
-                  <div
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-                  >
-                    <Icon
-                      name="heroicons:chevron-down"
-                      class="h-4 w-4 text-gray-400"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs md:text-sm text-black mb-1.5"
-                  >Unit Passkey</label
-                >
-                <div class="relative">
-                  <div
-                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                  >
-                    <Icon name="heroicons:key" class="h-4 w-4 text-gray-400" />
-                  </div>
-                  <input
-                    v-model="formData.passkey"
-                    type="password"
-                    required
-                    class="block w-full pl-9 pr-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
-                    placeholder="Enter 6-character key"
-                  />
-                </div>
-              </div>
+              <Icon name="heroicons:check" class="h-6 w-6" aria-hidden="true" />
             </div>
+            <h2 class="mt-5 text-xl font-semibold">Registration complete</h2>
+            <p class="mt-3 text-base font-light leading-7 text-gray-600">
+              {{ successMessage }}
+            </p>
+            <AppButton variant="ghost" class="mt-6" @click="resetForm">
+              Register another worker
+            </AppButton>
           </div>
 
-          <div>
-            <h4
-              class="text-xs md:text-sm font-bold font-mono text-black uppercase tracking-wider mb-6 border-b border-gray-100 pb-2"
-            >
-              Personal Information
-            </h4>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs md:text-sm text-black mb-1.5"
-                  >Full Name</label
-                >
-                <input
-                  v-model="formData.name"
-                  type="text"
+          <form v-else class="space-y-10" @submit.prevent="handleRegister">
+            <div>
+              <h2
+                class="border-b border-line pb-3 text-lg font-semibold"
+              >
+                Unit verification
+              </h2>
+              <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <AppField
+                  id="chapelUnit"
+                  v-model="formData.chapelUnit"
+                  as="select"
+                  label="Your unit"
                   required
-                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
-                  placeholder="Surname Firstname"
+                >
+                  <option value="" disabled>Select your unit</option>
+                  <option
+                    v-for="unit in availableUnits"
+                    :key="unit"
+                    :value="unit"
+                  >
+                    {{ unit }}
+                  </option>
+                </AppField>
+
+                <AppField
+                  id="passkey"
+                  v-model="formData.passkey"
+                  type="password"
+                  label="Unit passkey"
+                  maxlength="32"
+                  placeholder="Enter your unit passkey"
+                  autocomplete="off"
+                  required
                 />
               </div>
+            </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Gender</label
-                  >
-                  <select
+            <div>
+              <h2 class="border-b border-line pb-3 text-lg font-semibold">
+                Personal information
+              </h2>
+              <div class="mt-5 space-y-6">
+                <AppField
+                  id="name"
+                  v-model="formData.name"
+                  label="Full name"
+                  autocomplete="name"
+                  maxlength="150"
+                  placeholder="Surname Firstname"
+                  required
+                />
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <AppField
+                    id="gender"
                     v-model="formData.gender"
+                    as="select"
+                    label="Gender"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Select</option>
-                    <option value="MALE">MALE</option>
-                    <option value="FEMALE">FEMALE</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Date of Birth</label
-                  >
-                  <input
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                  </AppField>
+
+                  <AppField
+                    id="dateOfBirth"
                     v-model="formData.dateOfBirth"
                     type="date"
+                    label="Date of birth"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                   />
                 </div>
-              </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Phone Number</label
-                  >
-                  <input
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <AppField
+                    id="phoneNumber"
                     v-model="formData.phoneNumber"
                     type="tel"
-                    required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
+                    label="Phone number"
+                    autocomplete="tel"
+                    maxlength="32"
                     placeholder="090..."
+                    required
                   />
-                </div>
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >WhatsApp Number</label
-                  >
-                  <input
+
+                  <AppField
+                    id="whatsappPhoneNumber"
                     v-model="formData.whatsappPhoneNumber"
                     type="tel"
-                    required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
+                    label="WhatsApp number"
+                    autocomplete="tel"
+                    maxlength="32"
                     placeholder="090..."
+                    required
                   />
                 </div>
-              </div>
 
-              <div>
-                <label class="block text-xs md:text-sm text-black mb-1.5"
-                  >Email Address</label
-                >
-                <input
+                <AppField
+                  id="emailAddress"
                   v-model="formData.emailAddress"
                   type="email"
-                  required
-                  class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
+                  label="Email address"
+                  autocomplete="email"
+                  maxlength="254"
                   placeholder="student@gmail.com"
+                  required
                 />
               </div>
             </div>
-          </div>
 
-          <div>
-            <h4
-              class="text-xs md:text-sm text-black font-mono font-bold uppercase tracking-wider mb-6 border-b border-gray-100 pb-2"
-            >
-              Academic Profile
-            </h4>
-
-            <div class="space-y-4">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Matric Number</label
-                  >
-                  <input
+            <div>
+              <h2 class="border-b border-line pb-3 text-lg font-semibold">
+                Academic profile
+              </h2>
+              <div class="mt-5 space-y-6">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <AppField
+                    id="matricNumber"
                     v-model="formData.matricNumber"
-                    type="text"
+                    label="Matric number"
+                    maxlength="50"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
                   />
-                </div>
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Level</label
-                  >
-                  <select
-                    v-model="formData.level"
-                    required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
-                  >
-                    <option value="" disabled>Select</option>
-                    <option value="100">100 Level</option>
-                    <option value="200">200 Level</option>
-                    <option value="300">300 Level</option>
-                    <option value="400">400 Level</option>
-                    <option value="500">500 Level</option>
-                  </select>
-                </div>
-              </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >School Department</label
-                  >
-                  <input
-                    v-model="formData.schoolDepartment"
-                    type="text"
+                  <AppField
+                    id="level"
+                    v-model="formData.level"
+                    as="select"
+                    label="Level"
                     required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium"
-                    placeholder="e.g. Computer Science"
-                  />
-                </div>
-                <div>
-                  <label class="block text-xs md:text-sm text-black mb-1.5"
-                    >Relationship Status</label
-                  >
-                  <select
-                    v-model="formData.relationshipStatus"
-                    required
-                    class="block w-full px-3 py-2.5 border border-gray-300 focus:border-black outline-none rounded-lg text-xs md:text-sm transition-colors text-black font-medium appearance-none bg-white"
                   >
                     <option value="" disabled>Select</option>
-                    <option value="SINGLE">SINGLE</option>
-                    <option value="IN A RELATIONSHIP">IN A RELATIONSHIP</option>
-                    <option value="ENGAGED">ENGAGED</option>
-                    <option value="MARRIED">MARRIED</option>
-                  </select>
+                    <option value="100">100 level</option>
+                    <option value="200">200 level</option>
+                    <option value="300">300 level</option>
+                    <option value="400">400 level</option>
+                    <option value="500">500 level</option>
+                  </AppField>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                  <AppField
+                    id="schoolDepartment"
+                    v-model="formData.schoolDepartment"
+                    label="School department"
+                    maxlength="150"
+                    placeholder="e.g. Computer Science"
+                    required
+                  />
+
+                  <AppField
+                    id="relationshipStatus"
+                    v-model="formData.relationshipStatus"
+                    as="select"
+                    label="Relationship status"
+                    required
+                  >
+                    <option value="" disabled>Select</option>
+                    <option value="SINGLE">Single</option>
+                    <option value="IN A RELATIONSHIP">In a relationship</option>
+                    <option value="ENGAGED">Engaged</option>
+                    <option value="MARRIED">Married</option>
+                  </AppField>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div
-            v-if="errorMessage"
-            class="rounded-xl bg-red-50 p-4 border border-red-100"
-          >
-            <div class="flex">
+            <div
+              v-if="errorMessage"
+              role="alert"
+              class="flex gap-3 rounded-xl border border-brand-100 bg-brand-50 p-4"
+            >
               <Icon
                 name="heroicons:x-circle"
-                class="h-5 w-5 text-red-400 mr-3 shrink-0"
+                class="h-5 w-5 shrink-0 text-brand-600"
+                aria-hidden="true"
               />
-              <h3 class="text-xs md:text-sm font-semibold text-red-800">
+              <p class="text-sm font-medium text-brand-700">
                 {{ errorMessage }}
-              </h3>
+              </p>
             </div>
-          </div>
 
-          <div class="pt-2">
-            <button
-              type="submit"
-              :disabled="loading"
-              class="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-sm text-xs md:text-sm text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer items-center font-mono"
-            >
-              <Icon
-                v-if="loading"
-                name="heroicons:arrow-path"
-                class="mr-2 h-5 w-5 animate-spin"
-              />
-              {{
-                loading ? "Verifying & Submitting..." : "Complete Registration"
-              }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <AppButton type="submit" :loading="loading" class="w-full">
+              {{ loading ? "Submitting..." : "Complete registration" }}
+            </AppButton>
+          </form>
+        </div>
+      </AppContainer>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useRuntimeConfig } from "#app";
+import { onMounted, reactive, ref } from "vue";
+import { useRuntimeConfig, useSeoMeta } from "#app";
+import heroImage from "~/assets/images/connect.webp";
 
-// This is the public frontend, so no authStore is needed here.
+useSeoMeta({
+  title: "Workers Biodata | Chapel of Praise",
+  description: "Official worker registration portal for Chapel of Praise.",
+  robots: "noindex, nofollow",
+});
+
 const config = useRuntimeConfig();
 
 const availableUnits = ref([]);
@@ -345,18 +268,13 @@ const handleRegister = async () => {
   successMessage.value = "";
 
   try {
-    // Note: No Authorization header needed as this is a public route
-    const response = await $fetch(
-      `${config.public.apiBaseUrl}/members/register-worker`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    await $fetch(`${config.public.apiBaseUrl}/members/register-worker`, {
+      method: "POST",
+      body: formData,
+    });
 
     successMessage.value = `You have successfully registered as a worker in the ${formData.chapelUnit} unit. Your unit head has been notified.`;
   } catch (error) {
-    console.error(error);
     errorMessage.value =
       error.data?.error ||
       "Registration failed. Please check your passkey and try again.";
