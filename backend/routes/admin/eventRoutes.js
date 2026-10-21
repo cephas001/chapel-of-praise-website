@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { db } = require("../../config/firebase");
+const { db, admin } = require("../../config/firebase");
 const {
   verifyToken,
   requireStaticTypeAccess,
 } = require("../../middleware/auth");
 const { pickWritableFields } = require("../../utils/payload");
+const { encodeCursor, decodeCursor } = require("../../utils/cursor");
 
 // Client-writable fields only; server-managed fields (creatorId, timestamps)
 // can never be set or overwritten by the request body.
@@ -133,9 +134,19 @@ router.post("/", async (req, res) => {
 // Get All Events
 router.get("/", async (req, res) => {
   try {
+    const cursorParam =
+      typeof req.query.cursor === "string" ? req.query.cursor.trim() : "";
+    const cursor = cursorParam ? decodeCursor(cursorParam) : null;
+
+    if (cursorParam && (!cursor || typeof cursor.id !== "string")) {
+      return res.status(400).json({ error: "Invalid pagination cursor." });
+    }
+
+    const usesOffset = req.query.offset !== undefined;
     const paginated =
       req.query.limit !== undefined ||
-      req.query.offset !== undefined ||
+      usesOffset ||
+      Boolean(cursorParam) ||
       req.query.paginated === "1";
     const limit = parseBoundedInteger(
       req.query.limit,
@@ -177,13 +188,76 @@ router.get("/", async (req, res) => {
       filtered.sort(compareEvents(sort));
 
       const total = filtered.length;
-      const events = paginated
-        ? filtered.slice(offset, offset + limit)
-        : filtered;
 
       if (!paginated) {
-        return res.status(200).json(events);
+        return res.status(200).json(filtered);
       }
+
+      if (usesOffset) {
+        const events = filtered.slice(offset, offset + limit);
+
+        return res.status(200).json({
+          events,
+          total,
+          limit,
+          offset,
+          hasMore: offset + events.length < total,
+        });
+      }
+
+      const cursorIndex = cursor
+        ? filtered.findIndex((event) => event.id === cursor.id)
+        : -1;
+
+      if (cursor && cursorIndex === -1) {
+        return res.status(400).json({ error: "Invalid pagination cursor." });
+      }
+
+      const startIndex = cursorIndex + 1;
+      const events = filtered.slice(startIndex, startIndex + limit);
+      const hasMore = startIndex + events.length < total;
+      const lastEvent = events[events.length - 1];
+
+      return res.status(200).json({
+        events,
+        limit,
+        hasMore,
+        nextCursor:
+          hasMore && lastEvent
+            ? encodeCursor({ id: lastEvent.id })
+            : null,
+      });
+    }
+
+    if (!paginated) {
+      const snapshot = await db
+        .collection("events")
+        .orderBy("eventDate", sort.direction)
+        .get();
+      const events = [];
+      snapshot.forEach((doc) => {
+        events.push({ id: doc.id, ...doc.data() });
+      });
+
+      return res.status(200).json(events);
+    }
+
+    if (usesOffset) {
+      const query = db
+        .collection("events")
+        .orderBy("eventDate", sort.direction);
+
+      const [totalSnapshot, snapshot] = await Promise.all([
+        db.collection("events").count().get(),
+        query.limit(limit).offset(offset).get(),
+      ]);
+
+      const events = [];
+      snapshot.forEach((doc) => {
+        events.push({ id: doc.id, ...doc.data() });
+      });
+
+      const total = totalSnapshot.data().count;
 
       return res.status(200).json({
         events,
@@ -194,38 +268,36 @@ router.get("/", async (req, res) => {
       });
     }
 
-    const query = db
-      .collection("events")
-      .orderBy("eventDate", sort.direction);
-
-    if (!paginated) {
-      const snapshot = await query.get();
-      const events = [];
-      snapshot.forEach((doc) => {
-        events.push({ id: doc.id, ...doc.data() });
-      });
-
-      return res.status(200).json(events);
+    if (cursor && typeof cursor.eventDate !== "string") {
+      return res.status(400).json({ error: "Invalid pagination cursor." });
     }
 
-    const [totalSnapshot, snapshot] = await Promise.all([
-      db.collection("events").count().get(),
-      query.limit(limit).offset(offset).get(),
-    ]);
+    let query = db
+      .collection("events")
+      .orderBy("eventDate", sort.direction)
+      .orderBy(admin.firestore.FieldPath.documentId(), sort.direction);
 
-    const events = [];
-    snapshot.forEach((doc) => {
-      events.push({ id: doc.id, ...doc.data() });
-    });
+    if (cursor) {
+      query = query.startAfter(cursor.eventDate, cursor.id);
+    }
 
-    const total = totalSnapshot.data().count;
+    const snapshot = await query.limit(limit + 1).get();
+    const pageDocs = snapshot.docs.slice(0, limit);
+    const events = pageDocs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const hasMore = snapshot.size > limit;
+    const lastDoc = pageDocs[pageDocs.length - 1];
 
     res.status(200).json({
       events,
-      total,
       limit,
-      offset,
-      hasMore: offset + events.length < total,
+      hasMore,
+      nextCursor:
+        hasMore && lastDoc
+          ? encodeCursor({
+              id: lastDoc.id,
+              eventDate: lastDoc.get("eventDate"),
+            })
+          : null,
     });
   } catch (error) {
     console.error("Error fetching events:", error);

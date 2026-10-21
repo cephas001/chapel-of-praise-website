@@ -1,5 +1,5 @@
 // backend/middleware/auth.js
-const { admin, db } = require("../config/firebase");
+const { admin } = require("../config/firebase");
 
 // 1. Basic Token Verification (Are they logged in?)
 const verifyToken = async (req, res, next) => {
@@ -16,23 +16,10 @@ const verifyToken = async (req, res, next) => {
     // 2. Verify the token with Firebase
     const decodedToken = await admin.auth().verifyIdToken(idToken);
 
-    // 3. Custom claims only refresh when the ID token rotates (~1h), so a
-    // demoted admin would keep their old role/type until then. The Firestore
-    // profile is the source of truth: prefer it so role/type changes take
-    // effect on the very next request.
-    const userDoc = await db.collection("users").doc(decodedToken.uid).get();
-
-    if (userDoc.exists) {
-      const { role, type, name } = userDoc.data();
-      req.user = {
-        ...decodedToken,
-        role: role || decodedToken.role,
-        type: type || decodedToken.type,
-        name: name || decodedToken.name,
-      };
-    } else {
-      req.user = decodedToken;
-    }
+    // 3. Role/type come from custom claims on the verified ID token. This
+    // avoids a Firestore read on every API request. Clients must refresh
+    // their token after a role/type change (`getIdToken(true)`).
+    req.user = decodedToken;
 
     next();
   } catch (error) {

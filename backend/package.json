@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "node --watch-path=./routes --watch-path=./index.js index.js",
     "start": "node index.js",
-    "seed:units": "node scripts/seedChapelUnits.js"
+    "seed:units": "node scripts/seedChapelUnits.js",
+    "migrate:claims": "node scripts/migrateUserClaims.js",
+    "migrate:claims:dry": "node scripts/migrateUserClaims.js --dry-run"
   },
   "keywords": [],
   "author": "",

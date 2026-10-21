@@ -4,6 +4,7 @@ const express = require("express");
 const { db, auth, admin } = require("../../config/firebase");
 const { verifyToken, requireSuperAdmin } = require("../../middleware/auth");
 const { loginLimiter } = require("../../middleware/rateLimiters");
+const { setUserClaims } = require("../../utils/userClaims");
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
       displayName: name,
     });
 
-    await auth.setCustomUserClaims(userRecord.uid, {
+    await setUserClaims(userRecord.uid, {
       role: resolvedRole,
       type,
     });
@@ -87,29 +88,18 @@ router.post("/register", verifyToken, requireSuperAdmin, async (req, res) => {
 // This route is now just for the frontend to send its token and fetch its role/type.
 router.post("/login", loginLimiter, verifyToken, async (req, res) => {
   try {
-    // Thanks to your verifyToken middleware, req.user already contains the decoded Firebase token!
-    const uid = req.user.uid;
+    // Role/type are read from the verified token's custom claims, so login
+    // no longer needs an extra Firestore lookup.
+    const { uid, name, email, role, type } = req.user;
 
-    // Fetch the extra user data (role, type) from the Firestore 'users' collection
-    const userDoc = await db.collection("users").doc(uid).get();
-
-    if (!userDoc.exists) {
-      return res
-        .status(404)
-        .json({ error: "User profile not found in database." });
-    }
-
-    const userData = userDoc.data();
-
-    // We no longer mint our own token, we just return the user data needed for frontend state
     res.status(200).json({
       message: "User data synced successfully",
       user: {
         id: uid,
-        name: userData.name,
-        email: userData.email,
-        role: userData.role,
-        type: userData.type,
+        name: name || "",
+        email: email || "",
+        role: role || null,
+        type: type || null,
       },
     });
   } catch (error) {
@@ -290,6 +280,19 @@ router.put("/update/:uid", verifyToken, requireSuperAdmin, async (req, res) => {
       return res.status(400).json({ error: "User ID is required." });
     }
 
+    if (
+      typeof role === "string" &&
+      !["admin", "super_admin"].includes(role)
+    ) {
+      return res.status(400).json({ error: "Invalid user role." });
+    }
+
+    if (typeof type === "string" && !VALID_USER_TYPES.includes(type)) {
+      return res
+        .status(400)
+        .json({ error: `Type must be one of: ${VALID_USER_TYPES.join(", ")}.` });
+    }
+
     // 1. Update Firebase Auth user (displayName and email if provided)
     const updatePayload = {};
     if (typeof name === "string") updatePayload.displayName = name;
@@ -307,12 +310,7 @@ router.put("/update/:uid", verifyToken, requireSuperAdmin, async (req, res) => {
     if (Object.keys(claimsToSet).length > 0) {
       // Merge with existing claims so partial updates (e.g. only type)
       // don't wipe the user's other custom claims.
-      const userRecord = await auth.getUser(uid);
-      const mergedClaims = {
-        ...(userRecord.customClaims || {}),
-        ...claimsToSet,
-      };
-      await auth.setCustomUserClaims(uid, mergedClaims);
+      await setUserClaims(uid, claimsToSet);
     }
 
     // 3. Update or create Firestore user doc
@@ -395,12 +393,7 @@ router.post(
       }
 
       // 2. Merge with existing claims so upgrading doesn't drop custom fields (e.g. type)
-      const userRecord = await auth.getUser(uid);
-      const existingClaims = userRecord.customClaims || {};
-      await auth.setCustomUserClaims(uid, {
-        ...existingClaims,
-        role: "super_admin",
-      });
+      await setUserClaims(uid, { role: "super_admin" });
 
       // 3. Update Firestore record (role only; type is preserved)
       await userDocRef.update({
