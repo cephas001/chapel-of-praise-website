@@ -21,6 +21,10 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   devtools: { enabled: process.env.NODE_ENV !== "production" },
 
+  experimental: {
+    payloadExtraction: false,
+  },
+
   modules: [
     "@nuxt/icon",
     "@pinia/nuxt",
@@ -40,6 +44,26 @@ export default defineNuxtConfig({
   image: {
     domains: blobHosts,
     densities: [1],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+  },
+
+  hooks: {
+    "build:manifest": (manifest) => {
+      for (const entry of Object.values(manifest)) {
+        if (!Array.isArray(entry.assets)) continue;
+
+        entry.assets = entry.assets.filter(
+          (asset) => !/\.(?:avif|webp|png|jpe?g|gif|svg)$/i.test(asset),
+        );
+      }
+    },
   },
 
   compression: {
@@ -69,6 +93,11 @@ export default defineNuxtConfig({
     "/**": {
       headers: {
         vary: "Accept-Encoding",
+      },
+    },
+    "/_ipx/**": {
+      headers: {
+        "cache-control": "public, max-age=31536000, immutable",
       },
     },
     "/images/**": {

@@ -52,6 +52,15 @@
   }
 }
 
+@keyframes loading-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @layer utilities {
   .form-honeypot {
     position: absolute !important;
@@ -59,5 +68,15 @@
     width: 1px !important;
     height: 1px !important;
     overflow: hidden !important;
+  }
+
+  .loading-reveal {
+    animation: loading-reveal 180ms ease-out 180ms both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loading-reveal {
+      animation-duration: 0.01ms;
+    }
   }
 }

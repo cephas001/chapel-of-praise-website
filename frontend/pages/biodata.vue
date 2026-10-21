@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       kicker="Chapel of praise"
       title="Workers biodata"
       :image="heroImage"

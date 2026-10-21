@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       :kicker="pageContent.hero.kicker"
       :image="pageContent.hero.image"
       :fallback="heroImages.chapel"
@@ -100,6 +101,7 @@ const config = useRuntimeConfig();
 
 const { data: pageData } = await useFetch(
   `${config.public.apiBaseUrl}/public/about`,
+  { lazy: import.meta.client },
 );
 
 const sanitizeHtml = (html) =>

@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
@@ -180,6 +181,7 @@ const config = useRuntimeConfig();
 
 const { data: fetchedData } = await useFetch(
   `${config.public.apiBaseUrl}/public/prayer`,
+  { lazy: import.meta.client },
 );
 
 const pageData = computed(() => {

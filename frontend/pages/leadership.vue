@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
@@ -25,41 +26,51 @@
             <div
               class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
             >
-              <article
-                v-for="(chaplain, index) in pageData.chaplaincy"
-                :key="'chaplain-' + index"
-                class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
-              >
-                <AppImage
-                  :src="chaplain.imageUrl || defaultPastorImage"
-                  :alt="chaplain.name || 'Chaplain'"
-                  width="320"
-                  height="320"
-                  fit="cover"
-                  class="aspect-square w-40 rounded-2xl object-cover"
-                  loading="lazy"
-                  decoding="async"
+              <template v-if="pending">
+                <AppLoadingCard
+                  v-for="item in 3"
+                  :key="'chaplain-loading-' + item"
+                  variant="person"
                 />
-                <h4 class="mt-6 text-xl font-semibold">
-                  {{ chaplain.name }}
-                </h4>
-                <p class="mt-1 text-sm font-medium text-brand-600">
-                  {{ chaplain.title }}
-                </p>
-                <p class="mt-4 text-sm font-light leading-6 text-gray-600">
-                  {{ chaplain.bio }}
-                </p>
-              </article>
+              </template>
 
-              <div
-                v-if="pageData.chaplaincy.length === 0"
-                class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
-              >
-                <h4 class="text-xl font-semibold">No chaplains listed yet</h4>
-                <p class="mt-3 text-base font-light text-gray-600">
-                  Please check back soon.
-                </p>
-              </div>
+              <template v-else>
+                <article
+                  v-for="(chaplain, index) in pageData.chaplaincy"
+                  :key="'chaplain-' + index"
+                  class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
+                >
+                  <AppImage
+                    :src="chaplain.imageUrl || defaultPastorImage"
+                    :alt="chaplain.name || 'Chaplain'"
+                    width="320"
+                    height="320"
+                    fit="cover"
+                    class="aspect-square w-40 rounded-2xl object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <h4 class="mt-6 text-xl font-semibold">
+                    {{ chaplain.name }}
+                  </h4>
+                  <p class="mt-1 text-sm font-medium text-brand-600">
+                    {{ chaplain.title }}
+                  </p>
+                  <p class="mt-4 text-sm font-light leading-6 text-gray-600">
+                    {{ chaplain.bio }}
+                  </p>
+                </article>
+
+                <div
+                  v-if="pageData.chaplaincy.length === 0"
+                  class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
+                >
+                  <h4 class="text-xl font-semibold">No chaplains listed yet</h4>
+                  <p class="mt-3 text-base font-light text-gray-600">
+                    Please check back soon.
+                  </p>
+                </div>
+              </template>
             </div>
           </section>
 
@@ -71,43 +82,53 @@
             <div
               class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
             >
-              <article
-                v-for="(executive, index) in pageData.executives"
-                :key="'exec-' + index"
-                class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
-              >
-                <AppImage
-                  :src="executive.imageUrl || defaultExecutiveImage"
-                  :alt="executive.name || 'Executive'"
-                  width="320"
-                  height="320"
-                  fit="cover"
-                  class="aspect-square w-40 rounded-2xl object-cover grayscale"
-                  loading="lazy"
-                  decoding="async"
+              <template v-if="pending">
+                <AppLoadingCard
+                  v-for="item in 3"
+                  :key="'executive-loading-' + item"
+                  variant="person"
                 />
-                <h4 class="mt-6 text-xl font-semibold">
-                  {{ executive.name }}
-                </h4>
-                <p class="mt-1 text-sm font-medium text-brand-600">
-                  {{ executive.title }}
-                </p>
-                <p class="mt-4 text-sm font-light leading-6 text-gray-600">
-                  {{ executive.bio }}
-                </p>
-              </article>
+              </template>
 
-              <div
-                v-if="pageData.executives.length === 0"
-                class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
-              >
-                <h4 class="text-xl font-semibold">
-                  No student executives listed yet
-                </h4>
-                <p class="mt-3 text-base font-light text-gray-600">
-                  Please check back soon.
-                </p>
-              </div>
+              <template v-else>
+                <article
+                  v-for="(executive, index) in pageData.executives"
+                  :key="'exec-' + index"
+                  class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
+                >
+                  <AppImage
+                    :src="executive.imageUrl || defaultExecutiveImage"
+                    :alt="executive.name || 'Executive'"
+                    width="320"
+                    height="320"
+                    fit="cover"
+                    class="aspect-square w-40 rounded-2xl object-cover grayscale"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <h4 class="mt-6 text-xl font-semibold">
+                    {{ executive.name }}
+                  </h4>
+                  <p class="mt-1 text-sm font-medium text-brand-600">
+                    {{ executive.title }}
+                  </p>
+                  <p class="mt-4 text-sm font-light leading-6 text-gray-600">
+                    {{ executive.bio }}
+                  </p>
+                </article>
+
+                <div
+                  v-if="pageData.executives.length === 0"
+                  class="col-span-full rounded-2xl border border-line bg-paper p-10 text-center"
+                >
+                  <h4 class="text-xl font-semibold">
+                    No student executives listed yet
+                  </h4>
+                  <p class="mt-3 text-base font-light text-gray-600">
+                    Please check back soon.
+                  </p>
+                </div>
+              </template>
             </div>
           </section>
         </div>
@@ -138,8 +159,9 @@ useSeoMeta({
 
 const config = useRuntimeConfig();
 
-const { data: fetchedData } = await useFetch(
+const { data: fetchedData, pending } = await useFetch(
   `${config.public.apiBaseUrl}/public/leadership`,
+  { lazy: import.meta.client },
 );
 
 const pageData = computed(() => {

@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       kicker="Join the team"
       title="Become a Worker"
       :image="heroImage"

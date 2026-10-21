@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
@@ -14,16 +15,37 @@
         >
           {{ pageData.headline.title }}
         </h2>
-        <p class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600">
+        <p
+          class="mt-5 max-w-2xl text-lg font-light leading-relaxed text-gray-600"
+        >
           {{ pageData.headline.description }}
         </p>
 
         <div
           class="mt-12 grid grid-cols-1 gap-6"
-          :class="{ 'lg:grid-cols-2': hasBankDetails && hasOnlineGiving }"
+          :class="{
+            'lg:grid-cols-2': !pending && hasBankDetails && hasOnlineGiving,
+          }"
         >
           <div
-            v-if="hasBankDetails"
+            v-if="pending"
+            class="loading-reveal rounded-2xl border border-line bg-surface p-8"
+            aria-hidden="true"
+          >
+            <div class="motion-safe:animate-pulse">
+              <div class="h-8 w-8 rounded-full bg-line" />
+              <div class="mt-5 h-5 w-40 rounded-sm bg-line" />
+              <div class="mt-6 space-y-5">
+                <div v-for="row in 3" :key="row">
+                  <div class="h-3 w-24 rounded-sm bg-line/80" />
+                  <div class="mt-2 h-5 w-44 rounded-sm bg-line" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-if="!pending && hasBankDetails"
             class="rounded-2xl border border-line bg-surface p-8"
           >
             <Icon
@@ -58,7 +80,7 @@
           </div>
 
           <div
-            v-if="hasOnlineGiving"
+            v-if="!pending && hasOnlineGiving"
             class="flex flex-col justify-between rounded-2xl border border-line bg-paper p-8"
           >
             <div>
@@ -84,7 +106,7 @@
           </div>
 
           <div
-            v-if="!hasBankDetails && !hasOnlineGiving"
+            v-if="!pending && !hasBankDetails && !hasOnlineGiving"
             class="rounded-2xl border border-line bg-surface p-10 text-center"
           >
             <h3 class="text-xl font-semibold">
@@ -124,8 +146,9 @@ useSeoMeta({
 
 const config = useRuntimeConfig();
 
-const { data: fetchedData } = await useFetch(
+const { data: fetchedData, pending } = await useFetch(
   `${config.public.apiBaseUrl}/public/giving`,
+  { lazy: import.meta.client },
 );
 
 const pageData = computed(() => {
@@ -166,5 +189,7 @@ const hasBankDetails = computed(() =>
   Boolean(pageData.value.bank.accountNumber),
 );
 
-const hasOnlineGiving = computed(() => Boolean(pageData.value.online.buttonUrl));
+const hasOnlineGiving = computed(() =>
+  Boolean(pageData.value.online.buttonUrl),
+);
 </script>

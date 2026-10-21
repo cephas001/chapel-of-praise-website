@@ -1,6 +1,7 @@
 <template>
   <div class="w-full bg-paper text-ink">
     <AppPageHero
+      priority
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
@@ -125,7 +126,23 @@
             <div class="rounded-2xl border border-line bg-surface p-8 md:p-12">
               <h2 class="text-2xl font-semibold">Visit us</h2>
 
-              <div class="mt-8 space-y-8">
+              <div
+                v-if="pending"
+                class="loading-reveal mt-8 space-y-8"
+                aria-hidden="true"
+              >
+                <div v-for="row in 3" :key="row" class="flex items-start gap-4">
+                  <div
+                    class="h-10 w-10 shrink-0 rounded-full border border-line bg-paper motion-safe:animate-pulse"
+                  />
+                  <div class="w-full space-y-3 motion-safe:animate-pulse">
+                    <div class="h-3 w-24 rounded-sm bg-line" />
+                    <div class="h-3 w-4/5 rounded-sm bg-line/80" />
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="mt-8 space-y-8">
                 <div
                   v-if="pageData.campus.address"
                   class="flex items-start gap-4"
@@ -306,8 +323,9 @@ const resetForm = () => {
 
 const config = useRuntimeConfig();
 
-const { data: fetchedData } = await useFetch(
+const { data: fetchedData, pending } = await useFetch(
   `${config.public.apiBaseUrl}/public/contact`,
+  { lazy: import.meta.client },
 );
 
 const pageData = computed(() => {
@@ -349,17 +367,17 @@ const pageData = computed(() => {
 const hasContactDetails = computed(() =>
   Boolean(
     pageData.value.campus.address ||
-    pageData.value.campus.serviceTimesDetails ||
-    pageData.value.contact.email ||
-    pageData.value.contact.phone,
+      pageData.value.campus.serviceTimesDetails ||
+      pageData.value.contact.email ||
+      pageData.value.contact.phone,
   ),
 );
 
 const hasSocialLinks = computed(() =>
   Boolean(
     pageData.value.contact.instagramUrl ||
-    pageData.value.contact.twitterUrl ||
-    pageData.value.contact.youtubeUrl,
+      pageData.value.contact.twitterUrl ||
+      pageData.value.contact.youtubeUrl,
   ),
 );
 </script>

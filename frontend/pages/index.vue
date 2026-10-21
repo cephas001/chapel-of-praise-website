@@ -47,6 +47,7 @@
               <AppImage
                 :src="card.image"
                 :alt="card.title"
+                :sizes="{ xs: '100vw', sm: '100vw', md: '33vw' }"
                 width="640"
                 height="480"
                 fit="cover"
@@ -153,6 +154,7 @@
           <div class="overflow-hidden rounded-2xl">
             <AppImage
               :src="pageData.leadership.image"
+              sizes="xs:100vw md:50vw"
               width="640"
               height="800"
               fit="cover"
@@ -215,6 +217,7 @@ const config = useRuntimeConfig();
 
 const { data: homepageData } = await useFetch(
   `${config.public.apiBaseUrl}/public/homepage`,
+  { lazy: import.meta.client },
 );
 
 const pageData = computed(() => {
