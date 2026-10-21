@@ -103,15 +103,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "~/stores/auth";
-import { useRuntimeConfig, navigateTo, useNuxtApp } from "#app";
+import { useRuntimeConfig, navigateTo } from "#app";
 
 definePageMeta({ layout: false });
 
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
-const { $auth } = useNuxtApp(); // Get Firebase Auth from the plugin
 const loading = ref(false);
 const showPassword = ref(false);
 
@@ -122,20 +121,36 @@ const formData = reactive({
   password: "",
 });
 
+onMounted(async () => {
+  try {
+    const auth = await authStore.ensureFirebase();
+
+    if (!auth.currentUser) return;
+
+    const token = await auth.currentUser.getIdToken(true);
+    const synced = await authStore.syncUser(token);
+
+    if (synced) await navigateTo("/dashboard");
+  } catch (error) {
+    console.error("Unable to restore the admin session:", error);
+  }
+});
+
 async function handleLogin() {
   loading.value = true;
   try {
+    const auth = await authStore.ensureFirebase();
     const { signInWithEmailAndPassword } = await import("firebase/auth");
 
     // 1. Log in via Firebase FIRST
     const userCredential = await signInWithEmailAndPassword(
-      $auth,
+      auth,
       formData.email,
       formData.password,
     );
 
     // 2. Get the secure Firebase ID Token
-    const firebaseToken = await userCredential.user.getIdToken();
+    const firebaseToken = await userCredential.user.getIdToken(true);
 
     // 3. Sync with your backend using the new login-sync route
     const response = await $fetch(`${config.public.apiBase}/admin/auth/login`, {
@@ -193,8 +208,9 @@ async function handleForgotPassword() {
   }
 
   try {
+    const auth = await authStore.ensureFirebase();
     const { sendPasswordResetEmail } = await import("firebase/auth");
-    await sendPasswordResetEmail($auth, formData.email);
+    await sendPasswordResetEmail(auth, formData.email);
     toast.success("Password reset email sent. Check your inbox.");
   } catch (error) {
     console.error("Password reset error:", error);

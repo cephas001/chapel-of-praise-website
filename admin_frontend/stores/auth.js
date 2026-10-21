@@ -6,9 +6,22 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: useCookie("admin_user").value || null,
     token: useCookie("admin_token").value || null,
+    firebaseReady: false,
   }),
 
   actions: {
+    async ensureFirebase() {
+      const { $firebaseAuth } = useNuxtApp();
+
+      if (typeof $firebaseAuth !== "function") {
+        throw new Error("Firebase authentication is unavailable.");
+      }
+
+      const auth = await $firebaseAuth();
+      this.firebaseReady = true;
+      return auth;
+    },
+
     setAuth(userData, token) {
       this.user = userData;
       this.token = token;
@@ -64,11 +77,9 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        const { $auth } = useNuxtApp();
-        if ($auth) {
-          const { signOut } = await import("firebase/auth");
-          await signOut($auth);
-        }
+        const auth = await this.ensureFirebase();
+        const { signOut } = await import("firebase/auth");
+        await signOut(auth);
       } catch (error) {
         console.error("Firebase logout error", error);
       }

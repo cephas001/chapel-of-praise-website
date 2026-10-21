@@ -1,8 +1,11 @@
-﻿// plugins/firebase.client.js
-import { useAuthStore } from "~/stores/auth";
-import { useCookie, useRuntimeConfig, defineNuxtPlugin } from "#app";
+﻿import { useAuthStore } from "~/stores/auth";
+import {
+  useCookie,
+  useRuntimeConfig,
+  defineNuxtPlugin,
+} from "#app";
 
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
 
   const firebaseConfig = {
@@ -10,41 +13,70 @@ export default defineNuxtPlugin(async () => {
     authDomain: config.public.firebaseAuthDomain,
     projectId: config.public.firebaseProjectId,
   };
-
-  const [{ initializeApp }, { getAuth, onIdTokenChanged }] = await Promise.all([
-    import("firebase/app"),
-    import("firebase/auth"),
-  ]);
-
-  // 1. Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // 2. Set up the auto-refresh listener immediately
   const authStore = useAuthStore();
   const tokenCookie = useCookie("admin_token", { maxAge: 60 * 60 });
 
-  onIdTokenChanged(auth, async (user) => {
-    if (user) {
-      // User is logged in, grab the freshest token and update the cookie
-      const token = await user.getIdToken();
-      tokenCookie.value = token;
-      authStore.token = token; // Keep Pinia in sync
-    } else {
-      // User is logged out: clear any leftover token/state so a stale
-      // admin_user cookie can't keep the UI in a zombie session.
-      tokenCookie.value = null;
+  let authPromise = null;
 
-      if (authStore.user || authStore.token) {
-        authStore.clearAuth();
-      }
+  const initializeAuth = () => {
+    if (authPromise) return authPromise;
+
+    authPromise = Promise.all([
+      import("firebase/app"),
+      import("firebase/auth"),
+    ])
+      .then(
+        ([
+          { initializeApp, getApp, getApps },
+          { getAuth, onIdTokenChanged },
+        ]) => {
+          const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+          const auth = getAuth(app);
+
+          onIdTokenChanged(auth, async (user) => {
+            if (user) {
+              const token = await user.getIdToken();
+              tokenCookie.value = token;
+              authStore.token = token;
+            } else {
+              tokenCookie.value = null;
+
+              if (authStore.user || authStore.token) {
+                authStore.clearAuth();
+              }
+            }
+          });
+
+          return auth;
+        },
+      )
+      .catch((error) => {
+        authPromise = null;
+        console.error("Firebase initialization failed:", error);
+        throw error;
+      });
+
+    return authPromise;
+  };
+
+  const scheduleIdleInitialization = () => {
+    const initialize = () => {
+      initializeAuth().catch(() => undefined);
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(initialize, { timeout: 2500 });
+      return;
     }
-  });
 
-  // 3. Provide $auth to the rest of the Nuxt app
+    window.setTimeout(initialize, 300);
+  };
+
+  nuxtApp.hook("app:mounted", scheduleIdleInitialization);
+
   return {
     provide: {
-      auth,
+      firebaseAuth: initializeAuth,
     },
   };
 });

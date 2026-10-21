@@ -287,7 +287,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRuntimeConfig, useNuxtApp } from "#app";
+import { useRuntimeConfig } from "#app";
 import { useAuthStore } from "@/stores/auth";
 import { useConfirm } from "@/composables/useConfirm";
 import { sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
@@ -296,7 +296,6 @@ const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const toast = useAppToast();
 const confirm = useConfirm();
-const { $auth } = useNuxtApp();
 
 // State
 const isFetching = ref(true);
@@ -431,7 +430,8 @@ const initiatePasswordReset = async () => {
 
   if (answer) {
     try {
-      await sendPasswordResetEmail($auth, currentUser.value.email);
+      const auth = await authStore.ensureFirebase();
+      await sendPasswordResetEmail(auth, currentUser.value.email);
       toast.success("Password reset instructions have been emailed to you.");
     } catch (error) {
       console.error("Failed to send password reset email:", error);
@@ -451,10 +451,11 @@ const initiateEmailVerification = async () => {
 
   if (answer) {
     try {
-      if (!$auth.currentUser) {
+      const auth = await authStore.ensureFirebase();
+      if (!auth.currentUser) {
         throw new Error("No authenticated user found");
       }
-      await sendEmailVerification($auth.currentUser);
+      await sendEmailVerification(auth.currentUser);
       toast.success("A verification link has been sent to your email.");
     } catch (error) {
       console.error("Failed to send verification email:", error);
