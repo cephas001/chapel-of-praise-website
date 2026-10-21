@@ -122,7 +122,7 @@
 
           <tbody class="bg-surface divide-y divide-line">
             <tr
-              v-for="event in paged"
+              v-for="event in events"
               :key="event.id"
               class="group transition-colors hover:bg-subtle/40"
             >
@@ -202,7 +202,7 @@
 
         <!-- No matches -->
         <div
-          v-if="!isFetching && events.length > 0 && filtered.length === 0"
+          v-if="!isFetching && events.length === 0 && hasActiveFilters"
           class="border-t border-line py-16 text-center"
         >
           <Icon
@@ -253,7 +253,10 @@
       </div>
 
       <!-- Empty State -->
-      <div v-if="!isFetching && events.length === 0" class="py-20 text-center">
+      <div
+        v-if="!isFetching && events.length === 0 && !hasActiveFilters"
+        class="py-20 text-center"
+      >
         <Icon
           name="heroicons:calendar"
           class="mx-auto mb-4 h-12 w-12 text-line"
@@ -281,7 +284,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRuntimeConfig } from "#app";
 import { useConfirm } from "~/composables/useConfirm";
 
@@ -293,89 +296,102 @@ const config = useRuntimeConfig();
 const confirm = useConfirm();
 const toast = useAppToast();
 
+const pageSize = 10;
 const events = ref([]);
 const isFetching = ref(true);
 const isSubmitting = ref(false);
-
-const eventLabel = (event) =>
-  event.service === "SPECIAL PROGRAM"
-    ? event.specialProgram || event.service
-    : event.service;
-
-const startOfToday = () => {
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  return date;
-};
-
-const {
-  search,
-  filters,
-  sortKey,
-  sortDirection,
-  page,
-  pageSize,
-  filtered,
-  paged,
-  total,
-  totalPages,
-  nextPage,
-  prevPage,
-  reset,
-} = useListControls(events, {
-  searchFields: ["service", "specialProgram", "eventDescription", "programDay"],
-  defaultFilters: { service: "ALL", time: "all" },
-  filter: (event, activeFilters) => {
-    if (
-      activeFilters.service !== "ALL" &&
-      event.service !== activeFilters.service
-    ) {
-      return false;
-    }
-    if (activeFilters.time !== "all") {
-      const isUpcoming = new Date(event.eventDate || 0) >= startOfToday();
-      if (activeFilters.time === "upcoming" && !isUpcoming) return false;
-      if (activeFilters.time === "past" && isUpcoming) return false;
-    }
-    return true;
-  },
-  sorters: {
-    date: (a, b) => new Date(a.eventDate || 0) - new Date(b.eventDate || 0),
-    name: (a, b) => String(eventLabel(a)).localeCompare(String(eventLabel(b))),
-  },
-  defaultSort: "date",
-  defaultDirection: "desc",
-  pageSize: 10,
-});
-
-const sortOption = computed({
-  get: () => `${sortKey.value}:${sortDirection.value}`,
-  set: (value) => {
-    const [key, direction] = value.split(":");
-    sortKey.value = key;
-    sortDirection.value = direction;
-  },
-});
+const search = ref("");
+const filters = ref({ service: "ALL", time: "all" });
+const sortOption = ref("date:desc");
+const page = ref(1);
+const total = ref(0);
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(total.value / pageSize)),
+);
+const hasActiveFilters = computed(
+  () =>
+    search.value.trim().length > 0 ||
+    filters.value.service !== "ALL" ||
+    filters.value.time !== "all",
+);
 
 const isDrawerOpen = ref(false);
 const selectedEvent = ref(null);
 
-// Fetch all events on mount
+let requestSequence = 0;
+let filterTimer;
+
 const fetchEvents = async () => {
+  const requestId = ++requestSequence;
   isFetching.value = true;
+
   try {
-    const response = await $fetch(`${config.public.apiBase}/admin/events`);
-    events.value = response;
+    const response = await $fetch(`${config.public.apiBase}/admin/events`, {
+      query: {
+        paginated: 1,
+        limit: pageSize,
+        offset: (page.value - 1) * pageSize,
+        search: search.value.trim() || undefined,
+        service: filters.value.service,
+        time: filters.value.time,
+        sort: sortOption.value,
+      },
+    });
+
+    if (requestId !== requestSequence) return;
+
+    events.value = response.events;
+    total.value = response.total;
+
+    if (page.value > totalPages.value) {
+      page.value = totalPages.value;
+      await fetchEvents();
+    }
   } catch (error) {
+    if (requestId !== requestSequence) return;
     console.error("Error fetching events:", error);
     toast.error("Could not fetch events. Please try again.");
   } finally {
-    isFetching.value = false;
+    if (requestId === requestSequence) {
+      isFetching.value = false;
+    }
   }
+};
+
+const scheduleFilterFetch = () => {
+  clearTimeout(filterTimer);
+  filterTimer = setTimeout(() => {
+    page.value = 1;
+    fetchEvents();
+  }, 250);
+};
+
+watch([search, filters, sortOption], scheduleFilterFetch, { deep: true });
+
+const reset = () => {
+  search.value = "";
+  filters.value = { service: "ALL", time: "all" };
+  sortOption.value = "date:desc";
+};
+
+const nextPage = () => {
+  if (page.value >= totalPages.value) return;
+  page.value += 1;
+  fetchEvents();
+};
+
+const prevPage = () => {
+  if (page.value <= 1) return;
+  page.value -= 1;
+  fetchEvents();
 };
 
 onMounted(() => {
   fetchEvents();
+});
+
+onBeforeUnmount(() => {
+  clearTimeout(filterTimer);
 });
 
 // Drawer Controls
@@ -402,29 +418,18 @@ const handleFormSubmit = async (formData) => {
 
   try {
     if (selectedEvent.value) {
-      // UPDATE Existing Event
-      const response = await $fetch(
+      await $fetch(
         `${config.public.apiBase}/admin/events/${selectedEvent.value.id}`,
         {
           method: "PUT",
           body: formData,
         },
       );
-
-      // Update local state optimistically
-      const index = events.value.findIndex(
-        (e) => e.id === selectedEvent.value.id,
-      );
-      if (index !== -1) events.value[index] = response.event;
     } else {
-      // CREATE New Event
-      const response = await $fetch(`${config.public.apiBase}/admin/events`, {
+      await $fetch(`${config.public.apiBase}/admin/events`, {
         method: "POST",
         body: formData,
       });
-
-      // Add to beginning of local array
-      events.value.unshift(response.event);
     }
 
     toast.success(
@@ -433,6 +438,7 @@ const handleFormSubmit = async (formData) => {
         : "Event created successfully!",
     );
     closeDrawer();
+    await fetchEvents();
   } catch (error) {
     console.error("Submission error:", error);
     toast.error(
@@ -464,9 +470,8 @@ const handleDeleteEvent = async (id) => {
       method: "DELETE",
     });
 
-    // Remove event from local state
-    events.value = events.value.filter((e) => e.id !== id);
     toast.success("Event deleted successfully");
+    await fetchEvents();
   } catch (error) {
     console.error("Delete error:", error);
     toast.error(error.data?.error || "Could not delete the event.");
