@@ -19,6 +19,17 @@ const EVENT_WRITABLE_FIELDS = [
   "eventDescription",
 ];
 
+const EVENTS_DEFAULT_LIMIT = 50;
+const EVENTS_MAX_LIMIT = 200;
+
+const parseBoundedInteger = (value, fallback, min, max) => {
+  const parsed = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(parsed)) return fallback;
+
+  return Math.min(Math.max(parsed, min), max);
+};
+
 // Apply verifyToken middleware to all event routes
 router.use(verifyToken);
 router.use(requireStaticTypeAccess(["executive"]));
@@ -55,17 +66,50 @@ router.post("/", async (req, res) => {
 // Get All Events
 router.get("/", async (req, res) => {
   try {
-    const snapshot = await db
-      .collection("events")
-      .orderBy("eventDate", "desc")
-      .get();
+    const paginated =
+      req.query.limit !== undefined ||
+      req.query.offset !== undefined ||
+      req.query.paginated === "1";
+
+    const query = db.collection("events").orderBy("eventDate", "desc");
+
+    if (!paginated) {
+      const snapshot = await query.get();
+      const events = [];
+      snapshot.forEach((doc) => {
+        events.push({ id: doc.id, ...doc.data() });
+      });
+
+      return res.status(200).json(events);
+    }
+
+    const limit = parseBoundedInteger(
+      req.query.limit,
+      EVENTS_DEFAULT_LIMIT,
+      1,
+      EVENTS_MAX_LIMIT,
+    );
+    const offset = parseBoundedInteger(req.query.offset, 0, 0, Number.MAX_SAFE_INTEGER);
+
+    const [totalSnapshot, snapshot] = await Promise.all([
+      db.collection("events").count().get(),
+      query.limit(limit).offset(offset).get(),
+    ]);
 
     const events = [];
     snapshot.forEach((doc) => {
       events.push({ id: doc.id, ...doc.data() });
     });
 
-    res.status(200).json(events);
+    const total = totalSnapshot.data().count;
+
+    res.status(200).json({
+      events,
+      total,
+      limit,
+      offset,
+      hasMore: offset + events.length < total,
+    });
   } catch (error) {
     console.error("Error fetching events:", error);
     res.status(500).json({ error: "Failed to fetch events" });

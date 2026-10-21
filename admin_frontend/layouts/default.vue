@@ -367,7 +367,9 @@
         </button>
         <NuxtLink to="/dashboard">
           <img
-            src="@/assets/images/Chapel Of Praise Logo.png"
+            src="/images/logo-256.webp"
+            width="507"
+            height="492"
             alt="Chapel of Praise"
             class="invert w-15"
           >

@@ -29,13 +29,17 @@
         @click="handleCardClick(image)"
       >
         <div class="relative aspect-square overflow-hidden bg-subtle">
-          <img
+          <NuxtImg
             :src="image.url"
             :alt="image.name"
+            width="320"
+            height="320"
+            fit="cover"
+            format="webp"
             loading="lazy"
             decoding="async"
             class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          >
+          />
 
           <div
             v-if="selectable"

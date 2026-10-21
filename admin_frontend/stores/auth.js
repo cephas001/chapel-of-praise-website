@@ -1,7 +1,6 @@
 // stores/auth.js
 import { defineStore } from "pinia";
 import { useCookie, useNuxtApp, useRuntimeConfig } from "#app";
-import { signOut } from "firebase/auth"; // ADD THIS
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -66,7 +65,10 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       try {
         const { $auth } = useNuxtApp();
-        if ($auth) await signOut($auth); // Log out of Firebase
+        if ($auth) {
+          const { signOut } = await import("firebase/auth");
+          await signOut($auth);
+        }
       } catch (error) {
         console.error("Firebase logout error", error);
       }

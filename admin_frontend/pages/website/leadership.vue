@@ -223,6 +223,7 @@
                 </div>
               </div>
             </div>
+            <AddItemButton label="Add chaplain" @click="addChaplain" />
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton
@@ -330,6 +331,10 @@
                 </div>
               </div>
             </div>
+            <AddItemButton
+              label="Add executive"
+              @click="addExecutive"
+            />
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton

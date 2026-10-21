@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   MEDIA_MAX_BYTES,
+  compressImageFile,
   formatFileSize,
   isValidImageUrl,
   validateMediaFile,
@@ -32,6 +33,18 @@ describe("validateMediaFile", () => {
     expect(
       validateMediaFile(imageFile({ size: MEDIA_MAX_BYTES + 1 })),
     ).toContain("8 MB or smaller");
+  });
+});
+
+describe("compressImageFile", () => {
+  it("leaves GIF files untouched", async () => {
+    const file = imageFile({ type: "image/gif" });
+    expect(await compressImageFile(file)).toBe(file);
+  });
+
+  it("leaves unsupported files untouched", async () => {
+    const file = imageFile({ name: "notes.pdf", type: "application/pdf" });
+    expect(await compressImageFile(file)).toBe(file);
   });
 });
 

@@ -3,6 +3,7 @@
     <AppPageHero
       :kicker="pageContent.hero.kicker"
       :image="pageContent.hero.image"
+      :fallback="heroImages.chapel"
     >
       <template #title>
         <h1
@@ -79,7 +80,9 @@
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
 import DOMPurify from "isomorphic-dompurify";
-import defaultHeroImage from "~/assets/images/chapel.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const defaultHeroImage = heroImages.chapel.src;
 
 useHead({
   title: "About Us | Chapel of Praise",

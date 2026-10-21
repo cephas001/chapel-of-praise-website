@@ -46,7 +46,7 @@
             for="unit-meeting-unit"
             class="mb-2 block text-xs font-medium text-ink"
           >
-            1. Select unit
+            Select unit
           </label>
           <div class="relative">
             <select
@@ -62,10 +62,7 @@
             <div
               class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
             >
-              <Icon
-                name="heroicons:chevron-down"
-                class="h-4 w-4 text-muted"
-              />
+              <Icon name="heroicons:chevron-down" class="h-4 w-4 text-muted" />
             </div>
           </div>
         </div>
@@ -75,14 +72,14 @@
             for="unit-meeting-date"
             class="mb-2 block text-xs font-medium text-ink"
           >
-            2. Meeting date
+            Meeting date
           </label>
           <input
             id="unit-meeting-date"
             v-model="meetingDate"
             type="date"
             class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 font-mono text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-          >
+          />
         </div>
       </div>
 
@@ -118,14 +115,9 @@
         v-if="selectedUnit && members.length > 0"
         class="mb-6 flex items-start gap-3 rounded-surface border border-line bg-subtle p-4"
       >
-        <Icon
-          name="heroicons:light-bulb"
-          class="h-5 w-5 shrink-0 text-muted"
-        />
+        <Icon name="heroicons:light-bulb" class="h-5 w-5 shrink-0 text-muted" />
         <div class="flex flex-col gap-3">
-          <p
-            class="text-xs font-medium leading-relaxed text-ink md:text-sm"
-          >
+          <p class="text-xs font-medium leading-relaxed text-ink md:text-sm">
             Tap a row to quickly cycle status. Long-press a row for quick
             actions. Use the Bulk Menu to mark many members at once.
           </p>
@@ -175,9 +167,7 @@
             name="heroicons:clipboard-document-check"
             class="mx-auto mb-4 h-12 w-12 text-line"
           />
-          <h3 class="mb-1 text-sm font-semibold text-ink">
-            Select a unit
-          </h3>
+          <h3 class="mb-1 text-sm font-semibold text-ink">Select a unit</h3>
           <p class="mx-auto max-w-sm px-3 text-xs text-muted">
             Choose a unit above to load the attendance roster for the selected
             meeting date.
@@ -210,7 +200,7 @@
                 aria-label="Select all members"
                 class="h-4 w-4 cursor-pointer rounded-badge border-line accent-ink"
                 @change="toggleSelectAll"
-              >
+              />
               <span class="font-mono text-xs font-medium text-ink">
                 {{
                   selectedMembers.length > 0
@@ -281,14 +271,12 @@
                   :aria-label="`Select ${member.name}`"
                   class="h-4 w-4 cursor-pointer rounded-badge border-line accent-ink"
                   @click.stop
-                >
+                />
                 <div>
                   <div class="text-sm text-ink">
                     {{ member.name }}
                   </div>
-                  <div
-                    class="mt-0.5 font-mono text-xs text-muted"
-                  >
+                  <div class="mt-0.5 font-mono text-xs text-muted">
                     {{
                       member.memberType === "EXECUTIVE" ? "Executive" : "Member"
                     }}
@@ -427,7 +415,9 @@
 
       <div v-else class="overflow-x-auto">
         <table class="min-w-full divide-y divide-line">
-          <caption class="sr-only">Saved unit meeting records</caption>
+          <caption class="sr-only">
+            Saved unit meeting records
+          </caption>
           <thead class="bg-subtle">
             <tr>
               <th
@@ -558,55 +548,55 @@
       </AppButton>
 
       <div
-          class="flex items-center gap-3 rounded-surface border px-4 py-3 shadow-overlay backdrop-blur-sm transition-colors"
-          :class="[
+        class="flex items-center gap-3 rounded-surface border px-4 py-3 shadow-overlay backdrop-blur-sm transition-colors"
+        :class="[
+          syncState === 'synced'
+            ? 'border-success-line bg-success-surface text-success-text'
+            : syncState === 'modified'
+              ? 'border-warning-line bg-warning-surface text-warning-text'
+              : syncState === 'saving'
+                ? 'border-line bg-surface text-ink'
+                : 'border-danger-line bg-danger-surface text-danger-text',
+        ]"
+      >
+        <Icon
+          :name="
             syncState === 'synced'
-              ? 'border-success-line bg-success-surface text-success-text'
+              ? 'heroicons:check-circle'
               : syncState === 'modified'
-                ? 'border-warning-line bg-warning-surface text-warning-text'
+                ? 'heroicons:cloud'
                 : syncState === 'saving'
-                  ? 'border-line bg-surface text-ink'
-                  : 'border-danger-line bg-danger-surface text-danger-text',
-          ]"
-        >
-          <Icon
-            :name="
-              syncState === 'synced'
-                ? 'heroicons:check-circle'
-                : syncState === 'modified'
-                  ? 'heroicons:cloud'
-                  : syncState === 'saving'
-                    ? 'heroicons:arrow-path'
-                    : 'heroicons:exclamation-triangle'
-            "
-            class="h-5 w-5 shrink-0"
-            :class="{ 'animate-spin': syncState === 'saving' }"
-          />
-          <div class="flex flex-col">
-            <span class="text-xs font-medium leading-tight">
-              {{
-                syncState === "synced"
-                  ? "Saved"
-                  : syncState === "modified"
-                    ? "Unsaved"
-                    : syncState === "saving"
-                      ? "Saving…"
-                      : "Save failed"
-              }}
-            </span>
-            <span class="mt-0.5 text-xs leading-tight opacity-70">
-              {{
-                syncState === "synced"
-                  ? "All changes synced"
-                  : syncState === "modified"
-                    ? "Pending changes"
-                    : syncState === "saving"
-                      ? "Syncing to server"
-                      : "Check connection"
-              }}
-            </span>
-          </div>
+                  ? 'heroicons:arrow-path'
+                  : 'heroicons:exclamation-triangle'
+          "
+          class="h-5 w-5 shrink-0"
+          :class="{ 'animate-spin': syncState === 'saving' }"
+        />
+        <div class="flex flex-col">
+          <span class="text-xs font-medium leading-tight">
+            {{
+              syncState === "synced"
+                ? "Saved"
+                : syncState === "modified"
+                  ? "Unsaved"
+                  : syncState === "saving"
+                    ? "Saving…"
+                    : "Save failed"
+            }}
+          </span>
+          <span class="mt-0.5 text-xs leading-tight opacity-70">
+            {{
+              syncState === "synced"
+                ? "All changes synced"
+                : syncState === "modified"
+                  ? "Pending changes"
+                  : syncState === "saving"
+                    ? "Syncing to server"
+                    : "Check connection"
+            }}
+          </span>
         </div>
+      </div>
     </div>
 
     <!-- Quick Actions Modal (Long Press) -->

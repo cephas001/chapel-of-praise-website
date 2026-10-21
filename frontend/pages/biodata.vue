@@ -4,11 +4,14 @@
       kicker="Chapel of praise"
       title="Workers biodata"
       :image="heroImage"
+      :fallback="heroImages.celebrations"
     />
 
     <section class="bg-surface py-16 md:py-24">
       <AppContainer>
-        <div class="mx-auto max-w-3xl rounded-2xl border border-line bg-paper p-6 md:p-10">
+        <div
+          class="mx-auto max-w-3xl rounded-2xl border border-line bg-paper p-6 md:p-10"
+        >
           <div v-if="successMessage">
             <div
               class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-700"
@@ -26,9 +29,7 @@
 
           <form v-else class="space-y-10" @submit.prevent="handleRegister">
             <div>
-              <h2
-                class="border-b border-line pb-3 text-lg font-semibold"
-              >
+              <h2 class="border-b border-line pb-3 text-lg font-semibold">
                 Unit verification
               </h2>
               <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -51,14 +52,35 @@
 
                 <AppField
                   id="passkey"
-                  v-model="formData.passkey"
-                  type="password"
+                  v-model="passkeyModel"
+                  :type="showPasskey ? 'text' : 'password'"
                   label="Unit passkey"
                   maxlength="32"
                   placeholder="Enter your unit passkey"
                   autocomplete="off"
+                  autocapitalize="characters"
                   required
-                />
+                >
+                  <template #suffix>
+                    <button
+                      type="button"
+                      class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/20"
+                      :aria-label="
+                        showPasskey ? 'Hide passkey' : 'Show passkey'
+                      "
+                      :aria-pressed="showPasskey"
+                      @click="showPasskey = !showPasskey"
+                    >
+                      <Icon
+                        :name="
+                          showPasskey ? 'heroicons:eye-slash' : 'heroicons:eye'
+                        "
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </template>
+                </AppField>
               </div>
             </div>
 
@@ -130,7 +152,7 @@
                   label="Email address"
                   autocomplete="email"
                   maxlength="254"
-                  placeholder="student@gmail.com"
+                  placeholder="flourish@gmail.com"
                   required
                 />
               </div>
@@ -219,9 +241,11 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useRuntimeConfig, useSeoMeta } from "#app";
-import heroImage from "~/assets/images/connect.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const heroImage = heroImages.celebrations.src;
 
 useSeoMeta({
   title: "Workers Biodata | Chapel of Praise",
@@ -232,6 +256,7 @@ useSeoMeta({
 const config = useRuntimeConfig();
 
 const availableUnits = ref([]);
+const showPasskey = ref(false);
 
 onMounted(async () => {
   try {
@@ -262,6 +287,13 @@ const formData = reactive({
   relationshipStatus: "",
 });
 
+const passkeyModel = computed({
+  get: () => formData.passkey,
+  set: (value) => {
+    formData.passkey = String(value ?? "").toUpperCase();
+  },
+});
+
 const handleRegister = async () => {
   loading.value = true;
   errorMessage.value = "";
@@ -285,6 +317,7 @@ const handleRegister = async () => {
 
 const resetForm = () => {
   successMessage.value = "";
+  showPasskey.value = false;
   Object.keys(formData).forEach((key) => (formData[key] = ""));
 };
 </script>

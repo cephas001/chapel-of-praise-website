@@ -4,6 +4,7 @@
       kicker="Join the team"
       title="Become a Worker"
       :image="heroImage"
+      :fallback="heroImages.celebrations"
     />
 
     <section class="py-16 md:py-24">
@@ -32,7 +33,9 @@
 
 <script setup>
 import { useSeoMeta } from "#app";
-import heroImage from "~/assets/images/celebrations.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const heroImage = heroImages.celebrations.src;
 
 useSeoMeta({
   title: "Become a Worker | Chapel of Praise",

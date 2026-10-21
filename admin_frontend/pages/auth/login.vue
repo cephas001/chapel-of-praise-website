@@ -106,7 +106,6 @@
 import { ref, reactive } from "vue";
 import { useAuthStore } from "~/stores/auth";
 import { useRuntimeConfig, navigateTo, useNuxtApp } from "#app";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 definePageMeta({ layout: false });
 
@@ -126,6 +125,8 @@ const formData = reactive({
 async function handleLogin() {
   loading.value = true;
   try {
+    const { signInWithEmailAndPassword } = await import("firebase/auth");
+
     // 1. Log in via Firebase FIRST
     const userCredential = await signInWithEmailAndPassword(
       $auth,
@@ -192,6 +193,7 @@ async function handleForgotPassword() {
   }
 
   try {
+    const { sendPasswordResetEmail } = await import("firebase/auth");
     await sendPasswordResetEmail($auth, formData.email);
     toast.success("Password reset email sent. Check your inbox.");
   } catch (error) {

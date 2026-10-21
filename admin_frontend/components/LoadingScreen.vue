@@ -8,7 +8,9 @@
       <div class="relative w-40 sm:w-48 h-auto mb-10 -mt-2.5">
         <!-- The 'invert' class turns your white PNG into stark black -->
         <img
-          src="~/assets/images/Chapel Of Praise Logo.png"
+          src="/images/logo-512.webp"
+          width="507"
+          height="492"
           alt="Chapel of Praise"
           class="w-full h-full object-contain invert opacity-90 animate-pulse-slow"
         >

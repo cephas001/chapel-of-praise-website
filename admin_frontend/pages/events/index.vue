@@ -33,7 +33,7 @@
             type="search"
             placeholder="Search by service, description or program day..."
             class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-          >
+          />
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3 shrink-0">
@@ -88,7 +88,9 @@
       <!-- Data Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-line">
-          <caption class="sr-only">All events</caption>
+          <caption class="sr-only">
+            All events
+          </caption>
           <thead class="bg-subtle">
             <tr>
               <th
@@ -133,9 +135,7 @@
                         : event.service
                     }}
                   </div>
-                  <div
-                    class="mt-0.5 max-w-[250px] truncate text-xs text-muted"
-                  >
+                  <div class="mt-0.5 max-w-[250px] truncate text-xs text-muted">
                     {{ event.eventDescription || "No description provided" }}
                   </div>
                 </div>
@@ -143,7 +143,7 @@
 
               <td class="px-6 py-4 whitespace-nowrap flex gap-2 flex-col">
                 <span
-                  class="inline-flex w-fit items-center rounded-badge border px-2.5 py-1 font-mono text-xs font-medium"
+                  class="inline-flex w-fit items-center rounded-badge border px-2 py-0.5 font-mono text-xs font-medium"
                   :class="getBadgeColor(event.service)"
                 >
                   {{ event.service }}
@@ -161,9 +161,7 @@
                 <div class="font-mono text-xs text-ink md:text-sm">
                   {{ formatDate(event.eventDate) }}
                 </div>
-                <div
-                  class="mt-0.5 font-mono text-xs text-muted"
-                >
+                <div class="mt-0.5 font-mono text-xs text-muted">
                   {{ event.startTime }} – {{ event.endTime }}
                 </div>
               </td>
@@ -214,12 +212,7 @@
           <h3 class="mb-1 text-sm font-semibold text-ink">
             No events match your filters
           </h3>
-          <AppButton
-            variant="secondary"
-            size="sm"
-            class="mt-4"
-            @click="reset"
-          >
+          <AppButton variant="secondary" size="sm" class="mt-4" @click="reset">
             Clear filters
           </AppButton>
         </div>

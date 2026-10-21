@@ -142,11 +142,7 @@
                 />
               </div>
 
-              <div>
-                <AppButton variant="secondary" @click.prevent="addParagraph">
-                  Add paragraph
-                </AppButton>
-              </div>
+              <AddItemButton label="Add paragraph" @click="addParagraph" />
             </div>
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">

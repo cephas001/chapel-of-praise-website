@@ -167,6 +167,7 @@ import { computed, ref, watch } from "vue";
 import { useAuthStore } from "~/stores/auth";
 import {
   MEDIA_ACCEPT,
+  compressImageFile,
   validateMediaFile,
 } from "~/utils/media";
 
@@ -252,7 +253,9 @@ const uploadFile = async (item) => {
   item.progress = 5;
 
   try {
-    const data = await readFile(item.file);
+    const compressedFile = await compressImageFile(item.file);
+    item.progress = 20;
+    const data = await readFile(compressedFile);
     item.progress = 30;
     const image = await uploadWithProgress(item, data);
     item.progress = 100;

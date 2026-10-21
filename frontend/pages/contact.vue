@@ -4,6 +4,7 @@
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
+      :fallback="heroImages.connect"
     />
 
     <section class="py-16 md:py-24">
@@ -264,7 +265,9 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
-import defaultHeroImage from "~/assets/images/connect.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const defaultHeroImage = heroImages.connect.src;
 
 useHead({
   title: "Contact Us | Chapel of Praise",

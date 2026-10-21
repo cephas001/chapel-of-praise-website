@@ -273,11 +273,9 @@
                 </div>
               </div>
             </div>
+            <AddItemButton label="Add card" @click="addActionCard" />
           </div>
-          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
-            <AppButton variant="secondary" @click.prevent="addActionCard">
-              Add Card
-            </AppButton>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton
               :is-loading="sectionSavingState.actionCardsSection"
               @click="
@@ -467,11 +465,9 @@
                 </div>
               </div>
             </div>
+            <AddItemButton label="Add slide" @click="addEditorialCard" />
           </div>
-          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
-            <AppButton variant="secondary" @click.prevent="addEditorialCard">
-              Add Slide
-            </AppButton>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton
               :is-loading="sectionSavingState.editorialSection"
               @click="handleSaveSection('editorialSection', editorialSection)"

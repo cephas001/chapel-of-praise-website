@@ -197,53 +197,27 @@ const syncBadge = computed(() => {
   return { dot: "bg-success-text", text: "Data synced", tone: "idle" };
 });
 
-const isInCurrentMonth = (dateString) => {
-  if (!dateString) return false;
-  const date = new Date(dateString);
-  const now = new Date();
-  return (
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear()
-  );
-};
-
 const loadStats = async () => {
   statsState.value = "loading";
   try {
-    const [events, headcounts, followUps] = await Promise.all([
-      $fetch(`${config.public.apiBase}/admin/events`),
-      $fetch(`${config.public.apiBase}/admin/headcounts`),
-      $fetch(`${config.public.apiBase}/admin/follow-ups`),
-    ]);
-
-    const eventsThisMonth = events.filter((event) =>
-      isInCurrentMonth(event.eventDate),
-    );
-
-    const attendanceThisMonth = headcounts
-      .filter(
-        (hc) => hc.eventDetails && isInCurrentMonth(hc.eventDetails.eventDate),
-      )
-      .reduce((sum, hc) => sum + headcountTotal(hc), 0);
-
-    const pendingFollowUps = followUps.filter(
-      (followUp) => followUp.status === "Pending",
+    const summary = await $fetch(
+      `${config.public.apiBase}/admin/dashboard/summary`,
     );
 
     quickStats.value = [
       {
         label: "Events This Month",
-        value: eventsThisMonth.length,
+        value: summary.eventsThisMonth ?? 0,
         icon: "heroicons:calendar-days",
       },
       {
         label: "Attendance This Month",
-        value: attendanceThisMonth,
+        value: summary.attendanceThisMonth ?? 0,
         icon: "heroicons:user-group",
       },
       {
         label: "Pending Follow-ups",
-        value: pendingFollowUps.length,
+        value: summary.pendingFollowUps ?? 0,
         icon: "heroicons:megaphone",
       },
     ];

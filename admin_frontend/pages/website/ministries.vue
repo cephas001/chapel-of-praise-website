@@ -162,6 +162,7 @@
                 </div>
               </div>
             </div>
+            <AddItemButton label="Add ministry" @click="addMinistry" />
           </div>
           <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton

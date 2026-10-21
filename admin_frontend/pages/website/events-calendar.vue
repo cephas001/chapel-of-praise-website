@@ -212,13 +212,11 @@
                 </div>
               </div>
             </div>
+            <AddItemButton label="Add event" @click="addEvent" />
           </div>
 
-          <!-- Add & Save Button Container -->
-          <div class="px-6 pb-6 pt-2 flex justify-end gap-3">
-            <AppButton variant="secondary" @click.prevent="addEvent">
-              Add Event
-            </AppButton>
+          <!-- Save Button Container -->
+          <div class="px-6 pb-6 pt-2 flex justify-end">
             <SaveSectionButton
               :is-loading="sectionSavingState.eventsSection"
               @click="handleSaveSection('eventsSection', eventsSection)"

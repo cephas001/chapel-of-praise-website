@@ -1,17 +1,86 @@
+import tailwindcss from "@tailwindcss/vite";
+
 const blobHosts = (process.env.NUXT_PUBLIC_BLOB_HOSTS || "")
   .split(",")
   .map((host) => host.trim())
   .filter(Boolean);
+
+const cachedPage = (maxAge, staleMaxAge) => ({
+  cache: {
+    maxAge,
+    swr: true,
+    staleMaxAge,
+  },
+  headers: {
+    vary: "Accept-Encoding",
+  },
+});
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   css: ["~/assets/css/main.css"],
   devtools: { enabled: process.env.NODE_ENV !== "production" },
 
-  modules: ["@nuxt/icon", "@nuxt/ui", "@pinia/nuxt", "@nuxt/image"],
+  modules: [
+    "@nuxt/icon",
+    "@pinia/nuxt",
+    "@nuxt/image",
+    "h3-compression/nuxt",
+  ],
+
+  icon: {
+    serverBundle: {
+      collections: ["heroicons"],
+    },
+    clientBundle: {
+      scan: false,
+    },
+  },
 
   image: {
     domains: blobHosts,
+    densities: [1],
+  },
+
+  compression: {
+    threshold: 1024,
+  },
+
+  nitro: {
+    compressPublicAssets: { gzip: true, brotli: true },
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
+  routeRules: {
+    "/": cachedPage(60, 300),
+    "/about": cachedPage(300, 600),
+    "/become-a-worker": cachedPage(300, 600),
+    "/biodata": cachedPage(300, 600),
+    "/contact": cachedPage(300, 600),
+    "/counselling": cachedPage(300, 600),
+    "/events-calendar": cachedPage(60, 300),
+    "/giving": cachedPage(300, 600),
+    "/leadership": cachedPage(300, 600),
+    "/ministries": cachedPage(300, 600),
+    "/prayer": cachedPage(300, 600),
+    "/**": {
+      headers: {
+        vary: "Accept-Encoding",
+      },
+    },
+    "/images/**": {
+      headers: {
+        "cache-control": "public, max-age=604800",
+      },
+    },
+    "/fonts/**": {
+      headers: {
+        "cache-control": "public, max-age=31536000, immutable",
+      },
+    },
   },
 
   app: {
@@ -32,6 +101,20 @@ export default defineNuxtConfig({
         { name: "twitter:card", content: "summary_large_image" },
       ],
       link: [
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/inter-latin-wght-normal.woff2",
+          crossorigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/anton-latin-400-normal.woff2",
+          crossorigin: "anonymous",
+        },
         { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
         {
           rel: "icon",
@@ -50,8 +133,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseUrl: "http://localhost:5000/api",
-      siteUrl: "http://localhost:3000",
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || "",
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
       blobHosts: process.env.NUXT_PUBLIC_BLOB_HOSTS,
     },
   },

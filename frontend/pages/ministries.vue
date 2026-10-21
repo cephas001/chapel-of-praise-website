@@ -4,6 +4,7 @@
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
+      :fallback="heroImages.chapel"
     />
 
     <section class="bg-surface py-16 md:py-24">
@@ -45,7 +46,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
-import defaultHeroImage from "~/assets/images/chapel.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const defaultHeroImage = heroImages.chapel.src;
 
 useHead({
   title: "Ministries | Chapel of Praise",

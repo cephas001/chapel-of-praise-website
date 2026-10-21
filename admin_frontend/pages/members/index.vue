@@ -11,7 +11,8 @@
 
     <!-- Directory Controls -->
     <AppCard
-      class="mb-8" body-class="p-4 flex flex-col gap-3 lg:flex-row lg:items-center"
+      class="mb-8"
+      body-class="p-4 flex flex-col gap-3 lg:flex-row lg:items-center"
     >
       <div class="relative flex-1 min-w-0">
         <label for="members-search" class="sr-only">Search members</label>
@@ -25,7 +26,7 @@
           type="search"
           placeholder="Search by name, email, phone or unit..."
           class="w-full rounded-control border border-line bg-subtle py-2.5 pl-9 pr-4 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
-        >
+        />
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3 shrink-0">
@@ -79,25 +80,18 @@
         name="heroicons:arrow-path"
         class="mx-auto h-10 w-10 text-muted animate-spin mb-4"
       />
-      <h3
-        class="text-xs md:text-sm font-semibold text-ink animate-pulse"
-      >
+      <h3 class="text-xs md:text-sm font-semibold text-ink animate-pulse">
         Loading workforce directory...
       </h3>
     </div>
 
     <!-- Empty State -->
-    <AppCard
-      v-else-if="members.length === 0"
-      body-class="p-12 text-center"
-    >
+    <AppCard v-else-if="members.length === 0" body-class="p-12 text-center">
       <Icon
         name="heroicons:user-group"
         class="mx-auto h-12 w-12 text-line mb-4"
       />
-      <h3 class="text-sm font-semibold text-ink mb-1">
-        No members found
-      </h3>
+      <h3 class="text-sm font-semibold text-ink mb-1">No members found</h3>
       <p class="text-muted text-xs md:text-sm mb-6">
         Register workers to see them appear in the directory.
       </p>
@@ -109,21 +103,11 @@
         >
           Add an executive
         </AppButton>
-        <AppButton
-          to="/dashboard/help#your-unit"
-          variant="secondary"
-          icon="heroicons:question-mark-circle"
-        >
-          About the member directory
-        </AppButton>
       </div>
     </AppCard>
 
     <!-- No Filter Matches -->
-    <AppCard
-      v-else-if="filtered.length === 0"
-      body-class="p-12 text-center"
-    >
+    <AppCard v-else-if="filtered.length === 0" body-class="p-12 text-center">
       <Icon
         name="heroicons:magnifying-glass"
         class="mx-auto h-12 w-12 text-line mb-4"
@@ -131,12 +115,7 @@
       <h3 class="text-sm font-semibold text-ink mb-1">
         No members match your filters
       </h3>
-      <AppButton
-        variant="secondary"
-        size="sm"
-        class="mt-4"
-        @click="reset"
-      >
+      <AppButton variant="secondary" size="sm" class="mt-4" @click="reset">
         Clear filters
       </AppButton>
     </AppCard>
@@ -154,9 +133,7 @@
           @keydown.enter.self.prevent="toggleUnit(unitName)"
           @keydown.space.self.prevent="toggleUnit(unitName)"
         >
-          <h2
-            class="text-sm font-semibold text-ink"
-          >
+          <h2 class="text-sm font-semibold text-ink">
             {{ unitName }}
           </h2>
           <div class="flex items-center gap-2">
@@ -177,14 +154,15 @@
         </div>
 
         <!-- Section Table -->
-        <AppCard
-          v-show="!collapsedUnits[unitName]"
-          body-class="p-0"
-        >
+        <AppCard v-show="!collapsedUnits[unitName]" body-class="p-0">
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-line">
               <caption class="sr-only">
-                Members of the {{ unitName }} unit
+                Members of the
+                {{
+                  unitName
+                }}
+                unit
               </caption>
               <thead class="bg-subtle/60">
                 <tr>
@@ -342,46 +320,40 @@ const toggleUnit = (unitName) => {
   collapsedUnits.value[unitName] = !collapsedUnits.value[unitName];
 };
 
-const {
-  search,
-  filters,
-  sortKey,
-  sortDirection,
-  filtered,
-  reset,
-} = useListControls(members, {
-  searchFields: ["name", "emailAddress", "phoneNumber", "unit", "chapelUnit"],
-  defaultFilters: { memberType: "ALL", gender: "ALL" },
-  filter: (member, activeFilters) => {
-    if (
-      activeFilters.memberType === "EXECUTIVE" &&
-      member.memberType !== "EXECUTIVE"
-    ) {
-      return false;
-    }
-    if (
-      activeFilters.memberType === "WORKER" &&
-      member.memberType === "EXECUTIVE"
-    ) {
-      return false;
-    }
-    if (
-      activeFilters.gender !== "ALL" &&
-      String(member.gender || "").toUpperCase() !== activeFilters.gender
-    ) {
-      return false;
-    }
-    return true;
-  },
-  sorters: {
-    name: (a, b) =>
-      String(a.name || "").localeCompare(String(b.name || ""), undefined, {
-        sensitivity: "base",
-      }),
-  },
-  defaultSort: "name",
-  defaultDirection: "asc",
-});
+const { search, filters, sortKey, sortDirection, filtered, reset } =
+  useListControls(members, {
+    searchFields: ["name", "emailAddress", "phoneNumber", "unit", "chapelUnit"],
+    defaultFilters: { memberType: "ALL", gender: "ALL" },
+    filter: (member, activeFilters) => {
+      if (
+        activeFilters.memberType === "EXECUTIVE" &&
+        member.memberType !== "EXECUTIVE"
+      ) {
+        return false;
+      }
+      if (
+        activeFilters.memberType === "WORKER" &&
+        member.memberType === "EXECUTIVE"
+      ) {
+        return false;
+      }
+      if (
+        activeFilters.gender !== "ALL" &&
+        String(member.gender || "").toUpperCase() !== activeFilters.gender
+      ) {
+        return false;
+      }
+      return true;
+    },
+    sorters: {
+      name: (a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""), undefined, {
+          sensitivity: "base",
+        }),
+    },
+    defaultSort: "name",
+    defaultDirection: "asc",
+  });
 
 const sortOption = computed({
   get: () => `${sortKey.value}:${sortDirection.value}`,

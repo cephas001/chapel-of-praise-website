@@ -11,7 +11,11 @@
           class="inline-flex items-center"
         >
           <img
-            src="~/assets/images/Chapel Of Praise Logo.png"
+            src="/images/logo-256.webp"
+            srcset="/images/logo-128.webp 128w, /images/logo-256.webp 256w"
+            sizes="64px"
+            width="507"
+            height="492"
             alt="Chapel of Praise"
             class="h-12 w-auto object-contain md:h-14"
           />
@@ -82,7 +86,9 @@
               @click="closeMenu"
             >
               <img
-                src="~/assets/images/Combined Logos.png"
+                src="/images/combined-logos-241.webp"
+                width="241"
+                height="72"
                 alt="Chapel of Praise and Mountain of the Lord"
                 class="h-12 w-auto object-contain md:h-14"
               />

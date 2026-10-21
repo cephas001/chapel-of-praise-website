@@ -1,10 +1,8 @@
-// plugins/firebase.client.js
-import { initializeApp } from "firebase/app";
-import { getAuth, onIdTokenChanged } from "firebase/auth";
+﻿// plugins/firebase.client.js
 import { useAuthStore } from "~/stores/auth";
 import { useCookie, useRuntimeConfig, defineNuxtPlugin } from "#app";
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(async () => {
   const config = useRuntimeConfig();
 
   const firebaseConfig = {
@@ -12,6 +10,11 @@ export default defineNuxtPlugin(() => {
     authDomain: config.public.firebaseAuthDomain,
     projectId: config.public.firebaseProjectId,
   };
+
+  const [{ initializeApp }, { getAuth, onIdTokenChanged }] = await Promise.all([
+    import("firebase/app"),
+    import("firebase/auth"),
+  ]);
 
   // 1. Initialize Firebase
   const app = initializeApp(firebaseConfig);

@@ -4,6 +4,7 @@
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
+      :fallback="heroImages.celebrations"
     />
 
     <section class="py-16 md:py-24">
@@ -89,7 +90,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
-import defaultHeroImage from "~/assets/images/celebrations.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const defaultHeroImage = heroImages.celebrations.src;
 
 useHead({
   title: "Events Calendar | Chapel of Praise",

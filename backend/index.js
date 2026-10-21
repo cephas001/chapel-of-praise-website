@@ -1,4 +1,5 @@
 const express = require("express");
+const compression = require("compression");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -34,6 +35,7 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(compression());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "12mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -64,6 +66,7 @@ const adminEventsCalendarRoutes = require("./routes/admin/eventsCalendarRoutes")
 const adminUnitMeetingRoutes = require("./routes/admin/unitMeetingRoutes");
 const adminChapelUnitRoutes = require("./routes/admin/chapelUnitRoutes");
 const adminMediaRoutes = require("./routes/admin/mediaRoutes");
+const adminDashboardRoutes = require("./routes/admin/dashboardRoutes");
 
 // Public Routes
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
@@ -99,6 +102,7 @@ app.use("/api/admin/events-calendar", adminEventsCalendarRoutes);
 app.use("/api/admin/unit-meetings", adminUnitMeetingRoutes);
 app.use("/api/admin/chapel-units", adminChapelUnitRoutes);
 app.use("/api/admin/media", adminMediaRoutes);
+app.use("/api/admin/dashboard", adminDashboardRoutes);
 
 // Public APIs
 app.use("/api/public/homepage", publicHomepageRoutes);

@@ -45,21 +45,28 @@
       v-bind="$attrs"
     />
 
-    <input
-      v-else
-      :id="id"
-      v-model="model"
-      :type="type"
-      :placeholder="placeholder"
-      :maxlength="maxlength"
-      :autocomplete="autocomplete"
-      :disabled="disabled"
-      :required="required"
-      :aria-invalid="error ? 'true' : undefined"
-      :aria-describedby="describedBy"
-      :class="controlClass"
-      v-bind="$attrs"
-    />
+    <div v-else class="relative">
+      <input
+        :id="id"
+        v-model="model"
+        :type="type"
+        :placeholder="placeholder"
+        :maxlength="maxlength"
+        :autocomplete="autocomplete"
+        :disabled="disabled"
+        :required="required"
+        :aria-invalid="error ? 'true' : undefined"
+        :aria-describedby="describedBy"
+        :class="controlClass"
+        v-bind="$attrs"
+      />
+      <span
+        v-if="$slots.suffix"
+        class="absolute inset-y-0 right-0 flex items-center pr-3"
+      >
+        <slot name="suffix" />
+      </span>
+    </div>
 
     <p v-if="error" :id="errorId" class="mt-1.5 text-sm text-brand-700">
       {{ error }}
@@ -71,9 +78,11 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, useSlots } from "vue";
 
 defineOptions({ inheritAttrs: false });
+
+const slots = useSlots();
 
 const props = defineProps({
   id: {
@@ -144,6 +153,7 @@ const describedBy = computed(() => {
 const controlClass = computed(() => [
   "w-full rounded-xl border bg-surface px-4 py-3 text-base text-gray-900 transition-colors placeholder:text-gray-400 focus:outline-none focus:bg-paper focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60",
   props.as === "select" ? "appearance-none pr-10" : "",
+  props.as === "input" && slots.suffix ? "pr-14" : "",
   props.error
     ? "border-brand-600 focus:border-brand-600 focus:ring-brand-600/15"
     : "border-line focus:border-ink focus:ring-ink/10",

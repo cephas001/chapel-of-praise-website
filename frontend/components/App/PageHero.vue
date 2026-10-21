@@ -4,14 +4,15 @@
     :class="size === 'full' ? 'min-h-svh' : 'h-[50vh] min-h-[400px]'"
   >
     <AppImage
-      v-if="image"
-      :src="image"
-      :srcset="srcset"
-      :sizes="sizes"
-      :width="width"
-      :height="height"
+      v-if="displayImage"
+      :src="displayImage"
+      :sizes="displaySizes"
+      :width="displayWidth"
+      :height="displayHeight"
+      :avif-srcset="isFallback ? fallback?.avifSrcset : undefined"
+      :webp-srcset="isFallback ? fallback?.webpSrcset : undefined"
       alt=""
-      class="absolute inset-0 h-full w-full object-cover object-top opacity-60 grayscale-[0.3]"
+      class="absolute inset-0 h-full w-full translate-y-12 object-cover object-top opacity-60 grayscale-[0.3] md:translate-y-0"
       :loading="priority ? 'eager' : 'lazy'"
       :fetchpriority="priority ? 'high' : undefined"
       decoding="async"
@@ -55,7 +56,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from "vue";
+
+const props = defineProps({
   kicker: {
     type: String,
     default: "",
@@ -68,12 +71,12 @@ defineProps({
     type: String,
     default: "",
   },
-  srcset: {
-    type: String,
-    default: undefined,
+  fallback: {
+    type: Object,
+    default: null,
   },
   sizes: {
-    type: String,
+    type: [String, Object],
     default: undefined,
   },
   width: {
@@ -96,6 +99,38 @@ defineProps({
     type: Boolean,
     default: false,
   },
+});
+
+const isFallback = computed(
+  () =>
+    !!props.fallback &&
+    (!props.image || props.image === props.fallback.src),
+);
+
+const displayImage = computed(() =>
+  isFallback.value ? props.fallback?.src : props.image,
+);
+
+const displayWidth = computed(() =>
+  isFallback.value ? props.fallback?.width : props.width,
+);
+
+const displayHeight = computed(() =>
+  isFallback.value ? props.fallback?.height : props.height,
+);
+
+const displaySizes = computed(() => {
+  if (props.sizes) return props.sizes;
+  if (isFallback.value) return "100vw";
+
+  return {
+    xs: "100vw",
+    sm: "100vw",
+    md: "100vw",
+    lg: "100vw",
+    xl: "100vw",
+    xxl: "100vw",
+  };
 });
 </script>
 

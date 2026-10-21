@@ -6,11 +6,7 @@
       animated
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
-      :image="chapelHero"
-      :srcset="`${chapelHeroSmall} 960w, ${chapelHero} 1920w`"
-      sizes="100vw"
-      :width="1920"
-      :height="1280"
+      :fallback="heroImages.chapel"
     >
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <AppButton
@@ -51,6 +47,9 @@
               <AppImage
                 :src="card.image"
                 :alt="card.title"
+                width="640"
+                height="480"
+                fit="cover"
                 class="h-full w-full object-cover [@media(hover:hover)]:grayscale transition-[filter] duration-500 group-hover:grayscale-0 motion-reduce:transition-none"
                 loading="lazy"
                 decoding="async"
@@ -73,6 +72,7 @@
     <section class="relative overflow-hidden bg-ink py-24 text-paper md:py-32">
       <AppImage
         :src="pageData.champions.image"
+        :sizes="fullBleedSizes"
         alt=""
         class="absolute inset-0 h-full w-full object-cover opacity-50 grayscale-[0.5]"
         loading="lazy"
@@ -113,6 +113,7 @@
         <AppImage
           v-if="section.images?.[0]"
           :src="section.images[0]"
+          :sizes="fullBleedSizes"
           alt=""
           class="absolute inset-0 h-full w-full object-cover opacity-50 grayscale-[0.5]"
           loading="lazy"
@@ -152,6 +153,9 @@
           <div class="overflow-hidden rounded-2xl">
             <AppImage
               :src="pageData.leadership.image"
+              width="640"
+              height="800"
+              fit="cover"
               alt="Reverend Ibiwunmi Alo, lead pastor of Chapel of Praise"
               class="aspect-[4/5] w-full object-cover"
               loading="lazy"
@@ -187,12 +191,16 @@
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useSeoMeta } from "#app";
 
-import aboutImage from "~/assets/images/about.webp";
-import connectImage from "~/assets/images/connect.webp";
-import celebrationsImage from "~/assets/images/celebrations.webp";
-import pastorImage from "~/assets/images/pastor.webp";
-import chapelHero from "~/assets/images/chapel.webp";
-import chapelHeroSmall from "~/assets/images/chapel-960.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const fullBleedSizes = {
+  xs: "100vw",
+  sm: "100vw",
+  md: "100vw",
+  lg: "100vw",
+  xl: "100vw",
+  xxl: "100vw",
+};
 
 useSeoMeta({
   title: "Chapel of Praise | McPherson University Chapel",
@@ -229,7 +237,7 @@ const pageData = computed(() => {
         "Dive into our teachings, events and community. Your journey of faith begins here.",
     },
     champions: {
-      image: data.championsSection?.championImage || celebrationsImage,
+      image: data.championsSection?.championImage || heroImages.celebrations.src,
       headline: data.championsSection?.championHeadline || "Great Champions",
       description:
         data.championsSection?.championDescription ||
@@ -238,7 +246,7 @@ const pageData = computed(() => {
       ctaLink: data.championsSection?.championCtaLink || "/events-calendar",
     },
     leadership: {
-      image: data.leadershipSection?.leadershipImage || pastorImage,
+      image: data.leadershipSection?.leadershipImage || heroImages.pastor.src,
       headline: data.leadershipSection?.leadershipHeadline || "Our Chaplain",
       bio:
         data.leadershipSection?.leadershipBio ||
@@ -255,21 +263,21 @@ const defaultCards = [
     title: "About us",
     ctaLabel: "Learn more",
     ctaLink: "/about",
-    image: aboutImage,
+    image: heroImages.about.src,
   },
   {
     kicker: "Join our community",
     title: "Connect with us",
     ctaLabel: "Get in touch",
     ctaLink: "/contact",
-    image: connectImage,
+    image: heroImages.connect.src,
   },
   {
     kicker: "Endless praise",
     title: "Celebrations",
     ctaLabel: "See events",
     ctaLink: "/events-calendar",
-    image: celebrationsImage,
+    image: heroImages.celebrations.src,
   },
 ];
 
@@ -293,7 +301,7 @@ const defaultEditorialSections = [
     title: "Vibrant Worship",
     description:
       "Experience the transformative power of God's presence through high-energy praise and deep, intimate worship.",
-    images: [aboutImage],
+    images: [heroImages.about.src],
   },
   {
     id: 2,
@@ -301,7 +309,7 @@ const defaultEditorialSections = [
     title: "Deep Word",
     description:
       "Rooted in scripture. We believe in building a foundation of excellence and integrity through unadulterated teachings.",
-    images: [celebrationsImage],
+    images: [heroImages.celebrations.src],
   },
   {
     id: 3,
@@ -309,7 +317,7 @@ const defaultEditorialSections = [
     title: "Strong Community",
     description:
       "A vibrant family of young believers. Find your tribe, grow together, and shine the gospel light in your world.",
-    images: [connectImage],
+    images: [heroImages.connect.src],
   },
 ];
 

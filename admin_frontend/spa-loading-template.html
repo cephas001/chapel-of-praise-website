@@ -1,0 +1,109 @@
+<div class="cop-spa-loader" role="status" aria-live="polite" aria-label="Loading Chapel of Praise admin">
+  <div class="cop-spa-loader__panel">
+    <div class="cop-spa-loader__mark" aria-hidden="true">COP</div>
+    <div class="cop-spa-loader__copy">
+      <p class="cop-spa-loader__title">Chapel of Praise</p>
+      <p class="cop-spa-loader__subtitle">Admin</p>
+    </div>
+    <div class="cop-spa-loader__track" aria-hidden="true">
+      <span></span>
+    </div>
+    <p class="cop-spa-loader__status">Loading admin</p>
+  </div>
+</div>
+<style>
+  .cop-spa-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #f6f7f9;
+    color: #101319;
+    font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .cop-spa-loader__panel {
+    width: min(100%, 320px);
+    border: 1px solid #e2e5ea;
+    border-radius: 12px;
+    background: #fff;
+    padding: 32px 28px;
+    box-shadow: 0 12px 32px rgb(16 19 25 / 0.08);
+  }
+
+  .cop-spa-loader__mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: #101319;
+    color: #fff;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .cop-spa-loader__copy {
+    margin-top: 20px;
+  }
+
+  .cop-spa-loader__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .cop-spa-loader__subtitle {
+    margin: 4px 0 0;
+    color: #5b6472;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .cop-spa-loader__track {
+    height: 2px;
+    margin-top: 28px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #eff1f4;
+  }
+
+  .cop-spa-loader__track span {
+    display: block;
+    width: 38%;
+    height: 100%;
+    border-radius: inherit;
+    background: #101319;
+    animation: cop-spa-progress 1.4s ease-in-out infinite;
+  }
+
+  .cop-spa-loader__status {
+    margin: 12px 0 0;
+    color: #5b6472;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  @keyframes cop-spa-progress {
+    0% {
+      transform: translateX(-110%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cop-spa-loader__track span {
+      animation: none;
+      width: 100%;
+    }
+  }
+</style>

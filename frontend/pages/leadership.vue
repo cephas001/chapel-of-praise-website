@@ -4,6 +4,7 @@
       :kicker="pageData.hero.kicker"
       :title="pageData.hero.headline"
       :image="pageData.hero.image"
+      :fallback="heroImages.pastor"
     />
 
     <section class="bg-surface py-16 md:py-24">
@@ -32,6 +33,9 @@
                 <AppImage
                   :src="chaplain.imageUrl || defaultPastorImage"
                   :alt="chaplain.name || 'Chaplain'"
+                  width="320"
+                  height="320"
+                  fit="cover"
                   class="aspect-square w-40 rounded-2xl object-cover"
                   loading="lazy"
                   decoding="async"
@@ -73,8 +77,11 @@
                 class="flex flex-col items-center rounded-2xl border border-line bg-paper p-6 text-center"
               >
                 <AppImage
-                  :src="executive.imageUrl || defaultConnectImage"
+                  :src="executive.imageUrl || defaultExecutiveImage"
                   :alt="executive.name || 'Executive'"
+                  width="320"
+                  height="320"
+                  fit="cover"
                   class="aspect-square w-40 rounded-2xl object-cover grayscale"
                   loading="lazy"
                   decoding="async"
@@ -112,8 +119,10 @@
 <script setup>
 import { computed } from "vue";
 import { useRuntimeConfig, useFetch, useHead, useSeoMeta } from "#app";
-import defaultPastorImage from "~/assets/images/pastor.webp";
-import defaultConnectImage from "~/assets/images/connect.webp";
+import { heroImages } from "~/utils/staticImages";
+
+const defaultPastorImage = "/images/pastor-320.webp";
+const defaultExecutiveImage = heroImages.avatar.src;
 
 useHead({
   title: "Leadership | Chapel of Praise",
