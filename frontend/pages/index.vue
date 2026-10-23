@@ -70,6 +70,145 @@
       </AppContainer>
     </section>
 
+    <section class="pb-16 md:pb-24" aria-labelledby="whole-life-heading">
+      <AppContainer>
+        <div
+          class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-12"
+        >
+          <div class="md:col-span-2 lg:col-span-7 lg:pr-10 xl:pr-16">
+            <div class="flex items-center gap-3">
+              <span
+                class="h-0.5 w-10 rounded-full bg-brand-600"
+                aria-hidden="true"
+              />
+              <p class="text-sm font-medium text-brand-600">
+                {{ pageData.beyondSunday.kicker }}
+              </p>
+            </div>
+
+            <h2
+              id="whole-life-heading"
+              class="mt-5 font-impact text-5xl uppercase leading-[0.95] sm:text-6xl lg:text-7xl"
+            >
+              <span
+                v-for="(line, index) in pageData.beyondSunday.headlineLines"
+                :key="`beyond-sunday-line-${index}`"
+                class="block"
+              >
+                {{ line }}
+              </span>
+            </h2>
+
+            <p
+              class="mt-6 max-w-xl text-base font-light leading-relaxed text-gray-600 md:text-lg"
+            >
+              {{ pageData.beyondSunday.description }}
+            </p>
+          </div>
+
+          <NuxtLink
+            :to="pageData.beyondSunday.spiritualCtaLink"
+            class="group relative flex min-h-[420px] flex-col overflow-hidden rounded-2xl border border-line bg-ink text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 md:col-span-2 lg:col-span-5 lg:row-span-2 lg:min-h-[500px]"
+          >
+            <AppImage
+              :src="pageData.beyondSunday.image.src"
+              :avif-srcset="pageData.beyondSunday.image.avifSrcset"
+              :webp-srcset="pageData.beyondSunday.image.webpSrcset"
+              :width="pageData.beyondSunday.image.width"
+              :height="pageData.beyondSunday.image.height"
+              sizes="(min-width: 1024px) 42vw, 100vw"
+              fit="cover"
+              alt=""
+              class="absolute inset-0 h-full w-full object-cover object-center transition-[filter] duration-500 [@media(hover:hover)]:grayscale group-hover:grayscale-0 group-focus-visible:grayscale-0 motion-reduce:transition-none"
+              loading="lazy"
+              decoding="async"
+            />
+            <div
+              class="absolute inset-0 bg-linear-to-b from-black/10 via-black/30 to-black/90"
+              aria-hidden="true"
+            />
+
+            <div class="relative mt-auto p-7 md:p-9">
+              <span
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-white"
+              >
+                <Icon
+                  name="heroicons:book-open"
+                  class="h-5 w-5"
+                  aria-hidden="true"
+                />
+              </span>
+              <h3
+                class="mt-5 font-impact text-3xl uppercase leading-none md:text-4xl"
+              >
+                {{ pageData.beyondSunday.spiritualTitle }}
+              </h3>
+              <p
+                class="mt-3 max-w-xs text-sm font-light leading-6 text-white/80 md:text-base"
+              >
+                {{ pageData.beyondSunday.spiritualDescription }}
+              </p>
+              <span
+                class="mt-6 inline-flex border-b border-white/40 pb-1 text-sm font-semibold text-white transition-colors group-hover:border-white group-focus-visible:border-white"
+              >
+                {{ pageData.beyondSunday.spiritualCtaLabel }}
+              </span>
+            </div>
+          </NuxtLink>
+
+          <article
+            class="flex flex-col rounded-2xl border border-line bg-paper p-6 md:p-8 lg:col-span-4"
+          >
+            <Icon
+              name="heroicons:academic-cap"
+              class="h-7 w-7 text-brand-600"
+              aria-hidden="true"
+            />
+            <h3
+              class="mt-6 font-impact text-2xl uppercase leading-none md:text-3xl"
+            >
+              {{ pageData.beyondSunday.academicTitle }}
+            </h3>
+            <p class="mt-4 text-sm font-light leading-6 text-gray-600">
+              {{ pageData.beyondSunday.academicDescription }}
+            </p>
+            <AppButton
+              variant="link"
+              :to="pageData.beyondSunday.academicCtaLink"
+              class="mt-auto self-start pt-6"
+            >
+              {{ pageData.beyondSunday.academicCtaLabel }}
+            </AppButton>
+          </article>
+
+          <article
+            class="flex flex-col rounded-2xl border border-line bg-paper p-6 md:p-8 lg:col-span-3"
+          >
+            <Icon
+              name="heroicons:heart"
+              class="h-7 w-7 text-brand-600"
+              aria-hidden="true"
+            />
+            <h3
+              class="mt-6 font-impact text-2xl uppercase leading-none md:text-3xl"
+            >
+              {{ pageData.beyondSunday.emotionalTitle }}
+            </h3>
+            <p class="mt-4 text-sm font-light leading-6 text-gray-600">
+              {{ pageData.beyondSunday.emotionalDescription }}
+            </p>
+            <AppButton
+              variant="link"
+              :to="pageData.beyondSunday.emotionalCtaLink"
+              class="mt-auto self-start pt-6"
+            >
+              {{ pageData.beyondSunday.emotionalCtaLabel }}
+            </AppButton>
+          </article>
+        </div>
+      </AppContainer>
+    </section>
+
     <section class="relative overflow-hidden bg-ink py-24 text-paper md:py-32">
       <AppImage
         :src="pageData.champions.image"
@@ -220,10 +359,113 @@ const { data: homepageData } = await useFetch(
   { lazy: import.meta.client },
 );
 
+const defaultBeyondSunday = {
+  kicker: "Beyond Sunday",
+  headline: "Your whole\nlife matters",
+  description:
+    "University life is intense. We're here for your spiritual growth, academic excellence, and emotional wellness, not just Sunday.",
+  spiritualTitle: "Spiritual growth",
+  spiritualDescription: "Deepen your faith and discover your purpose.",
+  spiritualCtaLabel: "Explore ministries",
+  spiritualCtaLink: "/ministries",
+  academicTitle: "Academic excellence",
+  academicDescription:
+    "Study hubs, mentorship, and a community that pushes you to lead.",
+  academicCtaLabel: "View Academic Hub",
+  academicCtaLink: "/academic-hub",
+  emotionalTitle: "Emotional wellness",
+  emotionalDescription:
+    "Safe spaces, welfare support, and professional counselling.",
+  emotionalCtaLabel: "Request counselling",
+  emotionalCtaLink: "/counselling",
+};
+
+const textOr = (value, fallback) => {
+  const text = typeof value === "string" ? value.trim() : "";
+  return text || fallback;
+};
+
+const buildBeyondSunday = (section = {}) => {
+  const customImage = textOr(section.beyondSundayImage, "");
+  const headline = textOr(
+    section.beyondSundayHeadline,
+    defaultBeyondSunday.headline,
+  );
+  const headlineLines = headline
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return {
+    kicker: textOr(
+      section.beyondSundayKicker,
+      defaultBeyondSunday.kicker,
+    ),
+    headlineLines:
+      headlineLines.length > 0 ? headlineLines : ["Your whole life matters"],
+    description: textOr(
+      section.beyondSundayDescription,
+      defaultBeyondSunday.description,
+    ),
+    image: customImage
+      ? { src: customImage, width: 1920, height: 1280 }
+      : heroImages.chapel,
+    spiritualTitle: textOr(
+      section.beyondSundaySpiritualTitle,
+      defaultBeyondSunday.spiritualTitle,
+    ),
+    spiritualDescription: textOr(
+      section.beyondSundaySpiritualDescription,
+      defaultBeyondSunday.spiritualDescription,
+    ),
+    spiritualCtaLabel: textOr(
+      section.beyondSundaySpiritualCtaLabel,
+      defaultBeyondSunday.spiritualCtaLabel,
+    ),
+    spiritualCtaLink: textOr(
+      section.beyondSundaySpiritualCtaLink,
+      defaultBeyondSunday.spiritualCtaLink,
+    ),
+    academicTitle: textOr(
+      section.beyondSundayAcademicTitle,
+      defaultBeyondSunday.academicTitle,
+    ),
+    academicDescription: textOr(
+      section.beyondSundayAcademicDescription,
+      defaultBeyondSunday.academicDescription,
+    ),
+    academicCtaLabel: textOr(
+      section.beyondSundayAcademicCtaLabel,
+      defaultBeyondSunday.academicCtaLabel,
+    ),
+    academicCtaLink: textOr(
+      section.beyondSundayAcademicCtaLink,
+      defaultBeyondSunday.academicCtaLink,
+    ),
+    emotionalTitle: textOr(
+      section.beyondSundayEmotionalTitle,
+      defaultBeyondSunday.emotionalTitle,
+    ),
+    emotionalDescription: textOr(
+      section.beyondSundayEmotionalDescription,
+      defaultBeyondSunday.emotionalDescription,
+    ),
+    emotionalCtaLabel: textOr(
+      section.beyondSundayEmotionalCtaLabel,
+      defaultBeyondSunday.emotionalCtaLabel,
+    ),
+    emotionalCtaLink: textOr(
+      section.beyondSundayEmotionalCtaLink,
+      defaultBeyondSunday.emotionalCtaLink,
+    ),
+  };
+};
+
 const pageData = computed(() => {
   const data = homepageData.value || {};
 
   return {
+    beyondSunday: buildBeyondSunday(data.beyondSundaySection || {}),
     hero: {
       kicker: data.heroSection?.heroKicker || "Shining the Gospel Light",
       headline: data.heroSection?.heroHeadline || "McPherson University Chapel",

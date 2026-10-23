@@ -81,6 +81,7 @@ export default defineNuxtConfig({
   routeRules: {
     "/": cachedPage(60, 300),
     "/about": cachedPage(300, 600),
+    "/academic-hub": cachedPage(300, 600),
     "/become-a-worker": cachedPage(300, 600),
     "/biodata": cachedPage(300, 600),
     "/contact": cachedPage(300, 600),

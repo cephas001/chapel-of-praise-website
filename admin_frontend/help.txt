@@ -110,6 +110,7 @@ There are four middleware functions in `backend/middleware/auth.js`:
 |---|---|---|---|
 | Homepage | `/public/homepage` | `homepage` | GET |
 | About | `/public/about` | `about` | GET |
+| Academic Hub | `/public/academic-hub` | `homepage` | GET |
 | Contact | `/public/contact` | `contact` | GET |
 | Leadership | `/public/leadership` | `leadership` | GET |
 | Ministries | `/public/ministries` | `ministries` | GET |
@@ -189,7 +190,7 @@ All CMS pages follow the same pattern:
 
 | Page | Endpoint | Sections |
 |---|---|---|
-| **Homepage** | `homepage` | Hero Banner, Action Cards (dynamic array), Welcome Section, Great Champions, Sticky Editorial (dynamic array), Leadership Section |
+| **Homepage** | `homepage` | Hero Banner, Action Cards (dynamic array), Welcome Section, Beyond Sunday, Great Champions, Sticky Editorial (dynamic array), Leadership Section |
 | **About** | `about` | Hero Banner, Vision & Mission (2-column content) |
 | **Contact** | `contact` | Hero Section, Form Section, Campus Information, Contact Methods & Social (email, phone, Instagram, Twitter, YouTube) |
 | **Leadership** | `leadership` | Hero Section, Team Overview, Chaplaincy List (dynamic array), Student Executives (dynamic array) |

@@ -71,6 +71,7 @@ const adminDashboardRoutes = require("./routes/admin/dashboardRoutes");
 // Public Routes
 const publicHomepageRoutes = require("./routes/public/homepageRoutes");
 const publicAboutRoutes = require("./routes/public/aboutRoutes");
+const publicAcademicHubRoutes = require("./routes/public/academicHubRoutes");
 const publicContactRoutes = require("./routes/public/contactRoutes");
 const publicLeadershipRoutes = require("./routes/public/leadershipRoutes");
 const publicMinistriesRoutes = require("./routes/public/ministriesRoutes");
@@ -107,6 +108,7 @@ app.use("/api/admin/dashboard", adminDashboardRoutes);
 // Public APIs
 app.use("/api/public/homepage", publicHomepageRoutes);
 app.use("/api/public/about", publicAboutRoutes);
+app.use("/api/public/academic-hub", publicAcademicHubRoutes);
 app.use("/api/public/contact", publicContactRoutes);
 app.use("/api/public/leadership", publicLeadershipRoutes);
 app.use("/api/public/ministries", publicMinistriesRoutes);

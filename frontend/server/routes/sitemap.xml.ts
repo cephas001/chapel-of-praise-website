@@ -1,6 +1,7 @@
 const routes = [
   "/",
   "/about",
+  "/academic-hub",
   "/ministries",
   "/leadership",
   "/events-calendar",

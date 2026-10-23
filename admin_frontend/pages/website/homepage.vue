@@ -286,7 +286,296 @@
         </AppCard>
       </div>
 
-      <!-- Section 4: Great Champions Section -->
+      <!-- Section 4: Beyond Sunday -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
+      >
+        <div class="md:col-span-1">
+          <h3 class="text-base font-semibold text-ink mb-1">Beyond Sunday</h3>
+          <p class="text-xs md:text-sm text-muted">
+            Manage the whole-life section and its three focus cards.
+          </p>
+        </div>
+        <AppCard class="md:col-span-2" body-class="flex flex-col">
+          <div class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="homepage-beyond-kicker"
+                  class="block text-xs font-medium text-ink mb-2"
+                >
+                  Kicker
+                </label>
+                <input
+                  id="homepage-beyond-kicker"
+                  v-model="beyondSundaySection.beyondSundayKicker"
+                  type="text"
+                  class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm"
+                  placeholder="e.g. Beyond Sunday"
+                >
+              </div>
+              <div>
+                <label
+                  for="homepage-beyond-headline"
+                  class="block text-xs font-medium text-ink mb-2"
+                >
+                  Headline
+                </label>
+                <textarea
+                  id="homepage-beyond-headline"
+                  v-model="beyondSundaySection.beyondSundayHeadline"
+                  rows="2"
+                  class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
+                />
+                <p class="mt-2 text-xs text-muted">
+                  Use line breaks to control the large display lines.
+                </p>
+              </div>
+              <div class="md:col-span-2">
+                <label
+                  for="homepage-beyond-image"
+                  class="block text-xs font-medium text-ink mb-2"
+                >
+                  Background Image URL
+                </label>
+                <MediaPickerInput
+                  v-model="beyondSundaySection.beyondSundayImage"
+                  input-id="homepage-beyond-image"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label
+                  for="homepage-beyond-description"
+                  class="block text-xs font-medium text-ink mb-2"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="homepage-beyond-description"
+                  v-model="beyondSundaySection.beyondSundayDescription"
+                  rows="3"
+                  class="w-full rounded-control border border-line bg-subtle px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink focus:bg-surface md:text-sm resize-none"
+                />
+              </div>
+            </div>
+
+            <div
+              class="rounded-surface border border-line bg-subtle/60 p-5"
+            >
+              <h4 class="text-sm font-semibold text-ink">Spiritual Growth</h4>
+              <p class="mt-1 text-xs text-muted">
+                The large image card. Its whole surface links to the card URL.
+              </p>
+              <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    for="homepage-beyond-spiritual-title"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Title
+                  </label>
+                  <input
+                    id="homepage-beyond-spiritual-title"
+                    v-model="beyondSundaySection.beyondSundaySpiritualTitle"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div>
+                  <label
+                    for="homepage-beyond-spiritual-cta-label"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link Label
+                  </label>
+                  <input
+                    id="homepage-beyond-spiritual-cta-label"
+                    v-model="beyondSundaySection.beyondSundaySpiritualCtaLabel"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-spiritual-cta-link"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link URL
+                  </label>
+                  <input
+                    id="homepage-beyond-spiritual-cta-link"
+                    v-model="beyondSundaySection.beyondSundaySpiritualCtaLink"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-spiritual-description"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="homepage-beyond-spiritual-description"
+                    v-model="beyondSundaySection.beyondSundaySpiritualDescription"
+                    rows="2"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-surface border border-line bg-subtle/60 p-5"
+            >
+              <h4 class="text-sm font-semibold text-ink">
+                Academic Excellence
+              </h4>
+              <p class="mt-1 text-xs text-muted">
+                The academic card and its link to the Academic Hub.
+              </p>
+              <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    for="homepage-beyond-academic-title"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Title
+                  </label>
+                  <input
+                    id="homepage-beyond-academic-title"
+                    v-model="beyondSundaySection.beyondSundayAcademicTitle"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div>
+                  <label
+                    for="homepage-beyond-academic-cta-label"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link Label
+                  </label>
+                  <input
+                    id="homepage-beyond-academic-cta-label"
+                    v-model="beyondSundaySection.beyondSundayAcademicCtaLabel"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-academic-cta-link"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link URL
+                  </label>
+                  <input
+                    id="homepage-beyond-academic-cta-link"
+                    v-model="beyondSundaySection.beyondSundayAcademicCtaLink"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-academic-description"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="homepage-beyond-academic-description"
+                    v-model="beyondSundaySection.beyondSundayAcademicDescription"
+                    rows="2"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-surface border border-line bg-subtle/60 p-5"
+            >
+              <h4 class="text-sm font-semibold text-ink">
+                Emotional Wellness
+              </h4>
+              <p class="mt-1 text-xs text-muted">
+                The emotional wellness card and its call to action.
+              </p>
+              <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label
+                    for="homepage-beyond-emotional-title"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Title
+                  </label>
+                  <input
+                    id="homepage-beyond-emotional-title"
+                    v-model="beyondSundaySection.beyondSundayEmotionalTitle"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div>
+                  <label
+                    for="homepage-beyond-emotional-cta-label"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link Label
+                  </label>
+                  <input
+                    id="homepage-beyond-emotional-cta-label"
+                    v-model="beyondSundaySection.beyondSundayEmotionalCtaLabel"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-emotional-cta-link"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Link URL
+                  </label>
+                  <input
+                    id="homepage-beyond-emotional-cta-link"
+                    v-model="beyondSundaySection.beyondSundayEmotionalCtaLink"
+                    type="text"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm"
+                  >
+                </div>
+                <div class="md:col-span-2">
+                  <label
+                    for="homepage-beyond-emotional-description"
+                    class="block text-xs font-medium text-ink mb-2"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="homepage-beyond-emotional-description"
+                    v-model="beyondSundaySection.beyondSundayEmotionalDescription"
+                    rows="2"
+                    class="w-full rounded-control border border-line bg-surface px-4 py-2.5 text-xs text-ink outline-none transition-colors focus:border-ink md:text-sm resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="px-6 pb-6 pt-2 flex justify-end">
+            <SaveSectionButton
+              :is-loading="sectionSavingState.beyondSundaySection"
+              @click="
+                handleSaveSection('beyondSundaySection', beyondSundaySection)
+              "
+            />
+          </div>
+        </AppCard>
+      </div>
+
+      <!-- Section 5: Great Champions Section -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
@@ -377,7 +666,7 @@
         </AppCard>
       </div>
 
-      <!-- Section 5: Editorial Slides -->
+      <!-- Section 6: Editorial Slides -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
@@ -476,7 +765,7 @@
         </AppCard>
       </div>
 
-      <!-- Section 6: Leadership Section -->
+      <!-- Section 7: Leadership Section -->
       <div
         class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-line pt-8"
       >
@@ -603,6 +892,29 @@ const actionCardsSection = reactive({
   actionCards: [],
 });
 
+const beyondSundaySection = reactive({
+  beyondSundayKicker: "Beyond Sunday",
+  beyondSundayHeadline: "Your whole\nlife matters",
+  beyondSundayDescription:
+    "University life is intense. We're here for your spiritual growth, academic excellence, and emotional wellness, not just Sunday.",
+  beyondSundayImage: "",
+  beyondSundaySpiritualTitle: "Spiritual growth",
+  beyondSundaySpiritualDescription:
+    "Deepen your faith and discover your purpose.",
+  beyondSundaySpiritualCtaLabel: "Explore ministries",
+  beyondSundaySpiritualCtaLink: "/ministries",
+  beyondSundayAcademicTitle: "Academic excellence",
+  beyondSundayAcademicDescription:
+    "Study hubs, mentorship, and a community that pushes you to lead.",
+  beyondSundayAcademicCtaLabel: "View Academic Hub",
+  beyondSundayAcademicCtaLink: "/academic-hub",
+  beyondSundayEmotionalTitle: "Emotional wellness",
+  beyondSundayEmotionalDescription:
+    "Safe spaces, welfare support, and professional counselling.",
+  beyondSundayEmotionalCtaLabel: "Request counselling",
+  beyondSundayEmotionalCtaLink: "/counselling",
+});
+
 const championsSection = reactive({
   championHeadline: "",
   championDescription: "",
@@ -632,6 +944,7 @@ const sectionsMap = {
   heroSection,
   welcomeSection,
   actionCardsSection,
+  beyondSundaySection,
   championsSection,
   editorialSection,
   leadershipSection,
@@ -642,6 +955,7 @@ const sectionSavingState = reactive({
   heroSection: false,
   welcomeSection: false,
   actionCardsSection: false,
+  beyondSundaySection: false,
   championsSection: false,
   editorialSection: false,
   leadershipSection: false,
