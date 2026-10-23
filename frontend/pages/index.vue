@@ -119,7 +119,7 @@
               sizes="(min-width: 1024px) 42vw, 100vw"
               fit="cover"
               alt=""
-              class="absolute inset-0 h-full w-full object-cover object-center transition-[filter] duration-500 [@media(hover:hover)]:grayscale group-hover:grayscale-0 group-focus-visible:grayscale-0 motion-reduce:transition-none"
+              class="absolute inset-0 h-full w-full object-cover object-center transition-[filter] duration-500 motion-reduce:transition-none"
               loading="lazy"
               decoding="async"
             />
@@ -397,10 +397,7 @@ const buildBeyondSunday = (section = {}) => {
     .filter(Boolean);
 
   return {
-    kicker: textOr(
-      section.beyondSundayKicker,
-      defaultBeyondSunday.kicker,
-    ),
+    kicker: textOr(section.beyondSundayKicker, defaultBeyondSunday.kicker),
     headlineLines:
       headlineLines.length > 0 ? headlineLines : ["Your whole life matters"],
     description: textOr(
@@ -482,7 +479,8 @@ const pageData = computed(() => {
         "Dive into our teachings, events and community. Your journey of faith begins here.",
     },
     champions: {
-      image: data.championsSection?.championImage || heroImages.celebrations.src,
+      image:
+        data.championsSection?.championImage || heroImages.celebrations.src,
       headline: data.championsSection?.championHeadline || "Great Champions",
       description:
         data.championsSection?.championDescription ||
